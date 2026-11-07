@@ -129,11 +129,11 @@
                 <button onclick="closeModal('mapModal')" class="text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="space-y-3">
-                <a href="https://naver.me/5x5x5x5x" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
+                <a href="https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EA%B4%80%EC%96%91%EB%8F%99%201608-4" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
                     <span class="text-sm font-medium text-gray-200">네이버 지도 열기</span>
                     <i class="fa-solid fa-arrow-right text-gold text-xs"></i>
                 </a>
-                <a href="https://map.kakao.com" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
+                <a href="https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EA%B4%80%EC%96%91%EB%8F%99%201608-4" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
                     <span class="text-sm font-medium text-gray-200">카카오맵 열기</span>
                     <i class="fa-solid fa-arrow-right text-gold text-xs"></i>
                 </a>
@@ -168,10 +168,8 @@
         function openQrModal() {
             openModal('qrModal');
             
-            // 기존에 생성된 QR코드가 있으면 지우고 다시 그리기 (중복 방지)
             document.getElementById('qrcode').innerHTML = '';
             
-            // 실제 접속하게 될 깃허브 웹 주소 연결
             const url = "https://lumian1108.github.io";
             
             new QRCode(document.getElementById("qrcode"), {
@@ -186,5 +184,3 @@
     </script>
 </body>
 </html>
-
-```
