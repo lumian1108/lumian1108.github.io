@@ -71,6 +71,16 @@
             </div>
         </div>
 
+        <!-- 실시간 예약하기 버튼 -->
+        <div class="mb-3">
+            <button onclick="openBookingModal()" class="w-full bg-gold rounded-2xl py-4 px-5 flex items-center justify-center active:scale-95 transition-transform shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-check text-bgDark text-lg"></i>
+                    <span class="text-sm font-bold text-bgDark">실시간 예약하기</span>
+                </div>
+            </button>
+        </div>
+
         <!-- 지도 통합 버튼 -->
         <div class="mb-3">
             <button onclick="openModal('mapModal')" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
@@ -152,6 +162,70 @@
         </div>
     </div>
 
+    <!-- 실시간 예약 팝업 모달 (Apple iOS 스타일) -->
+    <div id="bookingModal" class="fixed inset-0 bg-black/80 z-50 hidden flex-col items-center justify-end sm:justify-center p-0 sm:p-6 backdrop-blur-sm">
+        <!-- 바텀 시트 형태 -->
+        <div class="bg-boxDark w-full max-w-md rounded-t-[30px] sm:rounded-[24px] h-[85vh] sm:h-[600px] relative shadow-2xl flex flex-col overflow-hidden">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-5 border-b border-gray-700/50">
+                <button id="bookingBackBtn" onclick="bookingGoBack()" class="text-gold hidden px-2 active:scale-90"><i class="fa-solid fa-chevron-left"></i> 뒤로</button>
+                <h3 id="bookingTitle" class="font-bold text-lg text-white mx-auto">날짜 선택</h3>
+                <button onclick="closeModal('bookingModal')" class="text-gray-400 px-2 absolute right-5 active:scale-90"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto p-5 relative" id="bookingContent">
+                
+                <!-- Step 1: 캘린더 -->
+                <div id="stepCalendar" class="block">
+                    <div class="flex justify-between items-center mb-4 px-2">
+                        <button onclick="prevMonth()" class="text-gray-400 p-2 active:scale-90"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="calendarMonthYear" class="text-white font-bold text-lg"></span>
+                        <button onclick="nextMonth()" class="text-gray-400 p-2 active:scale-90"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center mb-2">
+                        <div class="text-red-500 text-xs font-medium py-2">일</div>
+                        <div class="text-gray-400 text-xs font-medium py-2">월</div>
+                        <div class="text-gray-400 text-xs font-medium py-2">화</div>
+                        <div class="text-gray-400 text-xs font-medium py-2">수</div>
+                        <div class="text-gray-400 text-xs font-medium py-2">목</div>
+                        <div class="text-gray-400 text-xs font-medium py-2">금</div>
+                        <div class="text-blue-400 text-xs font-medium py-2">토</div>
+                    </div>
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-2 text-center">
+                        <!-- JS로 날짜 삽입 -->
+                    </div>
+                </div>
+
+                <!-- Step 2: 시간 선택 -->
+                <div id="stepTime" class="hidden flex-col gap-3">
+                    <p class="text-gold text-sm font-medium mb-3 text-center" id="selectedDateDisplay"></p>
+                    <div id="timeGrid" class="grid grid-cols-3 gap-3">
+                        <!-- JS로 시간 삽입 -->
+                    </div>
+                </div>
+
+                <!-- Step 3: 프로그램 선택 -->
+                <div id="stepProgram" class="hidden flex-col gap-3">
+                    <p class="text-gold text-sm font-medium mb-3 text-center" id="selectedDateTimeDisplay"></p>
+                    <div id="programList" class="flex flex-col gap-3 pb-6">
+                        <!-- JS로 프로그램 삽입 -->
+                    </div>
+                </div>
+
+                <!-- Step 4: 예약 완료 팝업 -->
+                <div id="stepSuccess" class="hidden flex-col items-center justify-center h-full text-center pb-10">
+                    <div class="w-16 h-16 bg-gold/20 rounded-full flex items-center justify-center mb-5">
+                        <i class="fa-solid fa-check text-3xl text-gold"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-xl mb-2">예약 신청 완료</h3>
+                    <p class="text-gray-300 text-sm mb-8 leading-relaxed bg-[#163023] p-5 rounded-xl border border-gold/20 w-full" id="finalBookingDetails"></p>
+                    <button onclick="closeModal('bookingModal')" class="bg-gold text-bgDark font-bold py-3.5 px-8 rounded-xl w-full active:scale-95 transition-transform">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(id) {
             const el = document.getElementById(id);
@@ -180,6 +254,167 @@
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
             });
+        }
+
+        /* --- 실시간 예약 시스템 로직 --- */
+        // 임의 공휴일 지정 (2026성탄절, 2027신정 등 예시)
+        const holidays = ['2026-12-25', '2027-01-01', '2027-02-09', '2027-03-01']; 
+        let currentStep = 1;
+        let viewMonth, viewYear;
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        let bookDate = '', bookDay = 0, bookTime = '', bookProg = '';
+
+        function openBookingModal() {
+            currentStep = 1;
+            viewMonth = today.getMonth();
+            viewYear = today.getFullYear();
+            updateBookingUI();
+            openModal('bookingModal');
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            document.getElementById('calendarMonthYear').innerText = `${viewYear}년 ${viewMonth + 1}월`;
+            
+            const firstDay = new Date(viewYear, viewMonth, 1).getDay();
+            const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+            
+            // 시작 요일 앞 빈칸 채우기
+            for(let i=0; i<firstDay; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+            
+            // 날짜 렌더링
+            for(let d=1; d<=daysInMonth; d++) {
+                const dateObj = new Date(viewYear, viewMonth, d);
+                const dateStr = `${viewYear}-${String(viewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const dayOfWeek = dateObj.getDay();
+                
+                let colorClass = "text-gray-200";
+                // 일요일(0) 또는 지정된 공휴일은 빨간색, 토요일(6)은 파란색
+                if (dayOfWeek === 0 || holidays.includes(dateStr)) colorClass = "text-red-500";
+                else if (dayOfWeek === 6) colorClass = "text-blue-400";
+                
+                let isPast = dateObj < today;
+                let isToday = dateObj.getTime() === today.getTime();
+                
+                if (isPast && !isToday) {
+                    // 지나간 날짜는 회색 처리 및 선택 불가
+                    grid.innerHTML += `<div class="py-2 text-gray-600/50 text-sm font-light">${d}</div>`;
+                } else {
+                    let todayStyle = isToday ? "bg-gold text-bgDark font-bold rounded-full shadow-md" : colorClass;
+                    grid.innerHTML += `
+                        <button onclick="selectDate('${dateStr}', ${dayOfWeek})" class="py-2 text-sm mx-auto w-8 h-8 flex items-center justify-center hover:bg-gray-700/50 rounded-full transition-colors active:scale-90 ${todayStyle}">
+                            ${d}
+                        </button>
+                    `;
+                }
+            }
+        }
+
+        function prevMonth() { viewMonth--; if(viewMonth<0) { viewMonth=11; viewYear--;} renderCalendar(); }
+        function nextMonth() { viewMonth++; if(viewMonth>11) { viewMonth=0; viewYear++;} renderCalendar(); }
+
+        function selectDate(dateStr, dayOfWeek) {
+            bookDate = dateStr;
+            bookDay = dayOfWeek;
+            currentStep = 2;
+            updateBookingUI();
+            renderTimes();
+        }
+
+        function renderTimes() {
+            const dateArr = bookDate.split('-');
+            document.getElementById('selectedDateDisplay').innerText = `${dateArr[1]}월 ${dateArr[2]}일 시간 선택`;
+            const timeGrid = document.getElementById('timeGrid');
+            timeGrid.innerHTML = '';
+            
+            // 수요일(3)이면 17시까지, 그 외는 20시까지 오픈
+            const endHour = (bookDay === 3) ? 17 : 20; 
+            for(let h=9; h<=endHour; h++) {
+                let t = `${String(h).padStart(2,'0')}:00`;
+                timeGrid.innerHTML += `
+                    <button onclick="selectTime('${t}')" class="bg-[#163023] border border-gold/30 rounded-xl py-3.5 text-sm text-gray-200 hover:bg-gold hover:text-bgDark hover:font-bold hover:border-gold transition-all active:scale-95">
+                        ${t}
+                    </button>
+                `;
+            }
+        }
+
+        function selectTime(t) {
+            bookTime = t;
+            currentStep = 3;
+            updateBookingUI();
+            renderProgs();
+        }
+
+        function renderProgs() {
+            const dateArr = bookDate.split('-');
+            document.getElementById('selectedDateTimeDisplay').innerText = `${dateArr[1]}월 ${dateArr[2]}일 ${bookTime}`;
+            const pList = document.getElementById('programList');
+            pList.innerHTML = '';
+            
+            for(let i=1; i<=10; i++) {
+                pList.innerHTML += `
+                    <button onclick="selectProgram('무제${i}')" class="bg-[#163023] border border-gray-700 rounded-xl p-4 text-left text-sm text-gray-200 flex justify-between items-center hover:border-gold hover:text-gold transition-colors active:scale-95 shadow-sm">
+                        <span>무제${i}</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-gray-500"></i>
+                    </button>
+                `;
+            }
+        }
+
+        function selectProgram(p) {
+            bookProg = p;
+            currentStep = 4;
+            updateBookingUI();
+            const dateArr = bookDate.split('-');
+            document.getElementById('finalBookingDetails').innerHTML = `
+                <span class="block text-gold mb-2 font-bold">[ ${bookProg} ]</span>
+                ${dateArr[0]}년 ${dateArr[1]}월 ${dateArr[2]}일<br>
+                시간: ${bookTime}
+            `;
+        }
+
+        function bookingGoBack() {
+            if(currentStep > 1) {
+                currentStep--;
+                updateBookingUI();
+            }
+        }
+
+        function updateBookingUI() {
+            document.getElementById('stepCalendar').classList.add('hidden');
+            document.getElementById('stepTime').classList.add('hidden');
+            document.getElementById('stepProgram').classList.add('hidden');
+            document.getElementById('stepSuccess').classList.add('hidden');
+            
+            const title = document.getElementById('bookingTitle');
+            const backBtn = document.getElementById('bookingBackBtn');
+            
+            if(currentStep === 1) {
+                document.getElementById('stepCalendar').classList.remove('hidden');
+                title.innerText = '날짜 선택';
+                backBtn.classList.add('hidden');
+            } else if(currentStep === 2) {
+                document.getElementById('stepTime').classList.remove('hidden');
+                document.getElementById('stepTime').classList.add('flex');
+                title.innerText = '시간 선택';
+                backBtn.classList.remove('hidden');
+            } else if(currentStep === 3) {
+                document.getElementById('stepProgram').classList.remove('hidden');
+                document.getElementById('stepProgram').classList.add('flex');
+                title.innerText = '프로그램 선택';
+                backBtn.classList.remove('hidden');
+            } else if(currentStep === 4) {
+                document.getElementById('stepSuccess').classList.remove('hidden');
+                document.getElementById('stepSuccess').classList.add('flex');
+                title.innerText = '예약 신청 완료';
+                backBtn.classList.add('hidden');
+            }
         }
     </script>
 </body>
