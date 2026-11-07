@@ -103,6 +103,17 @@
             </button>
         </div>
 
+        <!-- 홈 화면에 추가 버튼 -->
+        <div class="mb-6">
+            <button onclick="openModal('homeScreenModal')" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-arrow-up-from-bracket text-gold text-lg"></i>
+                    <span class="text-sm font-medium text-gray-200">스마트폰 홈 화면에 추가</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
+            </button>
+        </div>
+
         <!-- 샵 정보 박스 -->
         <div class="bg-boxDark border border-gold/20 rounded-[20px] p-6 mb-8 shadow-lg">
             <div class="flex items-start gap-4 mb-5">
@@ -159,6 +170,44 @@
             <p class="text-xs text-gray-300 mb-6 text-center">스마트폰 카메라로 아래 QR코드를 스캔하면<br>명함으로 바로 연결됩니다.</p>
             <div id="qrcode" class="bg-white p-3 rounded-xl mb-4"></div>
             <p class="text-gold text-[10px] tracking-widest mt-2">LUMIAN AESTHETIC</p>
+        </div>
+    </div>
+
+    <!-- 홈 화면 추가 안내 팝업 모달 -->
+    <div id="homeScreenModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-6 relative shadow-2xl flex flex-col">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-base text-gold">홈 화면에 추가하는 방법</h3>
+                <button onclick="closeModal('homeScreenModal')" class="text-gray-400 p-2 active:scale-90"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- 아이폰 안내 -->
+                <div class="bg-[#163023] border border-gray-700 rounded-xl p-4 shadow-inner">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fa-brands fa-apple text-gray-200 text-lg"></i>
+                        <span class="font-bold text-sm text-gray-100">아이폰 (Safari)</span>
+                    </div>
+                    <p class="text-[13px] text-gray-300 leading-relaxed">
+                        1. 화면 맨 아래의 <i class="fa-solid fa-arrow-up-from-bracket mx-1 border border-gray-500 rounded p-1 text-[10px]"></i> <strong>공유</strong> 버튼을 누릅니다.<br>
+                        2. 목록을 내려서 <i class="fa-regular fa-square-plus mx-1"></i> <strong>홈 화면에 추가</strong>를 선택합니다.
+                    </p>
+                </div>
+
+                <!-- 안드로이드 안내 -->
+                <div class="bg-[#163023] border border-gray-700 rounded-xl p-4 shadow-inner">
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fa-brands fa-android text-green-500 text-lg"></i>
+                        <span class="font-bold text-sm text-gray-100">안드로이드 (Chrome)</span>
+                    </div>
+                    <p class="text-[13px] text-gray-300 leading-relaxed">
+                        1. 화면 오른쪽 위 <i class="fa-solid fa-ellipsis-vertical mx-1"></i> <strong>메뉴</strong> 버튼을 누릅니다.<br>
+                        2. 목록에서 <i class="fa-solid fa-mobile-screen mx-1"></i> <strong>홈 화면에 추가</strong>를 선택합니다.
+                    </p>
+                </div>
+            </div>
+            
+            <button onclick="closeModal('homeScreenModal')" class="mt-6 bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-xl w-full active:scale-95 transition-transform">닫기</button>
         </div>
     </div>
 
