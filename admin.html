@@ -51,7 +51,6 @@
 
     <div class="w-full max-w-md relative flex flex-col pt-12 pb-24 px-6">
         
-        <!-- 로그인 화면 -->
         <div id="loginSection" class="my-auto">
             <div class="text-center mb-8">
                 <h1 class="text-gold text-3xl font-serif font-bold mb-2">LUMIAN ADMIN</h1>
@@ -69,12 +68,11 @@
             </div>
         </div>
 
-        <!-- 관리자 대시보드 화면 -->
         <div id="dashboardSection" class="hidden">
             <div class="flex justify-between items-center mb-6 border-b border-gold/20 pb-4">
                 <div>
                     <h2 class="text-xl font-bold text-gold">예약 현황 관리</h2>
-                    <p class="text-xs text-gray-300 mt-1">실시간 손님 예약 요청 리스트</p>
+                    <p class="text-xs text-gray-300 mt-1">실시간 승인/거절 대시보드</p>
                 </div>
                 <button onclick="logout()" class="text-xs text-gray-400 bg-boxDark border border-gold/20 px-3 py-1.5 rounded-lg">로그아웃</button>
             </div>
@@ -116,28 +114,45 @@
                 const keys = Object.keys(data).reverse();
                 keys.forEach(key => {
                     const item = data[key];
+                    const isPending = item.status === 'pending';
+                    const isConfirmed = item.status === 'confirmed';
                     const isCancelled = item.status === 'cancelled';
 
                     const card = document.createElement('div');
                     card.className = `bg-boxDark border border-gold/20 rounded-2xl p-4 shadow-md ${isCancelled ? 'opacity-50' : ''}`;
+
+                    let statusBadge = '';
+                    if (isPending) statusBadge = '<span class="text-[11px] text-yellow-400 font-bold bg-yellow-950/40 px-2 py-0.5 rounded border border-yellow-500/30">승인 대기</span>';
+                    else if (isConfirmed) statusBadge = '<span class="text-[11px] text-green-400 font-bold bg-green-950/40 px-2 py-0.5 rounded border border-green-500/30">예약 확정</span>';
+                    else statusBadge = '<span class="text-[11px] text-red-400 font-bold bg-red-950/40 px-2 py-0.5 rounded border border-red-500/30">거절/취소</span>';
 
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-xs font-bold text-gold bg-[#163023] px-2.5 py-1 rounded-lg border border-gold/20">
                                 ${item.year}.${item.month}.${item.day} (${item.time})
                             </span>
-                            <span class="text-[11px] ${isCancelled ? 'text-red-400 font-bold' : 'text-green-400 font-bold'}">
-                                ${isCancelled ? '취소됨' : '예약완료'}
-                            </span>
+                            ${statusBadge}
                         </div>
                         <div class="space-y-1 mb-3 text-xs text-gray-200">
                             <p><strong class="text-gray-400">성함:</strong> ${item.name}</p>
                             <p><strong class="text-gray-400">연락처:</strong> <a href="tel:${item.phone}" class="text-gold underline">${item.phone}</a></p>
                             <p><strong class="text-gray-400">프로그램:</strong> ${item.program}</p>
                         </div>
-                        ${!isCancelled ? `
-                            <button onclick="cancelBooking('${key}')" class="w-full bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2 rounded-xl active:scale-95 transition-transform">
-                                예약 취소 / 마감 해제
+                        
+                        ${isPending ? `
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="approveBooking('${key}')" class="bg-gold text-[#163023] text-xs font-bold py-2 rounded-xl active:scale-95 transition-transform">
+                                    예약 승인
+                                </button>
+                                <button onclick="rejectBooking('${key}')" class="bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2 rounded-xl active:scale-95 transition-transform">
+                                    예약 거절
+                                </button>
+                            </div>
+                        ` : ''}
+
+                        ${isConfirmed ? `
+                            <button onclick="rejectBooking('${key}')" class="w-full bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2 rounded-xl active:scale-95 transition-transform">
+                                확정 취소하기
                             </button>
                         ` : ''}
                     `;
@@ -147,8 +162,14 @@
             });
         }
 
-        function cancelBooking(key) {
-            if (confirm("이 예약을 취소하시겠습니까? (취소 시 손님 달력에서 해당 시간이 다시 열립니다)")) {
+        function approveBooking(key) {
+            database.ref('bookings/' + key).update({
+                status: 'confirmed'
+            });
+        }
+
+        function rejectBooking(key) {
+            if (confirm("이 예약을 취소/거절하시겠습니까? (취소 시 달력에서 타 손님이 선택 가능해집니다)")) {
                 database.ref('bookings/' + key).update({
                     status: 'cancelled'
                 });
