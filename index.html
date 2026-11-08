@@ -358,6 +358,22 @@
         today.setHours(0,0,0,0);
         let bookDate = '', bookDay = 0, bookTime = '', bookProg = '';
 
+        // --- 예약 내역 저장 및 불러오기 (로컬 스토리지 활용) ---
+        function getBookedSlots() {
+            const slots = localStorage.getItem('lumianBookedSlots');
+            return slots ? JSON.parse(slots) : [];
+        }
+
+        function saveBookedSlot(dateStr, timeStr) {
+            const slots = getBookedSlots();
+            const slotKey = `${dateStr}_${timeStr}`;
+            if (!slots.includes(slotKey)) {
+                slots.push(slotKey);
+                localStorage.setItem('lumianBookedSlots', JSON.stringify(slots));
+            }
+        }
+        // ----------------------------------------------------
+
         function openBookingModal() {
             currentStep = 1;
             viewMonth = today.getMonth();
@@ -425,15 +441,31 @@
             const timeGrid = document.getElementById('timeGrid');
             timeGrid.innerHTML = '';
             
+            // 이미 예약된 시간 목록 가져오기
+            const bookedSlots = getBookedSlots();
+            
             // 수요일(3)이면 17시까지, 그 외는 20시까지 오픈
             const endHour = (bookDay === 3) ? 17 : 20; 
             for(let h=9; h<=endHour; h++) {
                 let t = `${String(h).padStart(2,'0')}:00`;
-                timeGrid.innerHTML += `
-                    <button onclick="selectTime('${t}')" class="bg-[#163023] border border-gold/30 rounded-xl py-3.5 text-sm text-gray-200 hover:bg-gold hover:text-bgDark hover:font-bold hover:border-gold transition-all active:scale-95">
-                        ${t}
-                    </button>
-                `;
+                const slotKey = `${bookDate}_${t}`;
+                
+                // 만약 이 시간이 예약된 목록(bookedSlots)에 있다면 마감 처리
+                if (bookedSlots.includes(slotKey)) {
+                    timeGrid.innerHTML += `
+                        <button disabled class="bg-[#0f2118] border border-gray-700 rounded-xl py-2.5 text-sm text-gray-600 cursor-not-allowed flex flex-col items-center justify-center opacity-70">
+                            <span class="line-through mb-1">${t}</span>
+                            <span class="text-[10px] text-red-500 font-bold bg-red-500/10 px-2 py-0.5 rounded">예약 마감</span>
+                        </button>
+                    `;
+                } else {
+                    // 예약되지 않은 시간은 정상적으로 버튼 표시
+                    timeGrid.innerHTML += `
+                        <button onclick="selectTime('${t}')" class="bg-[#163023] border border-gold/30 rounded-xl py-3.5 text-sm text-gray-200 hover:bg-gold hover:text-bgDark hover:font-bold hover:border-gold transition-all active:scale-95">
+                            ${t}
+                        </button>
+                    `;
+                }
             }
         }
 
@@ -463,6 +495,10 @@
         function selectProgram(p) {
             bookProg = p;
             currentStep = 4;
+            
+            // 예약 완료 시, 해당 날짜와 시간을 기기에 저장하여 마감 처리
+            saveBookedSlot(bookDate, bookTime);
+            
             updateBookingUI();
             const dateArr = bookDate.split('-');
             document.getElementById('finalBookingDetails').innerHTML = `
