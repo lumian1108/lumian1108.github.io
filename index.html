@@ -1,7 +1,557 @@
-apiKey: "AIzaSyAL5Q-dAKzi896llcUjMXM9UVl_IFywY2w",
-  authDomain: "lumian-booking.firebaseapp.com",
-  projectId: "lumian-booking",
-  storageBucket: "lumian-booking.firebasestorage.app",
-  messagingSenderId: "326384208087",
-  appId: "1:326384208087:web:24d696f92773c98251c892",
-  measurementId: "G-ZKP4XVRX43"
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>루미안 에스테틱 | 원장 안은희</title>
+    
+    <script>
+        (function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#163023';
+            ctx.fillRect(0, 0, 512, 512);
+
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 16;
+            ctx.strokeRect(30, 30, 452, 452);
+
+            ctx.fillStyle = '#d4af37';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 100px serif';
+            ctx.fillText('LUMIAN', 256, 256);
+
+            const dataUrl = canvas.toDataURL('image/png');
+
+            const appleIcon = document.createElement('link');
+            appleIcon.rel = 'apple-touch-icon';
+            appleIcon.href = dataUrl;
+            document.head.appendChild(appleIcon);
+
+            const favicon = document.createElement('link');
+            favicon.rel = 'icon';
+            favicon.href = dataUrl;
+            document.head.appendChild(favicon);
+        })();
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#163023',
+                        boxDark: '#1F3C2C',
+                        gold: '#d4af37',
+                    }
+                }
+            }
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAL5Q-dAKzI8961lcUjMXM9UV1_IFywY2w",
+            authDomain: "lumian-booking.firebaseapp.com",
+            databaseURL: "https://lumian-booking-default-rtdb.firebaseio.com",
+            projectId: "lumian-booking",
+            storageBucket: "lumian-booking.firebasestorage.app",
+            messagingSenderId: "326384208087",
+            appId: "1:326384208087:web:24d696f92773c98251c892",
+            measurementId: "G-ZKP4VRX43"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #163023; 
+            color: white; 
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased flex justify-center min-h-screen">
+    
+    <div class="w-full max-w-md relative flex flex-col pt-16 pb-24 px-7">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-gold text-4xl font-serif font-bold mb-2 tracking-wide">LUMIAN</h1>
+            <p class="text-gold text-[10px] tracking-[0.25em] mb-8">AESTHETIC & BODY CARE</p>
+            <div class="w-2/3 h-px bg-gold/30 mx-auto mb-8"></div>
+            <p class="text-gold text-xs mb-2 tracking-widest font-light">OWNER / CEO</p>
+            <h2 class="text-3xl font-bold mb-5 tracking-wide">원장 안은희</h2>
+            <p class="text-gray-300 text-[13px] leading-relaxed font-light">
+                피부 본연의 아름다운 빛을 찾는<br>
+                1:1 프리미엄 맞춤 에스테틱 & 바디케어
+            </p>
+        </div>
+
+        <div class="mb-6">
+            <p class="text-gold text-center text-[11px] font-semibold mb-4 tracking-widest">QUICK CONNECT</p>
+            <div class="grid grid-cols-4 gap-3">
+                <a href="tel:01071356548" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-phone text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">전화</span>
+                </a>
+                <a href="sms:01071356548" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-comment-sms text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">문자</span>
+                </a>
+                <a href="https://pf.kakao.com" target="_blank" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-comment text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">카톡상담</span>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-brands fa-instagram text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">인스타</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <button onclick="openBookingModal()" class="w-full bg-gold text-[#163023] font-bold rounded-2xl py-4 px-5 flex items-center justify-between shadow-lg active:scale-95 transition-transform">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-calendar-check text-lg"></i>
+                    <span class="text-sm font-bold">실시간 예약하기</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+            </button>
+        </div>
+
+        <div class="mb-3">
+            <button onclick="openModal('mapModal')" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-location-dot text-gold text-lg"></i>
+                    <span class="text-sm font-medium text-gray-200">오시는 길 (네이버 / 카카오 맵)</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
+            </button>
+        </div>
+
+        <div class="mb-3">
+            <button onclick="openQrModal()" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-qrcode text-gold text-lg"></i>
+                    <span class="text-sm font-medium text-gray-200">명함 공유하기 (QR코드)</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
+            </button>
+        </div>
+
+        <div class="mb-6">
+            <button onclick="openModal('homeAppModal')" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-[#163023] fa-mobile-screen-button text-gold text-lg"></i>
+                    <span class="text-sm font-medium text-gray-200">스마트폰 홈 화면에 앱으로 추가</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
+            </button>
+        </div>
+
+        <div class="bg-boxDark border border-gold/20 rounded-[20px] p-6 mb-8 shadow-lg">
+            <div class="flex items-start gap-4 mb-5">
+                <i class="fa-solid fa-store text-gold mt-1"></i>
+                <div>
+                    <p class="font-bold text-sm mb-1 text-gray-100">루미안 에스테틱 (LUMIAN)</p>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        경기도 안양시 동안구 관양동 1608-4<br>
+                        동아프라자 아케이드 107호
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4 mb-5">
+                <i class="fa-solid fa-phone text-gold mt-1"></i>
+                <div>
+                    <a href="tel:01071356548" class="block text-[15px] font-bold text-gold mb-1 tracking-wide">
+                        TEL. 010-7135-6548 <span class="text-[10px] text-gray-400 font-normal ml-1">(터치시 바로 전화)</span>
+                    </a>
+                    <p class="text-xs text-gray-400">(평촌역 1번 출구 도보 2분)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 pt-5 border-t border-gold/20">
+                <i class="fa-regular fa-clock text-gold"></i>
+                <p class="text-xs text-gray-300">100% 사전 예약제 운영</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="bookingModal" class="fixed inset-0 bg-black/85 z-50 hidden flex-col justify-end sm:justify-center items-center backdrop-blur-md">
+        <div class="bg-[#1C2C22] border-t sm:border border-gold/30 w-full max-w-md rounded-t-[30px] sm:rounded-[30px] p-6 relative max-h-[90vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-6">
+                <button id="backBtn" onclick="prevStep()" class="text-gold text-xs font-semibold flex items-center gap-1 hidden">
+                    <i class="fa-solid fa-chevron-left text-[10px]"></i> 뒤로
+                </button>
+                <h3 class="font-bold text-base text-gold mx-auto">실시간 예약</h3>
+                <button onclick="closeModal('bookingModal')" class="text-gray-400 p-1 absolute right-6"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div id="stepDate" class="space-y-4">
+                <div class="flex justify-between items-center px-2 mb-2">
+                    <span id="calendarTitle" class="text-sm font-bold text-gray-200"></span>
+                    <div class="flex gap-2">
+                        <button onclick="changeMonth(-1)" class="text-gray-400 hover:text-white p-1"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="changeMonth(1)" class="text-gray-400 hover:text-white p-1"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-400 border-b border-gold/10 pb-2">
+                    <span class="text-red-400">일</span>
+                    <span>월</span>
+                    <span>화</span>
+                    <span>수</span>
+                    <span>목</span>
+                    <span>금</span>
+                    <span class="text-blue-400">토</span>
+                </div>
+
+                <div id="calendarDays" class="grid grid-cols-7 gap-1 text-center"></div>
+            </div>
+
+            <div id="stepTime" class="hidden space-y-4">
+                <p id="selectedDateText" class="text-xs text-gold font-medium mb-3 text-center bg-boxDark py-2 rounded-xl border border-gold/10"></p>
+                <div id="timeSlots" class="grid grid-cols-3 gap-2.5"></div>
+            </div>
+
+            <div id="stepProgram" class="hidden space-y-4">
+                <p id="selectedDateTimeText" class="text-xs text-gold font-medium mb-2 text-center bg-boxDark py-2 rounded-xl border border-gold/10"></p>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-300 mb-1">예약자 성함</label>
+                        <input type="text" id="custName" placeholder="성함을 입력해주세요" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-300 mb-1">연락처</label>
+                        <input type="tel" id="custPhone" placeholder="010-0000-0000" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-300 mb-1">관리 프로그램 선택</label>
+                        <select id="programSelect" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                            <option value="">프로그램을 선택해 주세요</option>
+                            <option value="무제 1">무제 1</option>
+                            <option value="무제 2">무제 2</option>
+                            <option value="무제 3">무제 3</option>
+                            <option value="무제 4">무제 4</option>
+                            <option value="무제 5">무제 5</option>
+                            <option value="무제 6">무제 6</option>
+                            <option value="무제 7">무제 7</option>
+                            <option value="무제 8">무제 8</option>
+                            <option value="무제 9">무제 9</option>
+                            <option value="무제 10">무제 10</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="submitBooking()" class="w-full bg-gold text-[#163023] font-bold rounded-xl py-3.5 mt-4 shadow-lg active:scale-95 transition-transform">
+                    예약 신청 완료하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertModal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-xs rounded-[24px] p-6 text-center relative shadow-2xl">
+            <i class="fa-solid fa-circle-check text-gold text-4xl mb-3"></i>
+            <h4 id="alertTitle" class="font-bold text-base text-gold mb-2">예약이 완료되었습니다</h4>
+            <p id="alertMessage" class="text-xs text-gray-300 leading-relaxed mb-6"></p>
+            <button onclick="closeModal('alertModal')" class="w-full bg-gold text-[#163023] font-bold py-2.5 rounded-xl text-xs">확인</button>
+        </div>
+    </div>
+
+    <div id="mapModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-6 relative shadow-2xl">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-base text-gold">길찾기 앱 선택</h3>
+                <button onclick="closeModal('mapModal')" class="text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <a href="https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EA%B4%80%EC%96%91%EB%8F%99%201608-4" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
+                    <span class="text-sm font-medium text-gray-200">네이버 지도 열기</span>
+                    <i class="fa-solid fa-arrow-right text-gold text-xs"></i>
+                </a>
+                <a href="https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EA%B4%80%EC%96%91%EB%8F%99%201608-4" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
+                    <span class="text-sm font-medium text-gray-200">카카오맵 열기</span>
+                    <i class="fa-solid fa-arrow-right text-gold text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="qrModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-8 relative shadow-2xl flex flex-col items-center">
+            <button onclick="closeModal('qrModal')" class="absolute top-5 right-5 text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-bold text-lg text-gold mb-2 mt-2">디지털 명함 공유</h3>
+            <p class="text-xs text-gray-300 mb-6 text-center">스마트폰 카메라로 아래 QR코드를 스캔하면<br>명함으로 바로 연결됩니다.</p>
+            <div id="qrcode" class="bg-white p-3 rounded-xl mb-4"></div>
+            <p class="text-gold text-[10px] tracking-widest mt-2">LUMIAN AESTHETIC</p>
+        </div>
+    </div>
+
+    <div id="homeAppModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-6 relative shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-base text-gold">홈 화면에 앱으로 추가</h3>
+                <button onclick="closeModal('homeAppModal')" class="text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <p class="text-xs text-gray-300 mb-4 leading-relaxed">
+                스마트폰 바탕화면에 앱처럼 저장하고 원클릭으로 쉽게 예약해보세요!
+            </p>
+
+            <div class="space-y-3">
+                <div class="bg-[#163023] p-3.5 rounded-xl border border-gold/20">
+                    <p class="text-xs font-bold text-gold mb-1"><i class="fa-brands fa-apple text-sm mr-1"></i>아이폰 (Safari 브라우저)</p>
+                    <p class="text-[11px] text-gray-300 leading-normal">
+                        하단 중앙의 <i class="fa-solid fa-share-nodes text-gold"></i> <strong>[공유]</strong> 버튼을 누른 후<br>
+                        메뉴에서 <strong>[홈 화면에 추가]</strong>를 선택하세요.
+                    </p>
+                </div>
+
+                <div class="bg-[#163023] p-3.5 rounded-xl border border-gold/20">
+                    <p class="text-xs font-bold text-gold mb-1"><i class="fa-brands fa-android text-sm mr-1"></i>안드로이드 (Chrome 브라우저)</p>
+                    <p class="text-[11px] text-gray-300 leading-normal">
+                        우측 상단의 <i class="fa-solid fa-ellipsis-vertical text-gold"></i> <strong>[메뉴]</strong> 버튼을 누른 후<br>
+                        <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.
+                    </p>
+                    <p class="text-[10px] text-red-300 mt-1 font-light">
+                        * 카카오톡 내부 링크에서는 보이지 않으니 '크롬 앱'으로 열어주세요.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currDate = new Date();
+        let selectedYear, selectedMonth, selectedDay, selectedTime;
+        let currentStep = 1;
+        let bookedTimesMap = {};
+
+        const holidays = [
+            "2026-01-01", "2026-02-16", "2026-02-17", "2026-02-18", 
+            "2026-03-01", "2026-05-05", "2026-05-24", "2026-06-06", 
+            "2026-08-15", "2026-09-24", "2026-09-25", "2026-09-26", 
+            "2026-10-03", "2026-10-09", "2026-12-25"
+        ];
+
+        database.ref('bookings').on('value', (snapshot) => {
+            bookedTimesMap = {};
+            const data = snapshot.val();
+            if (data) {
+                Object.values(data).forEach(booking => {
+                    if (booking.status !== 'cancelled') {
+                        const dateKey = `${booking.year}-${booking.month}-${booking.day}`;
+                        if (!bookedTimesMap[dateKey]) bookedTimesMap[dateKey] = [];
+                        bookedTimesMap[dateKey].push(booking.time);
+                    }
+                });
+            }
+            if (currentStep === 2) renderTimeSlots();
+        });
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('flex');
+            el.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function openQrModal() {
+            openModal('qrModal');
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById("qrcode"), {
+                text: "https://lumian1108.github.io",
+                width: 160,
+                height: 160,
+                colorDark : "#163023",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        function openBookingModal() {
+            openModal('bookingModal');
+            currentStep = 1;
+            showStep(1);
+            renderCalendar();
+        }
+
+        function changeMonth(delta) {
+            currDate.setMonth(currDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const year = currDate.getFullYear();
+            const month = currDate.getMonth();
+            
+            document.getElementById('calendarTitle').innerText = `${year}년 ${month + 1}월`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                calendarDays.appendChild(document.createElement('div'));
+            }
+
+            for (let day = 1; day <= lastDate; day++) {
+                const dayEl = document.createElement('button');
+                dayEl.innerText = day;
+                
+                const targetDate = new Date(year, month, day);
+                const dayOfWeek = targetDate.getDay();
+                
+                const monthStr = String(month + 1).padStart(2, '0');
+                const dayStr = String(day).padStart(2, '0');
+                const formattedDate = `${year}-${monthStr}-${dayStr}`;
+                const isHoliday = holidays.includes(formattedDate);
+
+                let textColor = "text-gray-200";
+                if (dayOfWeek === 0 || isHoliday) textColor = "text-red-400";
+                else if (dayOfWeek === 6) textColor = "text-blue-400";
+
+                dayEl.className = `h-10 text-sm font-medium rounded-xl flex items-center justify-center transition-all ${textColor}`;
+
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+                if (isToday) {
+                    dayEl.classList.add('border', 'border-gold', 'font-bold', 'bg-gold/10');
+                }
+
+                targetDate.setHours(23, 59, 59, 999);
+                if (targetDate < today && !isToday) {
+                    dayEl.classList.add('opacity-20', 'cursor-not-allowed');
+                    dayEl.disabled = true;
+                } else {
+                    dayEl.classList.add('hover:bg-gold/20', 'active:scale-95');
+                    dayEl.onclick = () => selectDate(year, month + 1, day, dayOfWeek);
+                }
+
+                calendarDays.appendChild(dayEl);
+            }
+        }
+
+        function selectDate(year, month, day, dayOfWeek) {
+            selectedYear = year;
+            selectedMonth = month;
+            selectedDay = day;
+            selectedDayOfWeek = dayOfWeek;
+
+            document.getElementById('selectedDateText').innerText = `선택한 날짜: ${year}년 ${month}월 ${day}일`;
+            showStep(2);
+            renderTimeSlots();
+        }
+
+        function renderTimeSlots() {
+            const timeSlots = document.getElementById('timeSlots');
+            timeSlots.innerHTML = '';
+
+            const endHour = (selectedDayOfWeek === 3) ? 17 : 20;
+
+            const dateKey = `${selectedYear}-${selectedMonth}-${selectedDay}`;
+            const bookedTimes = bookedTimesMap[dateKey] || [];
+
+            for (let hour = 9; hour <= endHour; hour++) {
+                const timeStr = `${String(hour).padStart(2, '0')}:00`;
+                const isBooked = bookedTimes.includes(timeStr);
+
+                const btn = document.createElement('button');
+                btn.className = `py-3 border rounded-xl text-xs font-semibold transition-all ${
+                    isBooked 
+                    ? 'border-gray-600 bg-gray-800/40 text-gray-500 line-through cursor-not-allowed' 
+                    : 'border-gold/30 bg-[#163023] text-gray-200 hover:border-gold active:scale-95'
+                }`;
+                btn.innerText = isBooked ? `${timeStr} (마감)` : timeStr;
+                btn.disabled = isBooked;
+
+                if (!isBooked) {
+                    btn.onclick = () => selectTime(timeStr);
+                }
+
+                timeSlots.appendChild(btn);
+            }
+        }
+
+        function selectTime(timeStr) {
+            selectedTime = timeStr;
+            document.getElementById('selectedDateTimeText').innerText = `일시: ${selectedYear}.${selectedMonth}.${selectedDay} ${selectedTime}`;
+            showStep(3);
+        }
+
+        function showStep(step) {
+            currentStep = step;
+            document.getElementById('stepDate').classList.toggle('hidden', step !== 1);
+            document.getElementById('stepTime').classList.toggle('hidden', step !== 2);
+            document.getElementById('stepProgram').classList.toggle('hidden', step !== 3);
+            document.getElementById('backBtn').classList.toggle('hidden', step === 1);
+        }
+
+        function prevStep() {
+            if (currentStep > 1) showStep(currentStep - 1);
+        }
+
+        function submitBooking() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const program = document.getElementById('programSelect').value;
+
+            if (!name || !phone || !program) {
+                showAlert('입력 확인', '성함, 연락처, 프로그램을 모두 입력 및 선택해 주세요.');
+                return;
+            }
+
+            const newBooking = {
+                year: selectedYear,
+                month: selectedMonth,
+                day: selectedDay,
+                time: selectedTime,
+                name: name,
+                phone: phone,
+                program: program,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            database.ref('bookings').push(newBooking, (error) => {
+                if (error) {
+                    showAlert('오류 발생', '예약 등록 중 문제가 발생했습니다.');
+                } else {
+                    closeModal('bookingModal');
+                    showAlert('예약 완료', `${selectedMonth}월 ${selectedDay}일 ${selectedTime}\n'${program}' 예약이 정상 접수되었습니다.`);
+                    document.getElementById('custName').value = '';
+                    document.getElementById('custPhone').value = '';
+                    document.getElementById('programSelect').value = '';
+                }
+            });
+        }
+
+        function showAlert(title, msg) {
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMessage').innerText = msg;
+            openModal('alertModal');
+        }
+    </script>
+</body>
+</html>
