@@ -124,7 +124,7 @@
             <button onclick="openBookingModal()" class="w-full bg-gold text-[#163023] font-bold rounded-2xl py-4 px-5 flex items-center justify-between shadow-lg active:scale-95 transition-transform">
                 <div class="flex items-center gap-3">
                     <i class="fa-solid fa-calendar-check text-lg"></i>
-                    <span class="text-sm font-bold">실시간 예약하기</span>
+                    <span class="text-sm font-bold">실시간 예약 신청</span>
                 </div>
                 <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
@@ -194,7 +194,7 @@
                 <button id="backBtn" onclick="prevStep()" class="text-gold text-xs font-semibold flex items-center gap-1 hidden">
                     <i class="fa-solid fa-chevron-left text-[10px]"></i> 뒤로
                 </button>
-                <h3 class="font-bold text-base text-gold mx-auto">실시간 예약</h3>
+                <h3 class="font-bold text-base text-gold mx-auto">실시간 예약 신청</h3>
                 <button onclick="closeModal('bookingModal')" class="text-gray-400 p-1 absolute right-6"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
@@ -256,7 +256,7 @@
                 </div>
 
                 <button onclick="submitBooking()" class="w-full bg-gold text-[#163023] font-bold rounded-xl py-3.5 mt-4 shadow-lg active:scale-95 transition-transform">
-                    예약 신청 완료하기
+                    예약 신청하기
                 </button>
             </div>
         </div>
@@ -265,7 +265,7 @@
     <div id="alertModal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-6 backdrop-blur-sm">
         <div class="bg-boxDark border border-gold/40 w-full max-w-xs rounded-[24px] p-6 text-center relative shadow-2xl">
             <i class="fa-solid fa-circle-check text-gold text-4xl mb-3"></i>
-            <h4 id="alertTitle" class="font-bold text-base text-gold mb-2">예약이 완료되었습니다</h4>
+            <h4 id="alertTitle" class="font-bold text-base text-gold mb-2">예약 신청이 완료되었습니다</h4>
             <p id="alertMessage" class="text-xs text-gray-300 leading-relaxed mb-6"></p>
             <button onclick="closeModal('alertModal')" class="w-full bg-gold text-[#163023] font-bold py-2.5 rounded-xl text-xs">확인</button>
         </div>
@@ -352,7 +352,8 @@
             const data = snapshot.val();
             if (data) {
                 Object.values(data).forEach(booking => {
-                    if (booking.status !== 'cancelled') {
+                    // 승인된 예약(confirmed) 또는 대기중인 예약(pending) 모두 시간을 블록
+                    if (booking.status === 'confirmed' || booking.status === 'pending') {
                         const dateKey = `${booking.year}-${booking.month}-${booking.day}`;
                         if (!bookedTimesMap[dateKey]) bookedTimesMap[dateKey] = [];
                         bookedTimesMap[dateKey].push(booking.time);
@@ -530,7 +531,7 @@
                 name: name,
                 phone: phone,
                 program: program,
-                status: 'pending',
+                status: 'pending', // 대기 상태로 저장
                 createdAt: new Date().toISOString()
             };
 
@@ -539,7 +540,7 @@
                     showAlert('오류 발생', '예약 등록 중 문제가 발생했습니다.');
                 } else {
                     closeModal('bookingModal');
-                    showAlert('예약 완료', `${selectedMonth}월 ${selectedDay}일 ${selectedTime}\n'${program}' 예약이 정상 접수되었습니다.`);
+                    showAlert('신청 완료', `${selectedMonth}월 ${selectedDay}일 ${selectedTime}\n'${program}' 예약 신청이 접수되었습니다.\n\n원장님 확인 후 승인 시 최종 확정됩니다.`);
                     document.getElementById('custName').value = '';
                     document.getElementById('custPhone').value = '';
                     document.getElementById('programSelect').value = '';
