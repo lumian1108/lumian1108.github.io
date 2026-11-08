@@ -1,409 +1,159 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <title>루미안 에스테틱 | 관리자 시스템</title>
-
     
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script>
-
         tailwind.config = {
-
             theme: {
-
                 extend: {
-
                     colors: {
-
                         bgDark: '#163023',
-
                         boxDark: '#1F3C2C',
-
                         gold: '#d4af37',
-
-                        goldHover: '#c19b2e',
-
                     }
-
                 }
-
             }
-
         }
 
+        const firebaseConfig = {
+            apiKey: "AIzaSyAL5Q-dAKzI8961lcUjMXM9UV1_IFywY2w",
+            authDomain: "lumian-booking.firebaseapp.com",
+            databaseURL: "https://lumian-booking-default-rtdb.firebaseio.com",
+            projectId: "lumian-booking",
+            storageBucket: "lumian-booking.firebasestorage.app",
+            messagingSenderId: "326384208087",
+            appId: "1:326384208087:web:24d696f92773c98251c892",
+            measurementId: "G-ZKP4VRX43"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
     </script>
-
     <style>
-
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-
         body { 
-
             font-family: 'Pretendard', sans-serif; 
-
             background-color: #163023; 
-
             color: white; 
-
             -webkit-tap-highlight-color: transparent;
-
         }
-
-        /* 스크롤바 숨기기 (깔끔한 UI용) */
-
-        ::-webkit-scrollbar { display: none; }
-
     </style>
-
 </head>
-
 <body class="antialiased flex justify-center min-h-screen">
 
-    
-
-    <!-- 1. 관리자 로그인 화면 -->
-
-    <div id="loginScreen" class="w-full max-w-md relative flex flex-col justify-center px-7 min-h-screen">
-
-        <div class="bg-boxDark border border-gold/30 rounded-[24px] p-8 shadow-2xl flex flex-col items-center">
-
-            <!-- 로고 및 타이틀 -->
-
-            <div class="text-center mb-8">
-
-                <i class="fa-solid fa-user-shield text-gold text-4xl mb-4"></i>
-
-                <h1 class="text-gold text-2xl font-serif font-bold mb-1 tracking-wide">LUMIAN</h1>
-
-                <p class="text-gray-300 text-xs tracking-widest font-light">ADMINISTRATION</p>
-
-            </div>
-
-            
-
-            <!-- 입력 폼 -->
-
-            <div class="w-full space-y-4 mb-8">
-
-                <div>
-
-                    <label class="block text-[11px] text-gray-400 mb-1 ml-1">아이디</label>
-
-                    <input type="text" id="adminId" placeholder="아이디를 입력하세요" class="w-full bg-[#163023] border border-gray-600 focus:border-gold rounded-xl py-3 px-4 text-sm text-white outline-none transition-colors placeholder-gray-500">
-
-                </div>
-
-                <div>
-
-                    <label class="block text-[11px] text-gray-400 mb-1 ml-1">비밀번호</label>
-
-                    <input type="password" id="adminPw" placeholder="비밀번호를 입력하세요" class="w-full bg-[#163023] border border-gray-600 focus:border-gold rounded-xl py-3 px-4 text-sm text-white outline-none transition-colors placeholder-gray-500" onkeypress="if(event.key === 'Enter') login()">
-
-                </div>
-
-            </div>
-
-            
-
-            <button onclick="login()" class="w-full bg-gold hover:bg-goldHover text-bgDark font-bold rounded-xl py-4 flex items-center justify-center active:scale-95 transition-transform shadow-[0_0_15px_rgba(212,175,55,0.2)]">
-
-                관리자 로그인
-
-            </button>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- 2. 관리자 대시보드 화면 (기본은 숨김 처리) -->
-
-    <div id="dashboardScreen" class="w-full max-w-md relative hidden flex-col pb-24 h-screen overflow-y-auto">
-
+    <div class="w-full max-w-md relative flex flex-col pt-12 pb-24 px-6">
         
-
-        <!-- 상단 헤더 -->
-
-        <header class="sticky top-0 bg-[#163023]/90 backdrop-blur-md z-10 px-5 py-4 border-b border-gold/20 flex justify-between items-center">
-
-            <div>
-
-                <h2 class="text-gold font-bold text-lg">LUMIAN 예약 관리</h2>
-
-                <p class="text-[10px] text-gray-400">환영합니다, 안은희 원장님</p>
-
+        <!-- 로그인 화면 -->
+        <div id="loginSection" class="my-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-gold text-3xl font-serif font-bold mb-2">LUMIAN ADMIN</h1>
+                <p class="text-xs text-gray-300">루미안 에스테틱 관리자 대시보드</p>
             </div>
 
-            <button onclick="logout()" class="text-gray-400 hover:text-white text-xs px-3 py-1.5 border border-gray-600 rounded-lg active:scale-90 transition-transform">
-
-                <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>로그아웃
-
-            </button>
-
-        </header>
-
-
-
-        <div class="px-5 pt-6 space-y-6">
-
-            
-
-            <!-- 요약 카드 -->
-
-            <div class="grid grid-cols-2 gap-4">
-
-                <div class="bg-boxDark border border-gold/20 rounded-2xl p-4 flex flex-col shadow-lg">
-
-                    <span class="text-gray-400 text-xs mb-2">오늘의 예약</span>
-
-                    <div class="flex items-end justify-between">
-
-                        <span class="text-3xl font-bold text-white">4<span class="text-sm font-normal text-gray-500 ml-1">건</span></span>
-
-                        <i class="fa-regular fa-calendar-check text-gold text-2xl opacity-50"></i>
-
-                    </div>
-
+            <div class="bg-boxDark border border-gold/30 rounded-2xl p-6 shadow-xl space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">비밀번호</label>
+                    <input type="password" id="adminPw" placeholder="비밀번호를 입력하세요 (기본: 1234)" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-gold">
                 </div>
+                <button onclick="checkLogin()" class="w-full bg-gold text-[#163023] font-bold rounded-xl py-3.5 shadow-lg active:scale-95 transition-transform">
+                    관리자 로그인
+                </button>
+            </div>
+        </div>
 
-                <div class="bg-boxDark border border-gold/50 rounded-2xl p-4 flex flex-col shadow-[0_0_10px_rgba(212,175,55,0.1)] relative overflow-hidden">
-
-                    <div class="absolute top-0 right-0 w-2 h-full bg-red-500"></div>
-
-                    <span class="text-gray-200 text-xs font-bold mb-2">승인 대기</span>
-
-                    <div class="flex items-end justify-between">
-
-                        <span class="text-3xl font-bold text-gold">2<span class="text-sm font-normal text-gold/60 ml-1">건</span></span>
-
-                        <i class="fa-solid fa-bell text-gold text-xl animate-pulse"></i>
-
-                    </div>
-
+        <!-- 관리자 대시보드 화면 -->
+        <div id="dashboardSection" class="hidden">
+            <div class="flex justify-between items-center mb-6 border-b border-gold/20 pb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-gold">예약 현황 관리</h2>
+                    <p class="text-xs text-gray-300 mt-1">실시간 손님 예약 요청 리스트</p>
                 </div>
-
+                <button onclick="logout()" class="text-xs text-gray-400 bg-boxDark border border-gold/20 px-3 py-1.5 rounded-lg">로그아웃</button>
             </div>
 
-
-
-            <!-- 예약 리스트 영역 -->
-
-            <div>
-
-                <div class="flex justify-between items-center mb-4">
-
-                    <h3 class="font-bold text-sm text-gray-200">최근 예약 신청 내역</h3>
-
-                    <button class="text-[11px] text-gold border border-gold/30 rounded px-2 py-1">전체보기</button>
-
-                </div>
-
-                
-
-                <div class="space-y-4">
-
-                    
-
-                    <!-- 예약 아이템 1 (승인 대기) -->
-
-                    <div id="booking-1" class="bg-boxDark border border-gray-700 rounded-2xl p-5 shadow-lg relative">
-
-                        <div class="flex justify-between items-start mb-3">
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="bg-red-500/20 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-500/30" id="status-1">승인 대기</span>
-
-                                <span class="text-xs text-gray-400">방금 전 신청</span>
-
-                            </div>
-
-                        </div>
-
-                        
-
-                        <div class="mb-4">
-
-                            <h4 class="text-lg font-bold text-white mb-1">김태석 고객님</h4>
-
-                            <p class="text-gold text-sm font-medium mb-1"><i class="fa-regular fa-clock mr-1"></i>11월 9일 (목) 오전 10:00</p>
-
-                            <p class="text-gray-300 text-[13px] bg-[#163023] inline-block px-2 py-1 rounded">프로그램: 무제 1</p>
-
-                        </div>
-
-                        
-
-                        <div class="grid grid-cols-2 gap-2" id="actions-1">
-
-                            <button onclick="approveBooking(1)" class="bg-gold text-bgDark font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform">예약 승인</button>
-
-                            <button onclick="cancelBooking(1)" class="bg-gray-700 text-white font-medium py-2.5 rounded-xl text-sm active:scale-95 transition-transform">취소/거절</button>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- 예약 아이템 2 (승인 완료) -->
-
-                    <div class="bg-boxDark border border-gray-700 rounded-2xl p-5 shadow-lg opacity-70">
-
-                        <div class="flex justify-between items-start mb-3">
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-500/30">예약 확정</span>
-
-                                <span class="text-xs text-gray-500">2시간 전 승인</span>
-
-                            </div>
-
-                        </div>
-
-                        
-
-                        <div>
-
-                            <h4 class="text-lg font-bold text-gray-300 mb-1">이영희 고객님</h4>
-
-                            <p class="text-gray-400 text-sm font-medium mb-1"><i class="fa-regular fa-clock mr-1"></i>11월 10일 (금) 오후 14:00</p>
-
-                            <p class="text-gray-500 text-[13px] bg-[#163023] inline-block px-2 py-1 rounded">프로그램: 무제 3</p>
-
-                        </div>
-
-                    </div>
-
-
-
-                </div>
-
-            </div>
-
-
-
+            <div id="bookingList" class="space-y-3"></div>
         </div>
 
     </div>
-
-
 
     <script>
-
-        // 간단한 화면 전환 로직 (추후 실제 DB 연동 시 보안 인증 필요)
-
-        function login() {
-
-            const id = document.getElementById('adminId').value;
-
+        function checkLogin() {
             const pw = document.getElementById('adminPw').value;
-
-            
-
-            // UI 테스트를 위해 아무 값이나 넣어도 통과되게 설정
-
-            if(id !== '' && pw !== '') {
-
-                document.getElementById('loginScreen').classList.add('hidden');
-
-                document.getElementById('dashboardScreen').classList.remove('hidden');
-
-                document.getElementById('dashboardScreen').classList.add('flex');
-
+            if (pw === "1234") {
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('dashboardSection').classList.remove('hidden');
+                loadBookings();
             } else {
-
-                alert('아이디와 비밀번호를 입력해주세요.');
-
+                alert("비밀번호가 올바르지 않습니다.");
             }
-
         }
-
-
 
         function logout() {
-
-            document.getElementById('dashboardScreen').classList.add('hidden');
-
-            document.getElementById('dashboardScreen').classList.remove('flex');
-
-            document.getElementById('loginScreen').classList.remove('hidden');
-
-            // 입력값 초기화
-
-            document.getElementById('adminId').value = '';
-
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
             document.getElementById('adminPw').value = '';
-
         }
 
+        function loadBookings() {
+            database.ref('bookings').on('value', (snapshot) => {
+                const listEl = document.getElementById('bookingList');
+                listEl.innerHTML = '';
 
+                const data = snapshot.val();
+                if (!data) {
+                    listEl.innerHTML = '<p class="text-center text-xs text-gray-400 py-10">접수된 예약 내역이 없습니다.</p>';
+                    return;
+                }
 
-        // 예약 승인 처리 UI 변경
+                const keys = Object.keys(data).reverse();
+                keys.forEach(key => {
+                    const item = data[key];
+                    const isCancelled = item.status === 'cancelled';
 
-        function approveBooking(id) {
+                    const card = document.createElement('div');
+                    card.className = `bg-boxDark border border-gold/20 rounded-2xl p-4 shadow-md ${isCancelled ? 'opacity-50' : ''}`;
 
-            // 상태 라벨 변경
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-xs font-bold text-gold bg-[#163023] px-2.5 py-1 rounded-lg border border-gold/20">
+                                ${item.year}.${item.month}.${item.day} (${item.time})
+                            </span>
+                            <span class="text-[11px] ${isCancelled ? 'text-red-400 font-bold' : 'text-green-400 font-bold'}">
+                                ${isCancelled ? '취소됨' : '예약완료'}
+                            </span>
+                        </div>
+                        <div class="space-y-1 mb-3 text-xs text-gray-200">
+                            <p><strong class="text-gray-400">성함:</strong> ${item.name}</p>
+                            <p><strong class="text-gray-400">연락처:</strong> <a href="tel:${item.phone}" class="text-gold underline">${item.phone}</a></p>
+                            <p><strong class="text-gray-400">프로그램:</strong> ${item.program}</p>
+                        </div>
+                        ${!isCancelled ? `
+                            <button onclick="cancelBooking('${key}')" class="w-full bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2 rounded-xl active:scale-95 transition-transform">
+                                예약 취소 / 마감 해제
+                            </button>
+                        ` : ''}
+                    `;
 
-            const statusBadge = document.getElementById(`status-${id}`);
-
-            statusBadge.className = 'bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-500/30';
-
-            statusBadge.innerText = '예약 확정';
-
-            
-
-            // 액션 버튼 영역 숨기기 및 컨테이너 스타일 변경
-
-            document.getElementById(`actions-${id}`).style.display = 'none';
-
-            document.getElementById(`booking-${id}`).classList.add('opacity-70');
-
-            
-
-            // 추후 여기에 DB에 승인 상태를 업데이트하는 코드가 들어갑니다.
-
-            alert('예약이 성공적으로 확정되었습니다.');
-
+                    listEl.appendChild(card);
+                });
+            });
         }
 
-
-
-        // 예약 취소 처리 UI 변경
-
-        function cancelBooking(id) {
-
-            if(confirm('이 예약을 정말 취소하시겠습니까?')) {
-
-                const bookingBox = document.getElementById(`booking-${id}`);
-
-                bookingBox.style.display = 'none';
-
-                
-
-                // 추후 여기에 DB에서 삭제하는 코드가 들어갑니다.
-
+        function cancelBooking(key) {
+            if (confirm("이 예약을 취소하시겠습니까? (취소 시 손님 달력에서 해당 시간이 다시 열립니다)")) {
+                database.ref('bookings/' + key).update({
+                    status: 'cancelled'
+                });
             }
-
         }
-
     </script>
-
 </body>
-
 </html>
