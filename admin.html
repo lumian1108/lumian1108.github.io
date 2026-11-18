@@ -104,6 +104,26 @@
                 </div>
                 <p class="text-[10px] text-gray-400 mt-3 leading-relaxed">기본값: 오전 9시 시작 / 일반 마감 오후 8시 / 수요일 마감 오후 5시. 공휴일은 기존 달력 설정대로 계속 휴무 처리됩니다.</p>
             </section>
+            <section class="grid grid-cols-2 gap-2 mb-4">
+                <div class="bg-boxDark border border-gold/20 rounded-xl p-3"><p class="text-[10px] text-gray-400">오늘 예약</p><p id="todayCount" class="text-2xl font-bold text-gold mt-1">0</p></div>
+                <div class="bg-boxDark border border-gold/20 rounded-xl p-3"><p class="text-[10px] text-gray-400">승인 대기</p><p id="pendingCount" class="text-2xl font-bold text-yellow-400 mt-1">0</p></div>
+                <div class="bg-boxDark border border-gold/20 rounded-xl p-3"><p class="text-[10px] text-gray-400">예약 확정</p><p id="confirmedCount" class="text-2xl font-bold text-green-400 mt-1">0</p></div>
+                <div class="bg-boxDark border border-gold/20 rounded-xl p-3"><p class="text-[10px] text-gray-400">전체 예약</p><p id="totalCount" class="text-2xl font-bold text-white mt-1">0</p></div>
+            </section>
+            <section class="bg-boxDark border border-gold/20 rounded-2xl p-3 mb-4 space-y-2">
+                <input id="bookingSearch" type="search" placeholder="고객 이름 또는 전화번호 검색" oninput="renderBookingList()" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white placeholder-gray-500">
+                <div class="grid grid-cols-2 gap-2">
+                    <select id="bookingStatusFilter" onchange="renderBookingList()" class="min-w-0 bg-[#163023] border border-gold/20 rounded-xl p-3 text-xs text-white">
+                        <option value="all">모든 예약 상태</option>
+                        <option value="pending">승인 대기</option>
+                        <option value="confirmed">예약 확정</option>
+                        <option value="cancelled">취소/거절</option>
+                    </select>
+                    <input id="bookingDateFilter" type="date" onchange="renderBookingList()" class="min-w-0 bg-[#163023] border border-gold/20 rounded-xl p-3 text-xs text-white">
+                </div>
+                <button onclick="clearBookingFilters()" class="w-full border border-gold/20 text-gray-300 text-xs py-2 rounded-lg">검색 조건 초기화</button>
+            </section>
+            <p id="bookingResultCount" class="text-[11px] text-gray-400 mb-2"></p>
             <div id="bookingList" class="space-y-3"></div>
         </div>
 
@@ -205,80 +225,134 @@
             input.value = '';
         }
 
+        let allBookings = {};
+
+        function getLocalDateKey(date = new Date()) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[char]));
+        }
+
         function loadBookings() {
             database.ref('bookings').on('value', (snapshot) => {
-                const listEl = document.getElementById('bookingList');
-                listEl.innerHTML = '';
+                allBookings = snapshot.val() || {};
+                updateBookingSummary();
+                renderBookingList();
+            });
+        }
 
-                const data = snapshot.val();
-                if (!data) {
-                    listEl.innerHTML = '<p class="text-center text-xs text-gray-400 py-10">접수된 예약 내역이 없습니다.</p>';
-                    return;
+        function updateBookingSummary() {
+            const items = Object.values(allBookings);
+            const today = getLocalDateKey();
+            const countToday = items.filter(item =>
+                `${item.year}-${String(item.month).padStart(2, '0')}-${String(item.day).padStart(2, '0')}` === today &&
+                (item.status || 'confirmed') !== 'cancelled'
+            ).length;
+            const countPending = items.filter(item => item.status === 'pending').length;
+            const countConfirmed = items.filter(item => !item.status || item.status === 'confirmed').length;
+
+            document.getElementById('todayCount').textContent = countToday;
+            document.getElementById('pendingCount').textContent = countPending;
+            document.getElementById('confirmedCount').textContent = countConfirmed;
+            document.getElementById('totalCount').textContent = items.length;
+        }
+
+        function clearBookingFilters() {
+            document.getElementById('bookingSearch').value = '';
+            document.getElementById('bookingStatusFilter').value = 'all';
+            document.getElementById('bookingDateFilter').value = '';
+            renderBookingList();
+        }
+
+        function renderBookingList() {
+            const listEl = document.getElementById('bookingList');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+
+            const query = document.getElementById('bookingSearch').value.trim().toLowerCase();
+            const statusFilter = document.getElementById('bookingStatusFilter').value;
+            const dateFilter = document.getElementById('bookingDateFilter').value;
+
+            const records = Object.entries(allBookings).map(([key, raw]) => ({
+                key,
+                item: raw || {},
+                status: (raw && raw.status) || 'confirmed'
+            }));
+
+            records.sort((a, b) => {
+                const dateA = new Date(Number(a.item.year), Number(a.item.month) - 1, Number(a.item.day), Number(String(a.item.time || '00:00').slice(0,2)));
+                const dateB = new Date(Number(b.item.year), Number(b.item.month) - 1, Number(b.item.day), Number(String(b.item.time || '00:00').slice(0,2)));
+                return dateB - dateA;
+            });
+
+            const filtered = records.filter(({item, status}) => {
+                const customer = `${item.name || ''} ${item.phone || ''}`.toLowerCase();
+                const dateKey = `${item.year}-${String(item.month).padStart(2, '0')}-${String(item.day).padStart(2, '0')}`;
+                return (!query || customer.includes(query)) &&
+                    (statusFilter === 'all' || status === statusFilter) &&
+                    (!dateFilter || dateKey === dateFilter);
+            });
+
+            document.getElementById('bookingResultCount').textContent = `검색 결과 ${filtered.length}건`;
+
+            if (!filtered.length) {
+                listEl.innerHTML = '<p class="text-center text-xs text-gray-400 py-10">조건에 맞는 예약 내역이 없습니다.</p>';
+                return;
+            }
+
+            filtered.forEach(({key, item, status}) => {
+                const isPending = status === 'pending';
+                const isConfirmed = status === 'confirmed';
+                const isCancelled = status === 'cancelled';
+                const card = document.createElement('div');
+                card.className = `bg-boxDark border border-gold/20 rounded-2xl p-4 shadow-md ${isCancelled ? 'opacity-60 bg-[#122318]' : ''}`;
+
+                let statusBadge = '';
+                if (isPending) {
+                    statusBadge = '<span class="text-[11px] text-yellow-400 font-bold bg-yellow-950/40 px-2 py-0.5 rounded border border-yellow-500/30">승인 대기</span>';
+                } else if (isConfirmed) {
+                    statusBadge = '<span class="text-[11px] text-green-400 font-bold bg-green-950/40 px-2 py-0.5 rounded border border-green-500/30">예약 확정</span>';
+                } else {
+                    statusBadge = '<span class="text-[11px] text-gray-400 font-bold bg-gray-800/40 px-2 py-0.5 rounded border border-gray-600/30">거절/취소됨</span>';
                 }
 
-                const keys = Object.keys(data).reverse(); // 최신순 정렬
-                keys.forEach(key => {
-                    const item = data[key];
-                    
-                    // 과거 코드로 저장된 데이터 호환 처리
-                    if (!item.status) item.status = 'confirmed';
+                const safeKey = escapeHtml(key);
+                const safeDate = escapeHtml(`${item.year || ''}.${item.month || ''}.${item.day || ''} (${item.time || ''})`);
+                const safeName = escapeHtml(item.name || '이름 미입력');
+                const safePhone = escapeHtml(item.phone || '');
+                const safeProgram = escapeHtml(item.program || '프로그램 미입력');
 
-                    const isPending = item.status === 'pending';
-                    const isConfirmed = item.status === 'confirmed';
-                    const isCancelled = item.status === 'cancelled';
-
-                    const card = document.createElement('div');
-                    card.className = `bg-boxDark border border-gold/20 rounded-2xl p-4 shadow-md ${isCancelled ? 'opacity-60 bg-[#122318]' : ''}`;
-
-                    // 상태 뱃지 디자인
-                    let statusBadge = '';
-                    if (isPending) {
-                        statusBadge = '<span class="text-[11px] text-yellow-400 font-bold bg-yellow-950/40 px-2 py-0.5 rounded border border-yellow-500/30">승인 대기</span>';
-                    } else if (isConfirmed) {
-                        statusBadge = '<span class="text-[11px] text-green-400 font-bold bg-green-950/40 px-2 py-0.5 rounded border border-green-500/30">예약 확정</span>';
-                    } else {
-                        statusBadge = '<span class="text-[11px] text-gray-400 font-bold bg-gray-800/40 px-2 py-0.5 rounded border border-gray-600/30">거절/취소됨</span>';
-                    }
-
-                    card.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-xs font-bold text-gold bg-[#163023] px-2.5 py-1 rounded-lg border border-gold/20">
-                                ${item.year}.${item.month}.${item.day} (${item.time})
-                            </span>
-                            ${statusBadge}
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold text-gold bg-[#163023] px-2.5 py-1 rounded-lg border border-gold/20">${safeDate}</span>
+                        ${statusBadge}
+                    </div>
+                    <div class="space-y-1 mb-3 text-xs text-gray-200">
+                        <p><strong class="text-gray-400">성함:</strong> ${safeName}</p>
+                        <p><strong class="text-gray-400">연락처:</strong> <a href="tel:${safePhone}" class="text-gold underline">${safePhone}</a></p>
+                        <p><strong class="text-gray-400">프로그램:</strong> ${safeProgram}</p>
+                    </div>
+                    ${isPending ? `
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <button onclick="approveBooking('${safeKey}')" class="bg-gold text-[#163023] text-xs font-bold py-2.5 rounded-xl active:scale-95 transition-transform">예약 승인</button>
+                            <button onclick="rejectBooking('${safeKey}')" class="bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2.5 rounded-xl active:scale-95 transition-transform">예약 거절</button>
                         </div>
-                        <div class="space-y-1 mb-3 text-xs text-gray-200">
-                            <p><strong class="text-gray-400">성함:</strong> ${item.name}</p>
-                            <p><strong class="text-gray-400">연락처:</strong> <a href="tel:${item.phone}" class="text-gold underline">${item.phone}</a></p>
-                            <p><strong class="text-gray-400">프로그램:</strong> ${item.program}</p>
-                        </div>
-                        
-                        ${isPending ? `
-                            <div class="grid grid-cols-2 gap-2 mt-3">
-                                <button onclick="approveBooking('${key}')" class="bg-gold text-[#163023] text-xs font-bold py-2.5 rounded-xl active:scale-95 transition-transform">
-                                    예약 승인
-                                </button>
-                                <button onclick="rejectBooking('${key}')" class="bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2.5 rounded-xl active:scale-95 transition-transform">
-                                    예약 거절
-                                </button>
-                            </div>
-                        ` : ''}
-
-                        ${isConfirmed ? `
-                            <button onclick="rejectBooking('${key}')" class="w-full mt-3 bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2 rounded-xl active:scale-95 transition-transform">
-                                승인된 예약 취소하기
-                            </button>
-                        ` : ''}
-
-                        ${isCancelled ? `
-                            <button onclick="deleteBooking('${key}')" class="w-full mt-3 bg-gray-800/60 border border-gray-500/30 text-gray-400 text-xs font-semibold py-2 rounded-xl hover:bg-gray-700 active:scale-95 transition-transform">
-                                <i class="fa-solid fa-trash-can mr-1"></i> 이 기록 완전 삭제하기
-                            </button>
-                        ` : ''}
-                    `;
-
-                    listEl.appendChild(card);
-                });
+                    ` : ''}
+                    ${isConfirmed ? `
+                        <button onclick="rejectBooking('${safeKey}')" class="w-full mt-3 bg-red-950/60 border border-red-500/30 text-red-300 text-xs font-semibold py-2 rounded-xl active:scale-95 transition-transform">승인된 예약 취소하기</button>
+                    ` : ''}
+                    ${isCancelled ? `
+                        <button onclick="deleteBooking('${safeKey}')" class="w-full mt-3 bg-gray-800/60 border border-gray-500/30 text-gray-400 text-xs font-semibold py-2 rounded-xl hover:bg-gray-700 active:scale-95 transition-transform"><i class="fa-solid fa-trash-can mr-1"></i> 이 기록 완전 삭제하기</button>
+                    ` : ''}
+                `;
+                listEl.appendChild(card);
             });
         }
 
