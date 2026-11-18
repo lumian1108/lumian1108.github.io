@@ -347,13 +347,33 @@
             "2026-10-03", "2026-10-09", "2026-12-25"
         ];
 
+        // 관리자 페이지에서 저장한 예약 운영 설정. 데이터가 없으면 기존 운영시간을 사용합니다.
+        let bookingSettings = {
+            openHour: 9,
+            closeHour: 20,
+            wednesdayCloseHour: 17,
+            closedDates: []
+        };
+
+        database.ref('settings/booking').on('value', (snapshot) => {
+            const saved = snapshot.val() || {};
+            bookingSettings = {
+                openHour: Number.isInteger(Number(saved.openHour)) ? Number(saved.openHour) : 9,
+                closeHour: Number.isInteger(Number(saved.closeHour)) ? Number(saved.closeHour) : 20,
+                wednesdayCloseHour: Number.isInteger(Number(saved.wednesdayCloseHour)) ? Number(saved.wednesdayCloseHour) : 17,
+                closedDates: Array.isArray(saved.closedDates) ? saved.closedDates : []
+            };
+            if (currentStep === 1) renderCalendar();
+            if (currentStep === 2) renderTimeSlots();
+        });
+
         database.ref('bookings').on('value', (snapshot) => {
             bookedTimesMap = {};
             const data = snapshot.val();
             if (data) {
                 Object.values(data).forEach(booking => {
                     // 승인된 예약(confirmed) 또는 대기중인 예약(pending) 모두 시간을 블록
-                    if (booking.status === 'confirmed' || booking.status === 'pending') {
+                    if (!booking.status || booking.status === 'confirmed' || booking.status === 'pending') {
                         const dateKey = `${booking.year}-${booking.month}-${booking.day}`;
                         if (!bookedTimesMap[dateKey]) bookedTimesMap[dateKey] = [];
                         bookedTimesMap[dateKey].push(booking.time);
@@ -429,9 +449,11 @@
                 const dayStr = String(day).padStart(2, '0');
                 const formattedDate = `${year}-${monthStr}-${dayStr}`;
                 const isHoliday = holidays.includes(formattedDate);
+                const isCustomClosed = bookingSettings.closedDates.includes(formattedDate);
+                const isClosed = isHoliday || isCustomClosed;
 
                 let textColor = "text-gray-200";
-                if (dayOfWeek === 0 || isHoliday) textColor = "text-red-400";
+                if (dayOfWeek === 0 || isClosed) textColor = "text-red-400";
                 else if (dayOfWeek === 6) textColor = "text-blue-400";
 
                 dayEl.className = `h-10 text-sm font-medium rounded-xl flex items-center justify-center transition-all ${textColor}`;
@@ -442,9 +464,10 @@
                 }
 
                 targetDate.setHours(23, 59, 59, 999);
-                if (targetDate < today && !isToday) {
-                    dayEl.classList.add('opacity-20', 'cursor-not-allowed');
+                if ((targetDate < today && !isToday) || isClosed) {
+                    dayEl.classList.add('opacity-30', 'cursor-not-allowed');
                     dayEl.disabled = true;
+                    if (isClosed) dayEl.title = '휴무일';
                 } else {
                     dayEl.classList.add('hover:bg-gold/20', 'active:scale-95');
                     dayEl.onclick = () => selectDate(year, month + 1, day, dayOfWeek);
@@ -469,12 +492,15 @@
             const timeSlots = document.getElementById('timeSlots');
             timeSlots.innerHTML = '';
 
-            const endHour = (selectedDayOfWeek === 3) ? 17 : 20;
+            const endHour = (selectedDayOfWeek === 3)
+                ? bookingSettings.wednesdayCloseHour
+                : bookingSettings.closeHour;
+            const startHour = bookingSettings.openHour;
 
             const dateKey = `${selectedYear}-${selectedMonth}-${selectedDay}`;
             const bookedTimes = bookedTimesMap[dateKey] || [];
 
-            for (let hour = 9; hour <= endHour; hour++) {
+            for (let hour = startHour; hour <= endHour; hour++) {
                 const timeStr = `${String(hour).padStart(2, '0')}:00`;
                 const isBooked = bookedTimes.includes(timeStr);
 
@@ -535,9 +561,47 @@
                 createdAt: new Date().toISOString()
             };
 
-            database.ref('bookings').push(newBooking, (error) => {
+            // 같은 날짜와 시간에 활성 예약이 있는지 데이터베이스 트랜잭션으로 확인합니다.
+            // 동시에 여러 고객이 신청해도 한 건만 저장되도록 원자적으로 처리합니다.
+            const bookingsRef = database.ref('bookings');
+            const newBookingRef = bookingsRef.push();
+            const newBookingKey = newBookingRef.key;
+            let duplicateSlot = false;
+
+            bookingsRef.transaction((currentBookings) => {
+                duplicateSlot = false;
+                const bookings = currentBookings || {};
+
+                const hasConflict = Object.values(bookings).some((booking) => {
+                    if (!booking) return false;
+
+                    const isActive = !booking.status ||
+                        booking.status === 'pending' ||
+                        booking.status === 'confirmed';
+
+                    return isActive &&
+                        Number(booking.year) === Number(selectedYear) &&
+                        Number(booking.month) === Number(selectedMonth) &&
+                        Number(booking.day) === Number(selectedDay) &&
+                        booking.time === selectedTime;
+                });
+
+                if (hasConflict) {
+                    duplicateSlot = true;
+                    return; // 기존 예약을 덮어쓰지 않고 트랜잭션을 중단합니다.
+                }
+
+                bookings[newBookingKey] = newBooking;
+                return bookings;
+            }, (error, committed) => {
                 if (error) {
-                    showAlert('오류 발생', '예약 등록 중 문제가 발생했습니다.');
+                    showAlert('오류 발생', '예약 등록 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                } else if (!committed && duplicateSlot) {
+                    showAlert('예약 마감', '죄송합니다. 방금 선택하신 시간에 다른 고객님의 예약이 먼저 접수되었습니다. 다른 시간을 선택해 주세요.');
+                    showStep(2);
+                    renderTimeSlots();
+                } else if (!committed) {
+                    showAlert('예약 확인 필요', '예약이 저장되지 않았습니다. 다시 시도해 주세요.');
                 } else {
                     closeModal('bookingModal');
                     showAlert('신청 완료', `${selectedMonth}월 ${selectedDay}일 ${selectedTime}\n'${program}' 예약 신청이 접수되었습니다.\n\n원장님 확인 후 승인 시 최종 확정됩니다.`);
@@ -545,7 +609,7 @@
                     document.getElementById('custPhone').value = '';
                     document.getElementById('programSelect').value = '';
                 }
-            });
+            }, false);
         }
 
         function showAlert(title, msg) {
