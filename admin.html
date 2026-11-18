@@ -134,7 +134,6 @@
                     <i class="fa-solid fa-clipboard-list text-white text-lg mb-2"></i><p class="text-[11px] text-gray-300">전체 예약</p><p id="totalCount" class="text-2xl font-bold text-white mt-1">0</p><p class="text-[10px] text-gray-500 mt-1">예약 확인 <i class="fa-solid fa-arrow-right ml-1"></i></p>
                 </button>
             </section>
-            </section>
 
             <section id="calendarView" class="hidden">
             <section class="bg-boxDark border border-gold/20 rounded-2xl p-3 mb-4">
@@ -331,6 +330,7 @@
         }
 
         function selectCalendarDate(dateKey) {
+            showAdminView('home');
             selectedCalendarDate = dateKey;
             document.getElementById('bookingDateFilter').value = dateKey;
             document.getElementById('selectedCalendarDate').textContent = new Date(dateKey + 'T00:00:00').toLocaleDateString('ko-KR', {
