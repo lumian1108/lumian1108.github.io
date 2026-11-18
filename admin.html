@@ -197,34 +197,44 @@
             #dashboardSummary { gap: 16px !important; }
         }
 
-        /* Compact hamburger navigation */
+        /* Full-screen side navigation inspired by the supplied mobile reference */
         .admin-menu-toggle {
             width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center;
             border: 1px solid #e5e5ea; border-radius: 13px; background: #fff; color: #4b4b50;
-            box-shadow: 0 2px 8px rgba(0,0,0,.035); font-size: 17px; transition: background .18s ease, border-color .18s ease;
-        }
-        .admin-menu-toggle:hover, .admin-menu-toggle[aria-expanded="true"] {
-            background: #f4efe4; border-color: #b89b58; color: #8a6b2f;
+            box-shadow: 0 2px 8px rgba(0,0,0,.035); font-size: 17px;
         }
         .admin-navigation {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px; margin: -8px 0 22px; padding: 12px;
-            border: 1px solid #e8e8ed; border-radius: 18px; background: rgba(255,255,255,.96);
-            box-shadow: 0 10px 28px rgba(0,0,0,.07);
-            animation: adminMenuReveal .16s ease-out;
+            position: fixed; inset: 0; z-index: 1000; width: 100%; height: 100dvh;
+            margin: 0; padding: max(18px, env(safe-area-inset-top)) 0 max(18px, env(safe-area-inset-bottom));
+            background: rgba(255,255,255,.985); display: grid; grid-template-columns: minmax(124px, 38%) 1fr;
+            grid-template-rows: auto 1fr; gap: 0; border: 0; border-radius: 0; box-shadow: -16px 0 48px rgba(0,0,0,.14);
+            overflow-y: auto; animation: adminDrawerIn .22s ease-out;
         }
+        .admin-navigation.hidden { display: none !important; }
         .admin-navigation:not(.hidden) { display: grid; }
-        @keyframes adminMenuReveal {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+        .admin-drawer-head { grid-column: 1 / -1; display:flex; align-items:center; justify-content:space-between; padding: 8px 20px 18px; border-bottom:1px solid #e8e8ed; }
+        .admin-drawer-brand { font-size:12px; font-weight:800; letter-spacing:.16em; color:#8a744a; }
+        .admin-drawer-close { width:40px; height:40px; border:1px solid #e5e5ea; border-radius:50%; background:#f5f5f7; color:#444; }
+        .admin-drawer-links { background:#f1f7f3; padding:18px 10px; display:flex; flex-direction:column; gap:8px; }
+        .admin-navigation .admin-nav-btn {
+            min-height:58px !important; width:100%; display:flex; align-items:center; justify-content:flex-start;
+            gap:10px; padding:12px 10px !important; text-align:left; border:0 !important; border-radius:10px !important;
+            background:transparent !important; box-shadow:none !important; color:#303b34 !important;
         }
-        @media (max-width: 420px) {
-            .admin-navigation { grid-template-columns: 1fr; }
-            .admin-navigation .admin-nav-btn {
-                min-height: 52px !important; display: flex; align-items: center; justify-content: flex-start;
-                gap: 12px; padding: 10px 14px !important; text-align: left;
-            }
-            .admin-navigation .admin-nav-btn i { width: 20px; margin: 0 !important; }
+        .admin-navigation .admin-nav-btn i { width:20px; margin:0 !important; color:#4e8067 !important; }
+        .admin-navigation .admin-nav-btn span { font-size:12px !important; }
+        .admin-navigation .admin-nav-btn.bg-gold\\/10 { background:#168b62 !important; color:white !important; }
+        .admin-navigation .admin-nav-btn.bg-gold\\/10 i { color:white !important; }
+        .admin-drawer-detail { padding:24px 18px; display:flex; flex-direction:column; justify-content:flex-start; }
+        .admin-drawer-kicker { color:#168b62; font-size:10px; font-weight:700; letter-spacing:.08em; }
+        .admin-drawer-detail h3 { margin-top:12px; font-size:20px; line-height:1.35; font-weight:750; color:#202522; letter-spacing:-.04em; }
+        .admin-drawer-detail p { margin-top:10px; color:#777e79; font-size:12px; line-height:1.7; }
+        .admin-drawer-note { margin-top:24px; padding:14px; border-radius:12px; background:#f5f5f7; color:#727873; font-size:11px; line-height:1.6; }
+        @keyframes adminDrawerIn { from { opacity:0; transform:translateX(22px); } to { opacity:1; transform:translateX(0); } }
+        @media (min-width: 640px) {
+            .admin-navigation { grid-template-columns: 220px minmax(260px, 1fr); }
+            .admin-drawer-links { padding:24px 16px; }
+            .admin-drawer-detail { padding:36px; }
         }
 
     </style>
@@ -267,15 +277,27 @@
             </div>
 
             <nav id="adminNavigation" class="admin-navigation hidden" aria-label="관리자 메뉴">
-                <button type="button" onclick="showAdminView('home')" class="admin-nav-btn bg-boxDark border border-gold/30 rounded-xl py-3 px-2 text-center" data-view="home">
-                    <i class="fa-solid fa-house block text-gold text-lg mb-1"></i><span class="text-[11px]">현황</span>
-                </button>
-                <button type="button" onclick="showAdminView('calendar')" class="admin-nav-btn bg-boxDark border border-white/10 rounded-xl py-3 px-2 text-center" data-view="calendar">
-                    <i class="fa-solid fa-calendar-days block text-gold text-lg mb-1"></i><span class="text-[11px]">예약 달력</span>
-                </button>
-                <button type="button" onclick="showAdminView('settings')" class="admin-nav-btn bg-boxDark border border-white/10 rounded-xl py-3 px-2 text-center" data-view="settings">
-                    <i class="fa-solid fa-gear block text-gold text-lg mb-1"></i><span class="text-[11px]">운영 설정</span>
-                </button>
+                <div class="admin-drawer-head">
+                    <span class="admin-drawer-brand">LUMIAN ADMIN</span>
+                    <button type="button" class="admin-drawer-close" onclick="toggleAdminMenu(false)" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="admin-drawer-links">
+                    <button type="button" onclick="showAdminView('home')" class="admin-nav-btn bg-gold/10" data-view="home">
+                        <i class="fa-solid fa-house"></i><span>현황</span>
+                    </button>
+                    <button type="button" onclick="showAdminView('calendar')" class="admin-nav-btn" data-view="calendar">
+                        <i class="fa-solid fa-calendar-days"></i><span>예약 달력</span>
+                    </button>
+                    <button type="button" onclick="showAdminView('settings')" class="admin-nav-btn" data-view="settings">
+                        <i class="fa-solid fa-gear"></i><span>운영 설정</span>
+                    </button>
+                </div>
+                <div class="admin-drawer-detail">
+                    <span class="admin-drawer-kicker">MANAGEMENT</span>
+                    <h3>루미안 에스테틱<br>관리자 메뉴</h3>
+                    <p>원하시는 관리 항목을 선택해 주세요.</p>
+                    <div class="admin-drawer-note">예약 현황을 확인하고, 예약 달력과 운영 설정을 한곳에서 관리할 수 있습니다.</div>
+                </div>
             </nav>
 
             <section id="settingsView" class="hidden">
