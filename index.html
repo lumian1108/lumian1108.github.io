@@ -347,6 +347,26 @@
             "2026-10-03", "2026-10-09", "2026-12-25"
         ];
 
+        // 관리자 페이지에서 저장한 예약 운영 설정. 데이터가 없으면 기존 운영시간을 사용합니다.
+        let bookingSettings = {
+            openHour: 9,
+            closeHour: 20,
+            wednesdayCloseHour: 17,
+            closedDates: []
+        };
+
+        database.ref('settings/booking').on('value', (snapshot) => {
+            const saved = snapshot.val() || {};
+            bookingSettings = {
+                openHour: Number.isInteger(Number(saved.openHour)) ? Number(saved.openHour) : 9,
+                closeHour: Number.isInteger(Number(saved.closeHour)) ? Number(saved.closeHour) : 20,
+                wednesdayCloseHour: Number.isInteger(Number(saved.wednesdayCloseHour)) ? Number(saved.wednesdayCloseHour) : 17,
+                closedDates: Array.isArray(saved.closedDates) ? saved.closedDates : []
+            };
+            if (currentStep === 1) renderCalendar();
+            if (currentStep === 2) renderTimeSlots();
+        });
+
         database.ref('bookings').on('value', (snapshot) => {
             bookedTimesMap = {};
             const data = snapshot.val();
@@ -429,9 +449,11 @@
                 const dayStr = String(day).padStart(2, '0');
                 const formattedDate = `${year}-${monthStr}-${dayStr}`;
                 const isHoliday = holidays.includes(formattedDate);
+                const isCustomClosed = bookingSettings.closedDates.includes(formattedDate);
+                const isClosed = isHoliday || isCustomClosed;
 
                 let textColor = "text-gray-200";
-                if (dayOfWeek === 0 || isHoliday) textColor = "text-red-400";
+                if (dayOfWeek === 0 || isClosed) textColor = "text-red-400";
                 else if (dayOfWeek === 6) textColor = "text-blue-400";
 
                 dayEl.className = `h-10 text-sm font-medium rounded-xl flex items-center justify-center transition-all ${textColor}`;
@@ -442,9 +464,10 @@
                 }
 
                 targetDate.setHours(23, 59, 59, 999);
-                if (targetDate < today && !isToday) {
-                    dayEl.classList.add('opacity-20', 'cursor-not-allowed');
+                if ((targetDate < today && !isToday) || isClosed) {
+                    dayEl.classList.add('opacity-30', 'cursor-not-allowed');
                     dayEl.disabled = true;
+                    if (isClosed) dayEl.title = '휴무일';
                 } else {
                     dayEl.classList.add('hover:bg-gold/20', 'active:scale-95');
                     dayEl.onclick = () => selectDate(year, month + 1, day, dayOfWeek);
@@ -469,12 +492,15 @@
             const timeSlots = document.getElementById('timeSlots');
             timeSlots.innerHTML = '';
 
-            const endHour = (selectedDayOfWeek === 3) ? 17 : 20;
+            const endHour = (selectedDayOfWeek === 3)
+                ? bookingSettings.wednesdayCloseHour
+                : bookingSettings.closeHour;
+            const startHour = bookingSettings.openHour;
 
             const dateKey = `${selectedYear}-${selectedMonth}-${selectedDay}`;
             const bookedTimes = bookedTimesMap[dateKey] || [];
 
-            for (let hour = 9; hour <= endHour; hour++) {
+            for (let hour = startHour; hour <= endHour; hour++) {
                 const timeStr = `${String(hour).padStart(2, '0')}:00`;
                 const isBooked = bookedTimes.includes(timeStr);
 
