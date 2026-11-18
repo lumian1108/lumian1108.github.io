@@ -196,6 +196,37 @@
             .admin-shell { padding-left: 28px !important; padding-right: 28px !important; }
             #dashboardSummary { gap: 16px !important; }
         }
+
+        /* Compact hamburger navigation */
+        .admin-menu-toggle {
+            width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center;
+            border: 1px solid #e5e5ea; border-radius: 13px; background: #fff; color: #4b4b50;
+            box-shadow: 0 2px 8px rgba(0,0,0,.035); font-size: 17px; transition: background .18s ease, border-color .18s ease;
+        }
+        .admin-menu-toggle:hover, .admin-menu-toggle[aria-expanded="true"] {
+            background: #f4efe4; border-color: #b89b58; color: #8a6b2f;
+        }
+        .admin-navigation {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px; margin: -8px 0 22px; padding: 12px;
+            border: 1px solid #e8e8ed; border-radius: 18px; background: rgba(255,255,255,.96);
+            box-shadow: 0 10px 28px rgba(0,0,0,.07);
+            animation: adminMenuReveal .16s ease-out;
+        }
+        .admin-navigation:not(.hidden) { display: grid; }
+        @keyframes adminMenuReveal {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 420px) {
+            .admin-navigation { grid-template-columns: 1fr; }
+            .admin-navigation .admin-nav-btn {
+                min-height: 52px !important; display: flex; align-items: center; justify-content: flex-start;
+                gap: 12px; padding: 10px 14px !important; text-align: left;
+            }
+            .admin-navigation .admin-nav-btn i { width: 20px; margin: 0 !important; }
+        }
+
     </style>
 </head>
 <body class="antialiased flex justify-center min-h-screen">
@@ -222,15 +253,20 @@
 
         <!-- 대시보드 섹션 -->
         <div id="dashboardSection" class="hidden">
-            <div class="flex justify-between items-center mb-6 border-b border-gold/20 pb-4">
-                <div>
-                    <h2 class="text-xl font-bold text-gold">예약 현황 관리</h2>
-                    <p class="text-xs text-gray-300 mt-1">실시간 승인/거절 대시보드</p>
+            <div class="flex items-center justify-between gap-3 mb-6 border-b border-gold/20 pb-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <button id="adminMenuToggle" type="button" onclick="toggleAdminMenu()" aria-label="관리자 메뉴 열기" aria-expanded="false" aria-controls="adminNavigation" class="admin-menu-toggle shrink-0">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="min-w-0">
+                        <h2 class="text-xl font-bold text-gold">예약 현황 관리</h2>
+                        <p class="text-xs text-gray-300 mt-1">실시간 승인/거절 대시보드</p>
+                    </div>
                 </div>
-                <button onclick="logout()" class="text-xs text-gray-400 bg-boxDark border border-gold/20 px-3 py-1.5 rounded-lg">로그아웃</button>
+                <button onclick="logout()" class="text-xs text-gray-400 bg-boxDark border border-gold/20 px-3 py-1.5 rounded-lg shrink-0">로그아웃</button>
             </div>
 
-            <nav class="grid grid-cols-3 gap-2 mb-5" aria-label="관리자 메뉴">
+            <nav id="adminNavigation" class="admin-navigation hidden" aria-label="관리자 메뉴">
                 <button type="button" onclick="showAdminView('home')" class="admin-nav-btn bg-boxDark border border-gold/30 rounded-xl py-3 px-2 text-center" data-view="home">
                     <i class="fa-solid fa-house block text-gold text-lg mb-1"></i><span class="text-[11px]">현황</span>
                 </button>
@@ -340,7 +376,22 @@
     </div>
 
     <script>
+        function toggleAdminMenu(forceState) {
+            const navigation = document.getElementById('adminNavigation');
+            const toggle = document.getElementById('adminMenuToggle');
+            if (!navigation || !toggle) return;
+            const shouldOpen = typeof forceState === 'boolean'
+                ? forceState
+                : navigation.classList.contains('hidden');
+            navigation.classList.toggle('hidden', !shouldOpen);
+            toggle.setAttribute('aria-expanded', String(shouldOpen));
+            toggle.setAttribute('aria-label', shouldOpen ? '관리자 메뉴 닫기' : '관리자 메뉴 열기');
+            const icon = toggle.querySelector('i');
+            if (icon) icon.className = shouldOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+        }
+
         function showAdminView(view) {
+            toggleAdminMenu(false);
             ['home', 'calendar', 'settings'].forEach(name => {
                 const panel = document.getElementById(name + 'View');
                 if (panel) panel.classList.toggle('hidden', name !== view);
