@@ -113,6 +113,89 @@
             #homeView > #dashboardSummary { grid-template-columns: repeat(4,minmax(0,1fr)); }
             #adminCalendarGrid button { min-height: 78px !important; }
         }
+
+        /* Apple-inspired visual refresh: quiet, spacious, precise */
+        :root { color-scheme: light; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Pretendard", sans-serif !important;
+            background: #f5f5f7 !important;
+            color: #1d1d1f !important;
+            letter-spacing: -.018em;
+        }
+        .admin-shell { max-width: 1040px !important; padding-top: 28px !important; }
+        #dashboardSection > div:first-child {
+            border: 0 !important; border-bottom: 1px solid #e5e5ea !important;
+            padding-bottom: 22px !important; margin-bottom: 22px !important;
+        }
+        #dashboardSection h2 { color: #1d1d1f !important; font-size: 27px !important; font-weight: 700 !important; }
+        #dashboardSection p { color: #86868b; }
+        #dashboardSection > div:first-child button {
+            background: #fff !important; color: #6e6e73 !important;
+            border: 1px solid #e5e5ea !important; border-radius: 999px !important;
+            padding: 9px 15px !important;
+        }
+        .admin-nav-btn {
+            min-height: 68px !important; background: rgba(255,255,255,.82) !important;
+            border: 1px solid #e5e5ea !important; border-radius: 16px !important;
+            color: #6e6e73 !important; box-shadow: 0 2px 8px rgba(0,0,0,.025);
+        }
+        .admin-nav-btn i { color: #77777d !important; font-size: 17px !important; }
+        .admin-nav-btn span { color: inherit !important; font-size: 12px !important; font-weight: 600; }
+        .admin-nav-btn.bg-gold\/10 {
+            background: #fff !important; border-color: #b89b58 !important;
+            color: #8a6b2f !important; box-shadow: 0 0 0 2px rgba(184,155,88,.10);
+        }
+        .admin-nav-btn.bg-gold\/10 i { color: #9a7a3c !important; }
+        .summary-card {
+            min-height: 140px !important; background: #fff !important;
+            border: 1px solid #e8e8ed !important; border-radius: 20px !important;
+            padding: 19px !important; box-shadow: 0 3px 12px rgba(0,0,0,.035) !important;
+            color: #1d1d1f !important;
+        }
+        .summary-card i { color: #8f784d !important; font-size: 18px !important; margin-bottom: 17px !important; }
+        .summary-card p:nth-of-type(1) { color: #6e6e73 !important; font-size: 12px !important; }
+        .summary-card p:nth-of-type(2) { color: #1d1d1f !important; font-size: 30px !important; font-weight: 650 !important; }
+        .summary-card p:last-child { color: #a1a1a6 !important; }
+        .admin-panel, #calendarView > section, #settingsView > section {
+            background: #fff !important; border: 1px solid #e8e8ed !important;
+            border-radius: 20px !important; box-shadow: 0 3px 12px rgba(0,0,0,.03) !important;
+        }
+        #bookingList > div {
+            background: #fff !important; border: 1px solid #e8e8ed !important;
+            border-radius: 18px !important; color: #1d1d1f !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,.025) !important;
+        }
+        #bookingList > div p, #bookingList > div strong { color: #424245 !important; }
+        #bookingList > div a { color: #8a6b2f !important; }
+        #bookingList button { border-radius: 12px !important; min-height: 42px; }
+        input, select {
+            background: #f5f5f7 !important; color: #1d1d1f !important;
+            border: 1px solid #e5e5ea !important; border-radius: 12px !important;
+            min-height: 44px; outline: none;
+        }
+        input:focus, select:focus { border-color: #a58b55 !important; box-shadow: 0 0 0 3px rgba(165,139,85,.12); }
+        #calendarView h3, #settingsView h3, #settingsView h4 { color: #1d1d1f !important; }
+        #adminCalendarGrid button {
+            background: #f5f5f7 !important; border: 1px solid #ededf0 !important;
+            border-radius: 12px !important; color: #1d1d1f !important;
+        }
+        #adminCalendarGrid button.border-gold { background: #f4efe4 !important; border-color: #b89b58 !important; }
+        #calendarView .text-gray-400, #settingsView .text-gray-400 { color: #86868b !important; }
+        #calendarView .text-white, #settingsView .text-white { color: #1d1d1f !important; }
+        #calendarView button, #settingsView button { transition: transform .15s ease, background .15s ease; }
+        #loginSection h1 { color: #8a744a !important; letter-spacing: .12em; }
+        #loginSection .bg-boxDark {
+            background: rgba(255,255,255,.92) !important; border: 1px solid #e8e8ed !important;
+            border-radius: 24px !important; box-shadow: 0 12px 40px rgba(0,0,0,.06) !important;
+        }
+        #loginSection label, #loginSection p { color: #6e6e73 !important; }
+        #loginSection input { background: #f5f5f7 !important; }
+        button { -webkit-tap-highlight-color: transparent; }
+        button:active { transform: scale(.985); }
+        @media (min-width: 640px) {
+            .admin-shell { padding-left: 28px !important; padding-right: 28px !important; }
+            #dashboardSummary { gap: 16px !important; }
+        }
     </style>
 </head>
 <body class="antialiased flex justify-center min-h-screen">
