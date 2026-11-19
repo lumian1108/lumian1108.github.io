@@ -239,6 +239,38 @@
             .admin-drawer-detail { padding:36px; }
         }
 
+        
+        /* Reference-inspired left slide drawer */
+        .admin-navigation { position:fixed !important; inset:0 !important; z-index:1000 !important; width:100% !important; height:100dvh !important; margin:0 !important; padding:0 !important; display:block !important; background:transparent !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; overflow:hidden !important; }
+        .admin-navigation.hidden { display:none !important; }
+        .admin-navigation:not(.hidden) { display:block !important; }
+        .admin-drawer-backdrop { position:absolute; inset:0; width:100%; height:100%; border:0; border-radius:0; background:rgba(25,32,28,.30); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); opacity:0; animation:lumianBackdropIn .22s ease forwards; }
+        .admin-drawer-panel { position:absolute; left:0; top:0; bottom:0; width:min(86vw,390px); padding:calc(22px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom)); display:flex; flex-direction:column; overflow-y:auto; -webkit-overflow-scrolling:touch; background:linear-gradient(180deg,#fff 0%,#fbfaf8 100%); border-radius:0 26px 26px 0; box-shadow:18px 0 50px rgba(25,32,28,.16); transform:translateX(-103%); animation:lumianDrawerIn .26s cubic-bezier(.22,.78,.28,1) forwards; }
+        .admin-drawer-head { display:flex; justify-content:space-between; align-items:center; padding:5px 4px 22px; border-bottom:1px solid #ecebe8; }
+        .admin-drawer-brand { display:block; color:#8a744a; font-family:Georgia,serif; font-size:25px; letter-spacing:.12em; font-weight:600; }
+        .admin-drawer-subtitle { margin-top:4px; color:#9b9b96; font-size:9px; letter-spacing:.19em; font-weight:700; }
+        .admin-drawer-close { width:40px; height:40px; border:1px solid #e8e7e2; border-radius:50%; background:#f7f7f5; color:#65655f; }
+        .admin-drawer-links { display:flex; flex-direction:column; gap:7px; padding:24px 0; }
+        .admin-drawer-section-label { padding:0 12px 5px; color:#a2a19b; font-size:10px; font-weight:750; letter-spacing:.16em; }
+        .admin-navigation .admin-nav-btn { width:100%; min-height:60px !important; display:flex; align-items:center; justify-content:flex-start; gap:13px; padding:12px 14px !important; border:1px solid transparent !important; border-radius:15px !important; background:transparent !important; color:#555750 !important; text-align:left; box-shadow:none !important; }
+        .admin-navigation .admin-nav-btn i:first-child { width:22px; margin:0 !important; color:#8a744a !important; font-size:17px !important; }
+        .admin-navigation .admin-nav-btn span { flex:1; color:inherit !important; font-size:14px !important; font-weight:650; }
+        .admin-navigation .admin-nav-btn .nav-chevron { color:#b4b2aa !important; font-size:11px !important; }
+        .admin-navigation .admin-nav-btn.active { background:#f4f0e7 !important; border-color:#e9dfc9 !important; color:#806a3f !important; }
+        .admin-navigation .admin-nav-btn.active i { color:#8a744a !important; }
+        .admin-drawer-detail { margin-top:auto; padding:20px 15px; border-radius:18px; background:#f5f4f0; }
+        .admin-drawer-kicker { color:#9a8355; font-size:9px; font-weight:800; letter-spacing:.16em; }
+        .admin-drawer-detail h3 { margin-top:10px; color:#30312d; font-size:21px; line-height:1.4; font-weight:750; letter-spacing:-.045em; }
+        .admin-drawer-detail p { margin-top:8px; color:#898982; font-size:12px; line-height:1.65; }
+        .admin-drawer-note { margin-top:15px; color:#85857e; font-size:11px; line-height:1.5; }
+        .admin-drawer-note i { margin-right:5px; color:#9a8355; }
+        .admin-drawer-footer { padding:20px 5px 2px; color:#aaa9a2; font-size:9px; font-weight:750; letter-spacing:.13em; }
+        .admin-drawer-footer span { margin-left:5px; color:#c3bba8; }
+        body.admin-menu-open { overflow:hidden; }
+        @keyframes lumianBackdropIn { to { opacity:1; } }
+        @keyframes lumianDrawerIn { to { transform:translateX(0); } }
+        @media (prefers-reduced-motion:reduce) { .admin-drawer-backdrop,.admin-drawer-panel { animation:none; opacity:1; transform:none; } }
+
     </style>
 </head>
 <body class="antialiased flex justify-center min-h-screen">
@@ -279,27 +311,35 @@
             </div>
 
             <nav id="adminNavigation" class="admin-navigation hidden" aria-label="관리자 메뉴">
-                <div class="admin-drawer-head">
-                    <span class="admin-drawer-brand">LUMIAN ADMIN</span>
-                    <button type="button" class="admin-drawer-close" onclick="toggleAdminMenu(false)" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="admin-drawer-links">
-                    <button type="button" onclick="showAdminView('home')" class="admin-nav-btn bg-gold/10" data-view="home">
-                        <i class="fa-solid fa-house"></i><span>현황</span>
-                    </button>
-                    <button type="button" onclick="showAdminView('calendar')" class="admin-nav-btn" data-view="calendar">
-                        <i class="fa-solid fa-calendar-days"></i><span>예약 달력</span>
-                    </button>
-                    <button type="button" onclick="showAdminView('settings')" class="admin-nav-btn" data-view="settings">
-                        <i class="fa-solid fa-gear"></i><span>운영 설정</span>
-                    </button>
-                </div>
-                <div class="admin-drawer-detail">
-                    <span class="admin-drawer-kicker">MANAGEMENT</span>
-                    <h3>루미안 에스테틱<br>관리자 메뉴</h3>
-                    <p>원하시는 관리 항목을 선택해 주세요.</p>
-                    <div class="admin-drawer-note">예약 현황을 확인하고, 예약 달력과 운영 설정을 한곳에서 관리할 수 있습니다.</div>
-                </div>
+                <button type="button" class="admin-drawer-backdrop" onclick="toggleAdminMenu(false)" aria-label="메뉴 닫기"></button>
+                <aside class="admin-drawer-panel">
+                    <div class="admin-drawer-head">
+                        <div>
+                            <span class="admin-drawer-brand">LUMIAN</span>
+                            <p class="admin-drawer-subtitle">AESTHETIC & BODY CARE</p>
+                        </div>
+                        <button type="button" class="admin-drawer-close" onclick="toggleAdminMenu(false)" aria-label="메뉴 닫기"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="admin-drawer-links">
+                        <p class="admin-drawer-section-label">MENU</p>
+                        <button type="button" onclick="showAdminView('home')" class="admin-nav-btn" data-view="home">
+                            <i class="fa-solid fa-house"></i><span>예약 현황</span><i class="fa-solid fa-chevron-right nav-chevron"></i>
+                        </button>
+                        <button type="button" onclick="showAdminView('calendar')" class="admin-nav-btn" data-view="calendar">
+                            <i class="fa-solid fa-calendar-days"></i><span>예약 달력</span><i class="fa-solid fa-chevron-right nav-chevron"></i>
+                        </button>
+                        <button type="button" onclick="showAdminView('settings')" class="admin-nav-btn" data-view="settings">
+                            <i class="fa-solid fa-gear"></i><span>운영 설정</span><i class="fa-solid fa-chevron-right nav-chevron"></i>
+                        </button>
+                    </div>
+                    <div class="admin-drawer-detail">
+                        <span class="admin-drawer-kicker">LUMIAN AESTHETIC</span>
+                        <h3>편안한 관리,<br>정돈된 운영.</h3>
+                        <p>예약과 매장 운영을 한곳에서 간편하게 관리하세요.</p>
+                        <div class="admin-drawer-note"><i class="fa-regular fa-clock"></i> 예약 현황은 실시간으로 업데이트됩니다.</div>
+                    </div>
+                    <div class="admin-drawer-footer">LUMIAN AESTHETIC <span>ADMIN</span></div>
+                </aside>
             </nav>
 
             <section id="settingsView" class="hidden">
@@ -408,11 +448,22 @@
                 ? forceState
                 : navigation.classList.contains('hidden');
             navigation.classList.toggle('hidden', !shouldOpen);
+            document.body.classList.toggle('admin-menu-open', shouldOpen);
             toggle.setAttribute('aria-expanded', String(shouldOpen));
             toggle.setAttribute('aria-label', shouldOpen ? '관리자 메뉴 닫기' : '관리자 메뉴 열기');
             const icon = toggle.querySelector('i');
             if (icon) icon.className = shouldOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+            if (shouldOpen) {
+                const closeButton = navigation.querySelector('.admin-drawer-close');
+                if (closeButton) closeButton.focus({ preventScroll: true });
+            } else {
+                toggle.focus({ preventScroll: true });
+            }
         }
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') toggleAdminMenu(false);
+        });
 
         function showAdminView(view) {
             toggleAdminMenu(false);
@@ -427,10 +478,7 @@
                 if (listView) listView.classList.add('hidden');
             }
             document.querySelectorAll('.admin-nav-btn').forEach(button => {
-                const active = button.dataset.view === view;
-                button.classList.toggle('border-gold/50', active);
-                button.classList.toggle('bg-gold/10', active);
-                button.classList.toggle('border-white/10', !active);
+                button.classList.toggle('active', button.dataset.view === view);
             });
             if (view === 'calendar') renderAdminCalendar();
             window.scrollTo({ top: 0, behavior: 'smooth' });
