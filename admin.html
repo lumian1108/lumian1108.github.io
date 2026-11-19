@@ -114,87 +114,85 @@
             #adminCalendarGrid button { min-height: 78px !important; }
         }
 
-        /* Apple-inspired visual refresh: quiet, spacious, precise */
-        :root { color-scheme: light; }
+        /* Smart Store reference layout — Lumian forest green & gold theme */
+        :root { color-scheme: dark; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Pretendard", sans-serif !important;
-            background: #f5f5f7 !important;
-            color: #1d1d1f !important;
-            letter-spacing: -.018em;
+            font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Pretendard",sans-serif !important;
+            background:radial-gradient(ellipse at 50% -18%,rgba(212,175,55,.13),transparent 42%),#10271d !important;
+            color:#f5f3ec !important; letter-spacing:-.018em;
         }
-        .admin-shell { max-width: 1040px !important; padding-top: 28px !important; }
+        .admin-shell { max-width:780px !important; padding-top:26px !important; }
         #dashboardSection > div:first-child {
-            border: 0 !important; border-bottom: 1px solid #e5e5ea !important;
-            padding-bottom: 22px !important; margin-bottom: 22px !important;
+            border:0 !important; border-bottom:1px solid rgba(212,175,55,.22) !important;
+            padding-bottom:20px !important; margin-bottom:20px !important;
         }
-        #dashboardSection h2 { color: #1d1d1f !important; font-size: 27px !important; font-weight: 700 !important; }
-        #dashboardSection p { color: #86868b; }
-        #dashboardSection > div:first-child button {
-            background: #fff !important; color: #6e6e73 !important;
-            border: 1px solid #e5e5ea !important; border-radius: 999px !important;
-            padding: 9px 15px !important;
+        #dashboardSection h2 { color:#f1d77b !important; font-size:25px !important; font-weight:750 !important; letter-spacing:-.04em; }
+        #dashboardSection p { color:#aebbb0 !important; }
+        #dashboardSection > div:first-child button:not(.admin-menu-toggle) {
+            background:#1f3c2c !important; color:#d8d8ca !important;
+            border:1px solid rgba(212,175,55,.2) !important; border-radius:999px !important; padding:9px 15px !important;
         }
         .admin-nav-btn {
-            min-height: 68px !important; background: rgba(255,255,255,.82) !important;
-            border: 1px solid #e5e5ea !important; border-radius: 16px !important;
-            color: #6e6e73 !important; box-shadow: 0 2px 8px rgba(0,0,0,.025);
+            min-height:68px !important; background:rgba(31,60,44,.82) !important;
+            border:1px solid rgba(212,175,55,.13) !important; border-radius:17px !important;
+            color:#c9d0c8 !important; box-shadow:0 5px 18px rgba(0,0,0,.10);
         }
-        .admin-nav-btn i { color: #77777d !important; font-size: 17px !important; }
-        .admin-nav-btn span { color: inherit !important; font-size: 12px !important; font-weight: 600; }
-        .admin-nav-btn.bg-gold\/10 {
-            background: #fff !important; border-color: #b89b58 !important;
-            color: #8a6b2f !important; box-shadow: 0 0 0 2px rgba(184,155,88,.10);
+        .admin-nav-btn i { color:#d4af37 !important; }
+        .admin-nav-btn.bg-gold\\/10,.admin-nav-btn.active {
+            background:rgba(212,175,55,.14) !important; border-color:rgba(212,175,55,.55) !important;
+            color:#f1d77b !important; box-shadow:0 0 0 2px rgba(212,175,55,.07);
         }
-        .admin-nav-btn.bg-gold\/10 i { color: #9a7a3c !important; }
         .summary-card {
-            min-height: 140px !important; background: #fff !important;
-            border: 1px solid #e8e8ed !important; border-radius: 20px !important;
-            padding: 19px !important; box-shadow: 0 3px 12px rgba(0,0,0,.035) !important;
-            color: #1d1d1f !important;
+            min-height:140px !important; background:linear-gradient(145deg,#234432,#192f24) !important;
+            border:1px solid rgba(212,175,55,.20) !important; border-radius:21px !important;
+            padding:19px !important; box-shadow:0 8px 24px rgba(0,0,0,.13) !important; color:#f5f3ec !important;
         }
-        .summary-card i { color: #8f784d !important; font-size: 18px !important; margin-bottom: 17px !important; }
-        .summary-card p:nth-of-type(1) { color: #6e6e73 !important; font-size: 12px !important; }
-        .summary-card p:nth-of-type(2) { color: #1d1d1f !important; font-size: 30px !important; font-weight: 650 !important; }
-        .summary-card p:last-child { color: #a1a1a6 !important; }
-        .admin-panel, #calendarView > section, #settingsView > section {
-            background: #fff !important; border: 1px solid #e8e8ed !important;
-            border-radius: 20px !important; box-shadow: 0 3px 12px rgba(0,0,0,.03) !important;
+        .summary-card i { color:#d4af37 !important; font-size:18px !important; margin-bottom:17px !important; }
+        .summary-card p:nth-of-type(1) { color:#c5cec5 !important; font-size:12px !important; }
+        .summary-card p:nth-of-type(2) { color:#f7e7ad !important; font-size:30px !important; font-weight:700 !important; }
+        .summary-card p:last-child { color:#89988d !important; }
+        .admin-panel,#calendarView > section,#settingsView > section,#bookingListView .admin-panel {
+            background:rgba(31,60,44,.78) !important; border:1px solid rgba(212,175,55,.16) !important;
+            border-radius:21px !important; box-shadow:0 8px 24px rgba(0,0,0,.10) !important;
         }
         #bookingList > div {
-            background: #fff !important; border: 1px solid #e8e8ed !important;
-            border-radius: 18px !important; color: #1d1d1f !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,.025) !important;
+            background:#1d392a !important; border:1px solid rgba(212,175,55,.16) !important;
+            border-radius:19px !important; color:#f5f3ec !important; box-shadow:none !important;
         }
-        #bookingList > div p, #bookingList > div strong { color: #424245 !important; }
-        #bookingList > div a { color: #8a6b2f !important; }
-        #bookingList button { border-radius: 12px !important; min-height: 42px; }
-        input, select {
-            background: #f5f5f7 !important; color: #1d1d1f !important;
-            border: 1px solid #e5e5ea !important; border-radius: 12px !important;
-            min-height: 44px; outline: none;
+        #bookingList > div p { color:#d4ddd5 !important; }
+        #bookingList > div strong { color:#aebbb0 !important; }
+        #bookingList > div a { color:#e4c45d !important; }
+        #bookingList button { border-radius:13px !important; min-height:43px; }
+        input,select,textarea {
+            background:#163023 !important; color:#f5f3ec !important;
+            border:1px solid rgba(212,175,55,.22) !important; border-radius:13px !important;
+            min-height:45px; outline:none;
         }
-        input:focus, select:focus { border-color: #a58b55 !important; box-shadow: 0 0 0 3px rgba(165,139,85,.12); }
-        #calendarView h3, #settingsView h3, #settingsView h4 { color: #1d1d1f !important; }
+        input::placeholder,textarea::placeholder { color:#87968a !important; }
+        input:focus,select:focus,textarea:focus {
+            border-color:#d4af37 !important; box-shadow:0 0 0 3px rgba(212,175,55,.13) !important;
+        }
+        #calendarView h3,#settingsView h3,#settingsView h4 { color:#f1d77b !important; }
         #adminCalendarGrid button {
-            background: #f5f5f7 !important; border: 1px solid #ededf0 !important;
-            border-radius: 12px !important; color: #1d1d1f !important;
+            background:#163023 !important; border:1px solid rgba(212,175,55,.14) !important;
+            border-radius:13px !important; color:#f5f3ec !important;
         }
-        #adminCalendarGrid button.border-gold { background: #f4efe4 !important; border-color: #b89b58 !important; }
-        #calendarView .text-gray-400, #settingsView .text-gray-400 { color: #86868b !important; }
-        #calendarView .text-white, #settingsView .text-white { color: #1d1d1f !important; }
-        #calendarView button, #settingsView button { transition: transform .15s ease, background .15s ease; }
-        #loginSection h1 { color: #8a744a !important; letter-spacing: .12em; }
+        #adminCalendarGrid button.border-gold { background:rgba(212,175,55,.16) !important; border-color:#d4af37 !important; }
+        #calendarView .text-gray-400,#settingsView .text-gray-400 { color:#9aaa9e !important; }
+        #calendarView .text-white,#settingsView .text-white { color:#f5f3ec !important; }
+        #loginSection h1 { color:#d4af37 !important; letter-spacing:.12em; }
         #loginSection .bg-boxDark {
-            background: rgba(255,255,255,.92) !important; border: 1px solid #e8e8ed !important;
-            border-radius: 24px !important; box-shadow: 0 12px 40px rgba(0,0,0,.06) !important;
+            background:linear-gradient(145deg,#234432,#1b3527) !important;
+            border:1px solid rgba(212,175,55,.25) !important; border-radius:25px !important;
+            box-shadow:0 18px 48px rgba(0,0,0,.22) !important;
         }
-        #loginSection label, #loginSection p { color: #6e6e73 !important; }
-        #loginSection input { background: #f5f5f7 !important; }
-        button { -webkit-tap-highlight-color: transparent; }
-        button:active { transform: scale(.985); }
-        @media (min-width: 640px) {
-            .admin-shell { padding-left: 28px !important; padding-right: 28px !important; }
-            #dashboardSummary { gap: 16px !important; }
+        #loginSection label,#loginSection p { color:#bdc9be !important; }
+        #loginSection input { background:#163023 !important; }
+        button { -webkit-tap-highlight-color:transparent; }
+        button:active { transform:scale(.985); }
+        @media(min-width:640px) {
+            .admin-shell { padding-left:26px !important; padding-right:26px !important; }
+            #dashboardSummary { gap:14px !important; }
         }
 
         /* Compact menu trigger */
@@ -233,6 +231,27 @@
         body.admin-menu-open { overflow:hidden; }
         @keyframes lumianBackdropIn { to { opacity:1; } }
         @keyframes lumianDrawerIn { to { transform:translateX(0); } }
+
+        /* Drawer and shared controls follow the original Lumian palette */
+        .admin-menu-toggle { border:1px solid rgba(212,175,55,.28) !important; background:#1f3c2c !important; color:#e4c45d !important; box-shadow:0 4px 14px rgba(0,0,0,.15) !important; }
+        .admin-drawer-backdrop { background:rgba(4,18,11,.66) !important; }
+        .admin-drawer-panel { background:linear-gradient(180deg,#1f3c2c 0%,#142b20 100%) !important; border-right:1px solid rgba(212,175,55,.22) !important; box-shadow:18px 0 50px rgba(0,0,0,.38) !important; }
+        .admin-drawer-head { border-bottom:1px solid rgba(212,175,55,.22) !important; }
+        .admin-drawer-brand { color:#e3c45e !important; }
+        .admin-drawer-subtitle,.admin-drawer-section-label { color:#91a294 !important; }
+        .admin-drawer-close { border:1px solid rgba(212,175,55,.22) !important; background:#163023 !important; color:#e5d7a3 !important; }
+        .admin-navigation .admin-nav-btn { color:#d1dbd2 !important; }
+        .admin-navigation .admin-nav-btn i:first-child { color:#d4af37 !important; }
+        .admin-navigation .admin-nav-btn .nav-chevron { color:#829486 !important; }
+        .admin-navigation .admin-nav-btn.active { background:rgba(212,175,55,.14) !important; border-color:rgba(212,175,55,.38) !important; color:#f1d77b !important; }
+        .admin-drawer-detail { background:rgba(10,29,19,.72) !important; border:1px solid rgba(212,175,55,.18) !important; }
+        .admin-drawer-kicker,.admin-drawer-note i { color:#d4af37 !important; }
+        .admin-drawer-detail h3 { color:#f1e8ca !important; }
+        .admin-drawer-detail p,.admin-drawer-note { color:#aebbb0 !important; }
+        .admin-drawer-footer { color:#829486 !important; }
+        .admin-drawer-footer span { color:#d4af37 !important; }
+        #loginSection button.bg-gold { background:#d4af37 !important; color:#163023 !important; }
+
         @media (prefers-reduced-motion:reduce) { .admin-drawer-backdrop,.admin-drawer-panel { animation:none; opacity:1; transform:none; } }
 
     </style>
