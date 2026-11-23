@@ -122,17 +122,17 @@
         </div>
 
         <section class="mb-8" id="serviceMenu">
-            <button type="button" id="serviceMenuToggle" aria-expanded="false" aria-controls="serviceMenuContent" onclick="toggleServiceMenu()" class="w-full bg-boxDark border border-gold/30 rounded-2xl px-5 py-4 flex items-center justify-between text-left active:scale-[0.99] transition-transform">
-                <span class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center"><i class="fa-solid fa-spa text-gold"></i></span>
-                    <span>
-                        <span class="block text-gold text-[10px] tracking-[0.2em] mb-1">LUMIAN SIGNATURE PROGRAM</span>
-                        <span class="block text-white text-base font-semibold">케어 프로그램</span>
-                    </span>
+            <button type="button" id="serviceMenuToggle" aria-expanded="false" aria-controls="serviceMenuContent" onclick="toggleServiceMenu()" class="w-full flex items-end justify-between mb-4 text-left">
+                <span>
+                    <span class="block text-gold text-[10px] tracking-[0.25em] mb-1">LUMIAN SIGNATURE PROGRAM</span>
+                    <span class="block text-white text-xl font-semibold">케어 프로그램</span>
                 </span>
-                <i id="serviceMenuChevron" class="fa-solid fa-chevron-down text-gold text-sm transition-transform"></i>
+                <span class="flex items-center gap-2">
+                    <span class="text-[10px] text-gray-400">VAT 포함</span>
+                    <i id="serviceMenuChevron" class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
+                </span>
             </button>
-            <div id="serviceMenuContent" class="hidden mt-3 rounded-2xl border border-gold/20 bg-[#1F3C2C] p-4">
+            <div id="serviceMenuContent" class="hidden">
                 <div class="flex gap-2 mb-4">
                     <button type="button" onclick="filterServices('all')" class="service-filter active flex-1 rounded-full border border-gold/40 px-3 py-2 text-xs">전체</button>
                     <button type="button" onclick="filterServices('facial')" class="service-filter flex-1 rounded-full border border-gold/20 px-3 py-2 text-xs text-gray-300">얼굴</button>
