@@ -74,6 +74,7 @@
     </script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+.service-filter.active { background: rgba(212,175,55,.12); color: #d4af37; }
         body { 
             font-family: 'Pretendard', sans-serif; 
             background-color: #163023; 
@@ -97,6 +98,23 @@
                 1:1 프리미엄 맞춤 에스테틱 & 바디케어
             </p>
         </div>
+
+        <section class="mb-8" id="serviceMenu">
+            <div class="flex items-end justify-between mb-4">
+                <div>
+                    <p class="text-gold text-[10px] tracking-[0.25em] mb-1">LUMIAN SIGNATURE PROGRAM</p>
+                    <h3 class="text-white text-xl font-semibold">케어 프로그램</h3>
+                </div>
+                <span class="text-[10px] text-gray-400">VAT 포함</span>
+            </div>
+            <div class="flex gap-2 mb-4">
+                <button type="button" onclick="filterServices('all')" class="service-filter active flex-1 rounded-full border border-gold/40 px-3 py-2 text-xs">전체</button>
+                <button type="button" onclick="filterServices('facial')" class="service-filter flex-1 rounded-full border border-gold/20 px-3 py-2 text-xs text-gray-300">페이셜</button>
+                <button type="button" onclick="filterServices('body')" class="service-filter flex-1 rounded-full border border-gold/20 px-3 py-2 text-xs text-gray-300">바디</button>
+            </div>
+            <div id="serviceCards" class="space-y-3"></div>
+            <p class="text-[10px] text-gray-400 leading-relaxed mt-4">※ 모든 케어 금액은 부가가치세(VAT) 포함 정가입니다. 현금·계좌이체 결제 시 우대 혜택이 적용됩니다.</p>
+        </section>
 
         <div class="mb-6">
             <p class="text-gold text-center text-[11px] font-semibold mb-4 tracking-widest">QUICK CONNECT</p>
@@ -241,16 +259,24 @@
                         <label class="block text-xs text-gray-300 mb-1">관리 프로그램 선택</label>
                         <select id="programSelect" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
                             <option value="">프로그램을 선택해 주세요</option>
-                            <option value="무제 1">무제 1</option>
-                            <option value="무제 2">무제 2</option>
-                            <option value="무제 3">무제 3</option>
-                            <option value="무제 4">무제 4</option>
-                            <option value="무제 5">무제 5</option>
-                            <option value="무제 6">무제 6</option>
-                            <option value="무제 7">무제 7</option>
-                            <option value="무제 8">무제 8</option>
-                            <option value="무제 9">무제 9</option>
-                            <option value="무제 10">무제 10</option>
+                            <optgroup label="FACIAL CARE">
+                                <option value="수분 · 보습 장벽 케어 | 60분 | 88,000원">수분 · 보습 장벽 케어 · 60분 · 88,000원</option>
+                                <option value="미백 · 맑은 톤업 케어 | 60분 | 110,000원">미백 · 맑은 톤업 케어 · 60분 · 110,000원</option>
+                                <option value="트러블 · 피지 모공 케어 | 70분 | 132,000원">트러블 · 피지 모공 케어 · 70분 · 132,000원</option>
+                                <option value="안티에이징 탄력 · 리프팅 | 80분 | 165,000원">안티에이징 탄력 · 리프팅 · 80분 · 165,000원</option>
+                                <option value="윤곽 & 페이스 라인 수기 | 90분 | 187,000원">윤곽 & 페이스 라인 수기 · 90분 · 187,000원</option>
+                                <option value="예비 신부 & 스페셜 웨딩 | 100분 | 198,000원">예비 신부 & 스페셜 웨딩 · 100분 · 198,000원</option>
+                            </optgroup>
+                            <optgroup label="BODY CARE">
+                                <option value="골반 밸런스 케어 | 50분 | 88,000원">골반 밸런스 케어 · 50분 · 88,000원</option>
+                                <option value="복부 & 흉통 순환 케어 | 60분 | 110,000원">복부 & 흉통 순환 케어 · 60분 · 110,000원</option>
+                                <option value="등 & 목어깨 집중 케어 | 60분 | 132,000원">등 & 목어깨 집중 케어 · 60분 · 132,000원</option>
+                                <option value="하체 순환 & 부종 케어 | 70분 | 132,000원">하체 순환 & 부종 케어 · 70분 · 132,000원</option>
+                                <option value="등·경추 & 골반 밸런스 | 75분 | 132,000원">등·경추 & 골반 밸런스 · 75분 · 132,000원</option>
+                                <option value="1:1 맞춤 커스텀 바디 | 80분 | 165,000원">1:1 맞춤 커스텀 바디 · 80분 · 165,000원</option>
+                                <option value="전신 순환 리프레시 | 100분 | 198,000원">전신 순환 리프레시 · 100분 · 198,000원</option>
+                                <option value="루미안 시그니처 전신 근막 | 120분 | 242,000원">루미안 시그니처 전신 근막 · 120분 · 242,000원</option>
+                            </optgroup>
                         </select>
                     </div>
                 </div>
@@ -382,6 +408,76 @@
             }
             if (currentStep === 2) renderTimeSlots();
         });
+
+        const lumianServices = [
+            {category:'facial',name:'수분 · 보습 장벽 케어',time:60,price:88000,for:'속건조, 속당김, 각질 들뜸이 있는 민감 피부',benefit:'유수분 밸런스 회복 & 보습 장벽 강화'},
+            {category:'facial',name:'미백 · 맑은 톤업 케어',time:60,price:110000,for:'칙칙한 안색, 맑고 투명한 피부 톤을 원하는 분',benefit:'고농축 비타민 침투 & 투명한 안색 광채'},
+            {category:'facial',name:'트러블 · 피지 모공 케어',time:70,price:132000,for:'과다 피지 정체, 모공 노폐물, 위생 압출 필요 피부',benefit:'딥 모공 스케일링 & 항균 진정 스킨 케어'},
+            {category:'facial',name:'안티에이징 탄력 · 리프팅',time:80,price:165000,for:'잔주름, 피부 탄력 저하, 처진 페이스 라인 고민',benefit:'플라겐 수기 테크닉 & 피부 밀도 집중 충전'},
+            {category:'facial',name:'윤곽 & 페이스 라인 수기',time:90,price:187000,tag:'추천',for:'얼굴 붓기, 좌우 비대칭, 광대·이중턱 뭉침 고민',benefit:'두피~쇄골 속근막 이완 & 입체 윤곽 수기'},
+            {category:'facial',name:'예비 신부 & 스페셜 웨딩',time:100,price:198000,tag:'BEST',for:'본식/촬영 전 물광 피부 & 매끄러운 드레스 라인',benefit:'페이스 + 목·승모근 라인 집중 1:1 풀 케어'},
+            {category:'body',name:'골반 밸런스 케어',time:50,price:88000,for:'다리 꼬기 습관, 틀어진 골반 주변 뻐근함',benefit:'고관절 주변 이완 & 하체 순환 확보'},
+            {category:'body',name:'복부 & 흉통 순환 케어',time:60,price:110000,for:'복부 가스 팽만감, 답답한 흉통 완화 희망',benefit:'흉통 호흡 확보 & 복부 장 순환 촉진'},
+            {category:'body',name:'등 & 목어깨 집중 케어',time:60,price:132000,for:'만성 승모근 뭉침, 굽은 등, 경추 통증',benefit:'등 근막 집중 이완 & 슬림 목선 형성'},
+            {category:'body',name:'하체 순환 & 부종 케어',time:70,price:132000,for:'다리가 자주 무겁고 쉽게 저리는 부종 피부',benefit:'서경부 림프절 독소 배출 & 하체 피로 완화'},
+            {category:'body',name:'등·경추 & 골반 밸런스',time:75,price:132000,tag:'BEST',for:'상·하체 중심축(목·등·골반) 전체 불균형',benefit:'핵심 축 이완으로 전신 밸런스 리셋'},
+            {category:'body',name:'1:1 맞춤 커스텀 바디',time:80,price:165000,tag:'CUSTOM',for:'당일 체형 컨디션에 따른 집중 수기 희망',benefit:'1:1 문진 기반 맞춤 부위 조합 처방'},
+            {category:'body',name:'전신 순환 리프레시',time:100,price:198000,for:'전신 만성 피로 및 순환 정체 관리',benefit:'전신 림프 독소 정화 & 부드러운 전신 순환'},
+            {category:'body',name:'루미안 시그니처 전신 근막',time:120,price:242000,tag:'PREMIUM',for:'전신 굳은 속근막 유착 밀착 케어 원할 때',benefit:'120분 밀착 수기 근막 이완 최고급 풀바디'}
+        ];
+
+        function formatServicePrice(price) {
+            return price.toLocaleString('ko-KR') + '원';
+        }
+
+        function renderServices(filter='all') {
+            const container = document.getElementById('serviceCards');
+            if (!container) return;
+            const items = lumianServices.filter(service => filter === 'all' || service.category === filter);
+            container.innerHTML = items.map((service) => {
+                const index = lumianServices.indexOf(service);
+                return `
+                    <article class="bg-boxDark border border-gold/15 rounded-2xl p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    <span class="text-[10px] tracking-widest text-gold/80">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'}</span>
+                                    ${service.tag ? `<span class="text-[9px] bg-gold/15 text-gold rounded px-2 py-0.5">${service.tag}</span>` : ''}
+                                </div>
+                                <h4 class="font-semibold text-sm text-white leading-snug">${service.name}</h4>
+                                <p class="text-[10px] text-gray-400 mt-1">${service.time}분 소요</p>
+                            </div>
+                            <strong class="text-gold text-sm whitespace-nowrap">${formatServicePrice(service.price)}</strong>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 border-t border-white/10 mt-3 pt-3">
+                            <div><p class="text-[9px] text-gold/70 tracking-wider mb-1">RECOMMENDED FOR</p><p class="text-[10px] text-gray-300 leading-relaxed">${service.for}</p></div>
+                            <div><p class="text-[9px] text-gold/70 tracking-wider mb-1">KEY BENEFIT</p><p class="text-[10px] text-gray-300 leading-relaxed">${service.benefit}</p></div>
+                        </div>
+                        <button type="button" onclick="chooseService(${index})" class="w-full mt-3 rounded-xl border border-gold/40 py-2.5 text-xs font-semibold text-gold active:bg-gold active:text-[#163023]">이 프로그램 예약하기</button>
+                    </article>`;
+            }).join('');
+            document.querySelectorAll('.service-filter').forEach(button => {
+                const active = button.getAttribute('onclick').includes(`'${filter}'`);
+                button.classList.toggle('active', active);
+                button.classList.toggle('border-gold/40', active);
+                button.classList.toggle('border-gold/20', !active);
+                button.classList.toggle('text-gray-300', !active);
+                button.classList.toggle('text-gold', active);
+            });
+        }
+
+        function filterServices(filter) {
+            renderServices(filter);
+        }
+
+        function chooseService(index) {
+            const service = lumianServices[index];
+            const select = document.getElementById('programSelect');
+            const option = Array.from(select.options).find(item => item.value.startsWith(service.name + ' |'));
+            if (option) select.value = option.value;
+            openBookingModal();
+            document.getElementById('programSelect').focus();
+        }
 
         function openModal(id) {
             const el = document.getElementById(id);
@@ -611,6 +707,8 @@
                 }
             }, false);
         }
+
+        renderServices('all');
 
         function showAlert(title, msg) {
             document.getElementById('alertTitle').innerText = title;
