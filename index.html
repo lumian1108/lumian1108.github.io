@@ -122,12 +122,15 @@
         </div>
 
         <section class="mb-8" id="serviceMenu">
-            <button type="button" id="serviceMenuToggle" aria-expanded="false" aria-controls="serviceMenuContent" onclick="toggleServiceMenu()" class="w-full flex items-end justify-between mb-4 text-left">
-                <span>
-                    <span class="block text-gold text-[10px] tracking-[0.25em] mb-1">LUMIAN SIGNATURE PROGRAM</span>
-                    <span class="block text-white text-xl font-semibold">케어 프로그램</span>
+            <button type="button" id="serviceMenuToggle" aria-expanded="false" aria-controls="serviceMenuContent" onclick="toggleServiceMenu()" class="w-full flex items-center justify-between rounded-xl border border-gold/40 bg-[#1F3C2C] px-5 py-4 mb-4 text-left shadow-sm active:scale-[0.99] transition-all">
+                <span class="flex items-center gap-3">
+                    <span class="w-1 h-8 rounded-full bg-gold"></span>
+                    <span>
+                        <span class="block text-gold text-[10px] tracking-[0.2em] mb-1">LUMIAN SIGNATURE PROGRAM</span>
+                        <span class="block text-white text-base font-semibold">케어 프로그램</span>
+                    </span>
                 </span>
-                <span class="flex items-center gap-2">
+                <span class="flex items-center gap-3">
                     <span class="text-[10px] text-gray-400">VAT 포함</span>
                     <i id="serviceMenuChevron" class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
                 </span>
