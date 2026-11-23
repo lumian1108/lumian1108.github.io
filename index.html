@@ -248,6 +248,30 @@
 
             <div id="stepTime" class="hidden space-y-4">
                 <p id="selectedDateText" class="text-xs text-gold font-medium mb-3 text-center bg-boxDark py-2 rounded-xl border border-gold/10"></p>
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">관리 프로그램 선택 (소요 시간 기준)</label>
+                    <select id="programSelect" onchange="renderTimeSlots()" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                        <option value="">프로그램을 먼저 선택해 주세요</option>
+                        <optgroup label="FACIAL CARE">
+                            <option value="수분 · 보습 장벽 케어 | 60분 | 88,000원">수분 · 보습 장벽 케어 · 60분 · 88,000원</option>
+                            <option value="미백 · 맑은 톤업 케어 | 60분 | 110,000원">미백 · 맑은 톤업 케어 · 60분 · 110,000원</option>
+                            <option value="트러블 · 피지 모공 케어 | 70분 | 132,000원">트러블 · 피지 모공 케어 · 70분 · 132,000원</option>
+                            <option value="안티에이징 탄력 · 리프팅 | 80분 | 165,000원">안티에이징 탄력 · 리프팅 · 80분 · 165,000원</option>
+                            <option value="윤곽 & 페이스 라인 수기 | 90분 | 187,000원">윤곽 & 페이스 라인 수기 · 90분 · 187,000원</option>
+                            <option value="예비 신부 & 스페셜 웨딩 | 100분 | 198,000원">예비 신부 & 스페셜 웨딩 · 100분 · 198,000원</option>
+                        </optgroup>
+                        <optgroup label="BODY CARE">
+                            <option value="골반 밸런스 케어 | 50분 | 88,000원">골반 밸런스 케어 · 50분 · 88,000원</option>
+                            <option value="복부 & 흉통 순환 케어 | 60분 | 110,000원">복부 & 흉통 순환 케어 · 60분 · 110,000원</option>
+                            <option value="등 & 목어깨 집중 케어 | 60분 | 132,000원">등 & 목어깨 집중 케어 · 60분 · 132,000원</option>
+                            <option value="하체 순환 & 부종 케어 | 70분 | 132,000원">하체 순환 & 부종 케어 · 70분 · 132,000원</option>
+                            <option value="등·경추 & 골반 밸런스 | 75분 | 132,000원">등·경추 & 골반 밸런스 · 75분 · 132,000원</option>
+                            <option value="1:1 맞춤 커스텀 바디 | 80분 | 165,000원">1:1 맞춤 커스텀 바디 · 80분 · 165,000원</option>
+                            <option value="전신 순환 리프레시 | 100분 | 198,000원">전신 순환 리프레시 · 100분 · 198,000원</option>
+                            <option value="루미안 시그니처 전신 근막 | 120분 | 242,000원">루미안 시그니처 전신 근막 · 120분 · 242,000원</option>
+                        </optgroup>
+                    </select>
+                </div>
                 <div id="timeSlots" class="grid grid-cols-3 gap-2.5"></div>
             </div>
 
@@ -262,30 +286,6 @@
                     <div>
                         <label class="block text-xs text-gray-300 mb-1">연락처</label>
                         <input type="tel" id="custPhone" placeholder="010-0000-0000" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-300 mb-1">관리 프로그램 선택</label>
-                        <select id="programSelect" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
-                            <option value="">프로그램을 선택해 주세요</option>
-                            <optgroup label="FACIAL CARE">
-                                <option value="수분 · 보습 장벽 케어 | 60분 | 88,000원">수분 · 보습 장벽 케어 · 60분 · 88,000원</option>
-                                <option value="미백 · 맑은 톤업 케어 | 60분 | 110,000원">미백 · 맑은 톤업 케어 · 60분 · 110,000원</option>
-                                <option value="트러블 · 피지 모공 케어 | 70분 | 132,000원">트러블 · 피지 모공 케어 · 70분 · 132,000원</option>
-                                <option value="안티에이징 탄력 · 리프팅 | 80분 | 165,000원">안티에이징 탄력 · 리프팅 · 80분 · 165,000원</option>
-                                <option value="윤곽 & 페이스 라인 수기 | 90분 | 187,000원">윤곽 & 페이스 라인 수기 · 90분 · 187,000원</option>
-                                <option value="예비 신부 & 스페셜 웨딩 | 100분 | 198,000원">예비 신부 & 스페셜 웨딩 · 100분 · 198,000원</option>
-                            </optgroup>
-                            <optgroup label="BODY CARE">
-                                <option value="골반 밸런스 케어 | 50분 | 88,000원">골반 밸런스 케어 · 50분 · 88,000원</option>
-                                <option value="복부 & 흉통 순환 케어 | 60분 | 110,000원">복부 & 흉통 순환 케어 · 60분 · 110,000원</option>
-                                <option value="등 & 목어깨 집중 케어 | 60분 | 132,000원">등 & 목어깨 집중 케어 · 60분 · 132,000원</option>
-                                <option value="하체 순환 & 부종 케어 | 70분 | 132,000원">하체 순환 & 부종 케어 · 70분 · 132,000원</option>
-                                <option value="등·경추 & 골반 밸런스 | 75분 | 132,000원">등·경추 & 골반 밸런스 · 75분 · 132,000원</option>
-                                <option value="1:1 맞춤 커스텀 바디 | 80분 | 165,000원">1:1 맞춤 커스텀 바디 · 80분 · 165,000원</option>
-                                <option value="전신 순환 리프레시 | 100분 | 198,000원">전신 순환 리프레시 · 100분 · 198,000원</option>
-                                <option value="루미안 시그니처 전신 근막 | 120분 | 242,000원">루미안 시그니처 전신 근막 · 120분 · 242,000원</option>
-                            </optgroup>
-                        </select>
                     </div>
                 </div>
 
@@ -410,7 +410,7 @@
                     if (!booking.status || booking.status === 'confirmed' || booking.status === 'pending') {
                         const dateKey = `${booking.year}-${booking.month}-${booking.day}`;
                         if (!bookedTimesMap[dateKey]) bookedTimesMap[dateKey] = [];
-                        bookedTimesMap[dateKey].push(booking.time);
+                        bookedTimesMap[dateKey].push(booking);
                     }
                 });
             }
@@ -603,35 +603,51 @@ function filterServices(filter) {
             renderTimeSlots();
         }
 
+        function getDurationFromProgram(programValue) {
+            const match = String(programValue || '').match(/\\|\\s*(\\d+)분\\s*\\|/);
+            return match ? Number(match[1]) : 0;
+        }
+
+        function getBookingDuration(booking) {
+            if (Number(booking.duration) > 0) return Number(booking.duration);
+            const match = String(booking.program || '').match(/\\|\\s*(\\d+)분\\s*\\|/);
+            if (match) return Number(match[1]);
+            const service = lumianServices.find(item => String(booking.program || '').includes(item.name));
+            return service ? service.time : 60;
+        }
+
+        function toMinutes(timeValue) {
+            const parts = String(timeValue || '00:00').split(':').map(Number);
+            return (parts[0] || 0) * 60 + (parts[1] || 0);
+        }
+
+        function intervalsOverlap(startA, durationA, startB, durationB) {
+            return startA < startB + durationB && startB < startA + durationA;
+        }
+
         function renderTimeSlots() {
             const timeSlots = document.getElementById('timeSlots');
             timeSlots.innerHTML = '';
-
-            const endHour = (selectedDayOfWeek === 3)
-                ? bookingSettings.wednesdayCloseHour
-                : bookingSettings.closeHour;
+            const duration = getDurationFromProgram(document.getElementById('programSelect').value);
+            if (!duration) {
+                timeSlots.innerHTML = '<p class="col-span-3 text-center text-xs text-gray-400 py-5">프로그램을 먼저 선택하시면 소요 시간에 맞춰 예약 가능한 시간이 표시됩니다.</p>';
+                return;
+            }
+            const endHour = (selectedDayOfWeek === 3) ? bookingSettings.wednesdayCloseHour : bookingSettings.closeHour;
             const startHour = bookingSettings.openHour;
-
             const dateKey = `${selectedYear}-${selectedMonth}-${selectedDay}`;
-            const bookedTimes = bookedTimesMap[dateKey] || [];
-
-            for (let hour = startHour; hour <= endHour; hour++) {
+            const existingBookings = bookedTimesMap[dateKey] || [];
+            for (let hour = startHour; hour < endHour; hour++) {
                 const timeStr = `${String(hour).padStart(2, '0')}:00`;
-                const isBooked = bookedTimes.includes(timeStr);
-
+                const candidateStart = toMinutes(timeStr);
+                const isBooked = candidateStart + duration > endHour * 60 || existingBookings.some(booking =>
+                    intervalsOverlap(candidateStart, duration, toMinutes(booking.time), getBookingDuration(booking))
+                );
                 const btn = document.createElement('button');
-                btn.className = `py-3 border rounded-xl text-xs font-semibold transition-all ${
-                    isBooked 
-                    ? 'border-gray-600 bg-gray-800/40 text-gray-500 line-through cursor-not-allowed' 
-                    : 'border-gold/30 bg-[#163023] text-gray-200 hover:border-gold active:scale-95'
-                }`;
+                btn.className = `py-3 border rounded-xl text-xs font-semibold transition-all ${isBooked ? 'border-gray-600 bg-gray-800/40 text-gray-500 line-through cursor-not-allowed' : 'border-gold/30 bg-[#163023] text-gray-200 hover:border-gold active:scale-95'}`;
                 btn.innerText = isBooked ? `${timeStr} (마감)` : timeStr;
                 btn.disabled = isBooked;
-
-                if (!isBooked) {
-                    btn.onclick = () => selectTime(timeStr);
-                }
-
+                if (!isBooked) btn.onclick = () => selectTime(timeStr);
                 timeSlots.appendChild(btn);
             }
         }
@@ -669,6 +685,7 @@ function filterServices(filter) {
                 month: selectedMonth,
                 day: selectedDay,
                 time: selectedTime,
+                duration: getDurationFromProgram(program),
                 name: name,
                 phone: phone,
                 program: program,
@@ -698,7 +715,7 @@ function filterServices(filter) {
                         Number(booking.year) === Number(selectedYear) &&
                         Number(booking.month) === Number(selectedMonth) &&
                         Number(booking.day) === Number(selectedDay) &&
-                        booking.time === selectedTime;
+                        intervalsOverlap(toMinutes(selectedTime), getDurationFromProgram(program), toMinutes(booking.time), getBookingDuration(booking));
                 });
 
                 if (hasConflict) {
