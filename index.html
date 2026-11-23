@@ -604,13 +604,13 @@ function filterServices(filter) {
         }
 
         function getDurationFromProgram(programValue) {
-            const match = String(programValue || '').match(/\\|\\s*(\\d+)분\\s*\\|/);
+            const match = String(programValue || '').match(/\|\s*(\d+)분\s*\|/);
             return match ? Number(match[1]) : 0;
         }
 
         function getBookingDuration(booking) {
             if (Number(booking.duration) > 0) return Number(booking.duration);
-            const match = String(booking.program || '').match(/\\|\\s*(\\d+)분\\s*\\|/);
+            const match = String(booking.program || '').match(/\|\s*(\d+)분\s*\|/);
             if (match) return Number(match[1]);
             const service = lumianServices.find(item => String(booking.program || '').includes(item.name));
             return service ? service.time : 60;
