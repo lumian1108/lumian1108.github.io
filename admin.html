@@ -412,6 +412,7 @@
                     </select>
                     <input id="bookingDateFilter" type="date" onchange="renderBookingList()" class="min-w-0 bg-[#163023] border border-gold/20 rounded-xl p-3 text-xs text-white">
                 </div>
+                <select id="bookingProgramFilter" onchange="renderBookingList()" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-xs text-white"><option value="all">모든 관리 프로그램</option><option value="facial">페이셜 케어</option><option value="body">바디 케어</option></select>
                 <button onclick="clearBookingFilters()" class="w-full border border-gold/20 text-gray-300 text-xs py-2 rounded-lg">검색 조건 초기화</button>
             </div>
             <p id="bookingResultCount" class="text-[11px] text-gray-400 mb-2"></p>
@@ -742,6 +743,7 @@
             const query = document.getElementById('bookingSearch').value.trim().toLowerCase();
             const statusFilter = document.getElementById('bookingStatusFilter').value;
             const dateFilter = document.getElementById('bookingDateFilter').value;
+            const programFilter = document.getElementById('bookingProgramFilter')?.value || 'all';
 
             const records = Object.entries(allBookings).map(([key, raw]) => ({
                 key,
@@ -760,7 +762,8 @@
                 const dateKey = `${item.year}-${String(item.month).padStart(2, '0')}-${String(item.day).padStart(2, '0')}`;
                 return (!query || customer.includes(query)) &&
                     (statusFilter === 'all' || status === statusFilter) &&
-                    (!dateFilter || dateKey === dateFilter);
+                    (!dateFilter || dateKey === dateFilter) &&
+                    (programFilter === 'all' || (programFilter === 'facial' ? /수분|미백|트러블|안티에이징|윤곽|웨딩/.test(item.program || '') : /골반|복부|등 &|하체|경추|커스텀 바디|전신/.test(item.program || '')));
             });
 
             document.getElementById('bookingResultCount').textContent = `검색 결과 ${filtered.length}건`;
@@ -791,6 +794,9 @@
                 const safeName = escapeHtml(item.name || '이름 미입력');
                 const safePhone = escapeHtml(item.phone || '');
                 const safeProgram = escapeHtml(item.program || '프로그램 미입력');
+                const serviceDetails = {'수분 · 보습 장벽 케어':'60분 · 88,000원','미백 · 맑은 톤업 케어':'60분 · 110,000원','트러블 · 피지 모공 케어':'70분 · 132,000원','안티에이징 탄력 · 리프팅':'80분 · 165,000원','윤곽 & 페이스 라인 수기':'90분 · 187,000원','예비 신부 & 스페셜 웨딩':'100분 · 198,000원','골반 밸런스 케어':'50분 · 88,000원','복부 & 흉통 순환 케어':'60분 · 110,000원','등 & 목어깨 집중 케어':'60분 · 132,000원','하체 순환 & 부종 케어':'70분 · 132,000원','등·경추 & 골반 밸런스':'75분 · 132,000원','1:1 맞춤 커스텀 바디':'80분 · 165,000원','전신 순환 리프레시':'100분 · 198,000원','루미안 시그니처 전신 근막':'120분 · 242,000원};
+                const selectedService = Object.entries(serviceDetails).find(([name]) => (item.program || '').includes(name));
+                const safeServiceMeta = selectedService ? escapeHtml(selectedService[1]) : '';
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
@@ -800,7 +806,7 @@
                     <div class="space-y-1 mb-3 text-xs text-gray-200">
                         <p><strong class="text-gray-400">성함:</strong> ${safeName}</p>
                         <p><strong class="text-gray-400">연락처:</strong> <a href="tel:${safePhone}" class="text-gold underline">${safePhone}</a></p>
-                        <p><strong class="text-gray-400">프로그램:</strong> ${safeProgram}</p>
+                        <div class="rounded-xl bg-[#163023] border border-gold/15 p-3 mt-2"><p class="text-[10px] tracking-wider text-gold/80 mb-1">SELECTED PROGRAM</p><p class="text-sm font-semibold text-white">${safeProgram}</p>${safeServiceMeta ? '<p class="text-xs text-gold mt-1">' + safeServiceMeta + '</p>' : ""}</div>
                     </div>
                     ${isPending ? `
                         <div class="grid grid-cols-2 gap-2 mt-3">
