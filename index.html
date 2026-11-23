@@ -476,7 +476,6 @@
             const option = Array.from(select.options).find(item => item.value.startsWith(service.name + ' |'));
             if (option) select.value = option.value;
             openBookingModal();
-            showStep(3);
             document.getElementById('programSelect').focus();
         }
 
