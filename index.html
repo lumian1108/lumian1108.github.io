@@ -441,7 +441,13 @@
         function renderServices(filter='all') {
             const container = document.getElementById('serviceCards');
             if (!container) return;
-            const items = lumianServices.filter(service => filter === 'all' || service.category === filter);
+            const items = lumianServices
+                .filter(service => filter === 'all' || service.category === filter)
+                .sort((a, b) => {
+                    const aFeatured = a.tag === 'BEST' || a.tag === '추천';
+                    const bFeatured = b.tag === 'BEST' || b.tag === '추천';
+                    return Number(bFeatured) - Number(aFeatured);
+                });
             container.innerHTML = items.map((service) => {
                 const index = lumianServices.indexOf(service);
                 return `
