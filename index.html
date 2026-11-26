@@ -526,6 +526,7 @@
                     const bFeatured = featuredTags.includes(b.tag);
                     return Number(bFeatured) - Number(aFeatured);
                 });
+            container.dataset.detailOrder = JSON.stringify(items.map(service => lumianServices.indexOf(service)));
             container.innerHTML = items.map((service) => {
                 const index = lumianServices.indexOf(service);
                 return `
@@ -573,7 +574,19 @@ function filterServices(filter) {
             renderServices(filter);
         }
 
-        function openServiceDetail(index) {
+        let detailOrder = [], detailPosition = 0;
+        function moveServiceDetail(delta) {
+            const next = detailPosition + delta;
+            if (next < 0 || next >= detailOrder.length) return;
+            detailPosition = next;
+            openServiceDetail(detailOrder[next], true, delta);
+        }
+        function openServiceDetail(index, navigating = false, direction = 1) {
+            if (!navigating) {
+                detailOrder = JSON.parse(document.getElementById('serviceCards').dataset.detailOrder || '[]');
+                if (!detailOrder.includes(index)) detailOrder = [index];
+                detailPosition = detailOrder.indexOf(index);
+            }
             const service = lumianServices[index];
             if (!service) return;
             let modal = document.getElementById('serviceDetailModal');
@@ -581,8 +594,31 @@ function filterServices(filter) {
                 modal = document.createElement('dialog');
                 modal.id = 'serviceDetailModal';
                 modal.setAttribute('aria-labelledby','serviceDetailTitle');
-                modal.style.cssText = 'position:fixed;inset:0;margin:auto;width:calc(100% - 32px);max-width:400px;max-height:85dvh;overflow:auto;border:1px solid #d4af3766;border-radius:24px;background:#1f3c2c;color:white;padding:24px;box-shadow:0 24px 80px #0008;';
+                modal.style.cssText = 'position:fixed;inset:0;margin:auto;width:calc(100% - 32px);max-width:400px;max-height:85dvh;overflow:auto;overscroll-behavior:contain;border:1px solid #d4af3766;border-radius:24px;background:#1f3c2c;color:white;padding:24px;box-shadow:0 24px 80px #0008;';
                 document.body.appendChild(modal);
+                let touchStart = null, wheelTime = 0;
+                modal.addEventListener('touchstart', e => {
+                    if (e.touches.length !== 1) { touchStart = null; return; }
+                    touchStart = {x:e.touches[0].clientX,y:e.touches[0].clientY,top:modal.scrollTop, bottom:modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 4};
+                }, {passive:true});
+                modal.addEventListener('touchend', e => {
+                    if (!touchStart || !e.changedTouches.length) return;
+                    const start = touchStart; touchStart = null;
+                    const dy = start.y - e.changedTouches[0].clientY;
+                    const dx = start.x - e.changedTouches[0].clientX;
+                    if (Math.abs(dy) < 45 || Math.abs(dy) < Math.abs(dx)) return;
+                    if ((dy > 0 && start.bottom) || (dy < 0 && start.top <= 4)) moveServiceDetail(dy > 0 ? 1 : -1);
+                }, {passive:true});
+                modal.addEventListener('touchcancel', () => {touchStart = null;});
+                modal.addEventListener('wheel', e => {
+                    if (Math.abs(e.deltaY) < 8) return;
+                    const bottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 4;
+                    if ((e.deltaY > 0 && bottom) || (e.deltaY < 0 && modal.scrollTop <= 4)) {
+                        e.preventDefault();
+                        const now = Date.now(), elapsed = now - wheelTime; wheelTime = now;
+                        if (elapsed > 450) moveServiceDetail(e.deltaY > 0 ? 1 : -1);
+                    }
+                }, {passive:false});
                 modal.addEventListener('click', event => {
                     if (event.target !== modal) return;
                     const rect = modal.getBoundingClientRect();
@@ -591,6 +627,11 @@ function filterServices(filter) {
             }
             modal.innerHTML = `
                 <button type="button" aria-label="닫기" onclick="this.closest('dialog').close()" style="position:absolute;right:14px;top:12px;width:36px;height:36px;font-size:24px;color:#d4af37">×</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:0 28px 12px 0;color:#d4af37;font-size:12px">
+                    <button type="button" aria-label="이전 프로그램" onclick="moveServiceDetail(-1)" ${detailPosition === 0 ? 'disabled style="opacity:.3"' : ''}>‹ 이전</button>
+                    <span>${detailPosition + 1} / ${detailOrder.length}</span>
+                    <button type="button" aria-label="다음 프로그램" onclick="moveServiceDetail(1)" ${detailPosition === detailOrder.length - 1 ? 'disabled style="opacity:.3"' : ''}>다음 ›</button>
+                </div>
                 <div style="font-size:11px;letter-spacing:2px;color:#d4af37;padding-right:30px">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'} ${service.tag || ''}</div>
                 <h2 id="serviceDetailTitle" style="font-size:21px;font-weight:600;line-height:1.4;margin:10px 24px 8px 0">${service.name}</h2>
                 <div style="display:flex;justify-content:space-between;align-items:center;color:#d4af37;font-size:15px"><span>${service.time}분 소요</span><strong>${formatServicePrice(service.price)}</strong></div>
@@ -599,7 +640,12 @@ function filterServices(filter) {
                 <div style="margin-top:18px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">관리 효과</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.benefit}</p></div>
                 <button type="button" onclick="this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
             `;
-            modal.showModal();
+            if (!modal.open) modal.showModal();
+            modal.scrollTop = 0;
+            if (navigating && modal.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                modal.animate([{opacity:.5,transform:'translateY('+(direction*18)+'px)'},{opacity:1,transform:'translateY(0)'}],{duration:200,easing:'ease-out'});
+                return;
+            }
             if (!matchMedia('(prefers-reduced-motion: reduce)').matches && modal.animate) modal.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],{duration:220,easing:'ease-out'});
         }
 
