@@ -87,6 +87,13 @@
 #serviceDetailModal .service-detail-art img, #serviceDetailModal .service-detail-art svg { width:100%; max-width:240px; height:250px; object-fit:contain; }
 #serviceDetailModal .service-detail-art span { font-size:12px; margin-top:8px; }
 </style>
+<style>
+@media (max-height: 850px) {
+#serviceDetailModal { padding:16px !important; }
+#serviceDetailModal .service-detail-art { margin:8px auto !important; }
+#serviceDetailModal .service-detail-art img, #serviceDetailModal .service-detail-art svg { height:clamp(90px,25dvh,200px); }
+}
+</style>
 </head>
 <body class="antialiased flex justify-center min-h-screen">
     
@@ -596,19 +603,41 @@ function filterServices(filter) {
                 modal.setAttribute('aria-labelledby','serviceDetailTitle');
                 modal.style.cssText = 'position:fixed;inset:0;margin:auto;width:calc(100% - 32px);max-width:400px;max-height:85dvh;overflow:auto;overscroll-behavior:contain;border:1px solid #d4af3766;border-radius:24px;background:#1f3c2c;color:white;padding:24px;box-shadow:0 24px 80px #0008;';
                 document.body.appendChild(modal);
-                let touchStart = null, wheelTime = 0;
+                let touchStart = null, wheelTime = 0, savedStyles = [], savedY = 0;
+                function lockDetailBackground() {
+                    savedY = window.scrollY;
+                    savedStyles = [document.documentElement, document.body].map(el => [el, el.style.cssText]);
+                    document.documentElement.style.overflow = 'hidden';
+                    document.documentElement.style.overscrollBehavior = 'none';
+                    Object.assign(document.body.style, {position:'fixed',top:'-'+savedY+'px',left:'0',right:'0',width:'100%',overflow:'hidden',overscrollBehavior:'none'});
+                }
+                function unlockDetailBackground() {
+                    if (!savedStyles.length) return;
+                    savedStyles.forEach(([el, style]) => el.style.cssText = style);
+                    savedStyles = [];
+                    window.scrollTo(0,savedY);
+                }
+                modal.lockDetailBackground = lockDetailBackground;
+                modal.unlockDetailBackground = unlockDetailBackground;
+                modal.addEventListener('close', () => { if (!modal.open) unlockDetailBackground(); });
+                modal.style.touchAction = 'none';
                 modal.addEventListener('touchstart', e => {
                     if (e.touches.length !== 1) { touchStart = null; return; }
-                    touchStart = {x:e.touches[0].clientX,y:e.touches[0].clientY,top:modal.scrollTop, bottom:modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 4};
+                    const t = e.touches[0], rect = modal.getBoundingClientRect();
+                    touchStart = {x:t.clientX,y:t.clientY,inside:t.clientX >= rect.left && t.clientX <= rect.right && t.clientY >= rect.top && t.clientY <= rect.bottom};
                 }, {passive:true});
+                modal.addEventListener('touchmove', e => {
+                    if (e.cancelable) e.preventDefault();
+                }, {passive:false});
                 modal.addEventListener('touchend', e => {
                     if (!touchStart || !e.changedTouches.length) return;
                     const start = touchStart; touchStart = null;
                     const dy = start.y - e.changedTouches[0].clientY;
                     const dx = start.x - e.changedTouches[0].clientX;
-                    if (Math.abs(dy) < 45 || Math.abs(dy) < Math.abs(dx)) return;
-                    if ((dy > 0 && start.bottom) || (dy < 0 && start.top <= 4)) moveServiceDetail(dy > 0 ? 1 : -1);
-                }, {passive:true});
+                    if (!start.inside || Math.abs(dy) < 35 || Math.abs(dy) < Math.abs(dx)) return;
+                    if (e.cancelable) e.preventDefault();
+                    moveServiceDetail(dy > 0 ? 1 : -1);
+                }, {passive:false});
                 modal.addEventListener('touchcancel', () => {touchStart = null;});
                 modal.addEventListener('wheel', e => {
                     if (Math.abs(e.deltaY) < 8) return;
@@ -638,12 +667,12 @@ function filterServices(filter) {
                 <div class="service-detail-art" style="margin:20px auto">${renderServiceAnatomy(service.name)}</div>
                 <div style="border-top:1px solid #ffffff20;padding-top:16px;margin-top:12px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">추천 대상</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.for}</p></div>
                 <div style="margin-top:18px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">관리 효과</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.benefit}</p></div>
-                <button type="button" onclick="this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
+                <button type="button" onclick="this.closest('dialog').unlockDetailBackground(); this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
             `;
-            if (!modal.open) modal.showModal();
+            if (!modal.open) { modal.lockDetailBackground(); modal.showModal(); }
             modal.scrollTop = 0;
             if (navigating && modal.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                modal.animate([{opacity:.5,transform:'translateY('+(direction*18)+'px)'},{opacity:1,transform:'translateY(0)'}],{duration:200,easing:'ease-out'});
+                modal.querySelector('.service-detail-art').animate([{opacity:.5,transform:'translateY('+(direction*18)+'px)'},{opacity:1,transform:'translateY(0)'}],{duration:200,easing:'ease-out'});
                 return;
             }
             if (!matchMedia('(prefers-reduced-motion: reduce)').matches && modal.animate) modal.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],{duration:220,easing:'ease-out'});
