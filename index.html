@@ -94,10 +94,15 @@
 #serviceDetailModal .service-detail-art img, #serviceDetailModal .service-detail-art svg { height:clamp(90px,25dvh,200px); }
 }
 </style>
-</head>
+<style>
+.lumian-nav { position:fixed; inset:0 auto 0 max(0px,calc((100vw - 448px)/2)); margin:0; width:min(82vw,340px); height:100dvh; max-height:100dvh; max-width:none; padding: max(24px,env(safe-area-inset-top)) 22px 24px; background:#163023; color:white; border:0; border-right:1px solid #d4af3740; overflow-y:auto; overscroll-behavior:contain; }
+.lumian-nav::backdrop {background:rgba(0,0,0,.65);backdrop-filter:blur(3px);}
+</style></head>
 <body class="antialiased flex justify-center min-h-screen">
     
     <div class="w-full max-w-md relative flex flex-col pt-16 pb-24 px-7">
+        <button id="mainMenuButton" type="button" aria-label="전체 메뉴" aria-haspopup="dialog" aria-expanded="false" onclick="openMainMenu()" class="absolute top-4 left-7 w-11 h-11 rounded-xl border border-gold/25 text-gold flex items-center justify-center active:scale-95 transition-transform"><i class="fa-solid fa-bars text-xl" aria-hidden="true"></i></button>
+
         
         <div class="text-center mb-10">
             <h1 class="text-gold text-4xl font-serif font-bold mb-2 tracking-wide">LUMIAN</h1>
@@ -225,6 +230,10 @@
         </div>
     </div>
 
+    <dialog id="mainNavigation" aria-labelledby="mainNavTitle" class="lumian-nav">
+<div class="flex items-center justify-between mb-8"><div><h2 id="mainNavTitle" class="text-gold font-serif text-2xl tracking-widest">LUMIAN</h2><p class="text-gray-400 text-[10px] tracking-widest mt-2">AESTHETIC & BODY CARE</p></div><button type="button" aria-label="메뉴 닫기" onclick="closeMainMenu()" class="text-gold w-10 h-10"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+<nav aria-label="전체 메뉴" class="space-y-1"><button type="button" onclick="mainMenuAction('home')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-house text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">홈</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('care')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-spa text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">케어 프로그램</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('booking')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-calendar-check text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">실시간 예약 신청</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('map')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-location-dot text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">오시는 길</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('qr')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-qrcode text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">명함 공유하기</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('app')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-mobile-screen-button text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">홈 화면에 앱 추가</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('phone')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-phone text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">전화 상담</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('sms')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-comment-sms text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">문자 상담</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button></nav>
+</dialog>
     <div id="bookingModal" class="fixed inset-0 bg-black/85 z-50 hidden flex-col justify-end sm:justify-center items-center backdrop-blur-md">
         <div class="bg-[#1C2C22] border-t sm:border border-gold/30 w-full max-w-md rounded-t-[30px] sm:rounded-[30px] p-6 relative max-h-[90vh] overflow-y-auto">
             
@@ -730,6 +739,48 @@ function filterServices(filter) {
             if (option) select.value = option.value;
             openBookingModal();
             document.getElementById('programSelect').focus();
+        }
+
+        let mainNavSaved = null;
+        function openMainMenu() {
+            const menu = document.getElementById('mainNavigation');
+            if (menu.open) return;
+            mainNavSaved = {y:window.scrollY,body:document.body.style.cssText,root:document.documentElement.style.cssText};
+            document.documentElement.style.overflow='hidden';
+            Object.assign(document.body.style,{position:'fixed',top:'-'+mainNavSaved.y+'px',width:'100%',overflow:'hidden'});
+            menu.showModal();
+            document.getElementById('mainMenuButton').setAttribute('aria-expanded','true');
+            if (!matchMedia('(prefers-reduced-motion: reduce)').matches) menu.animate([{transform:'translateX(-100%)'},{transform:'translateX(0)'}],{duration:300,easing:'cubic-bezier(.22,.75,.18,1)'});
+        }
+        function closeMainMenu() {
+            const menu = document.getElementById('mainNavigation');
+            if(menu.open) menu.close();
+            if(mainNavSaved) {
+                const saved=mainNavSaved;mainNavSaved=null;
+                document.body.style.cssText=saved.body;
+                document.documentElement.style.cssText=saved.root;
+                window.scrollTo(0,saved.y);
+            }
+            document.getElementById('mainMenuButton').setAttribute('aria-expanded','false');
+        }
+        document.getElementById('mainNavigation').addEventListener('close',()=>{if(!document.getElementById('mainNavigation').open) closeMainMenu();});
+        document.getElementById('mainNavigation').addEventListener('click',e=>{
+            if(e.target!==e.currentTarget)return;
+            const rect=e.currentTarget.getBoundingClientRect();
+            if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)closeMainMenu();
+        });
+        function mainMenuAction(action) {
+            closeMainMenu();
+            if(action==='home')window.scrollTo({top:0,behavior:'smooth'});
+            else if(action==='care'){
+                if(document.getElementById('serviceMenuContent').classList.contains('hidden'))toggleServiceMenu();
+                document.getElementById('serviceMenu').scrollIntoView({behavior:'smooth',block:'start'});
+            }else if(action==='booking')openBookingModal();
+            else if(action==='map')openModal('mapModal');
+            else if(action==='qr')openQrModal();
+            else if(action==='app')openModal('homeAppModal');
+            else if(action==='phone')location.href='tel:01071356548';
+            else if(action==='sms')location.href='sms:01071356548';
         }
 
         function openModal(id) {
