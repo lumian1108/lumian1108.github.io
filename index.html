@@ -438,6 +438,61 @@
             return price.toLocaleString('ko-KR') + '원';
         }
 
+
+        // 케어 프로그램별 부위를 보여주는 작은 해부학 스타일 일러스트
+        function renderServiceAnatomy(name) {
+            const configs = {
+                '수분 · 보습 장벽 케어': ['얼굴 피부', 'face'],
+                '미백 · 맑은 톤업 케어': ['얼굴 톤', 'faceGlow'],
+                '트러블 · 피지 모공 케어': ['T존·볼 모공', 'tzone'],
+                '안티에이징 탄력 · 리프팅': ['턱선·목', 'jaw'],
+                '윤곽 & 페이스 라인 수기': ['얼굴 윤곽', 'jaw'],
+                '예비 신부 & 스페셜 웨딩': ['얼굴·목·어깨', 'neckShoulder'],
+                '골반 밸런스 케어': ['골반·고관절', 'pelvis'],
+                '복부 & 흉통 순환 케어': ['가슴·복부', 'abdomen'],
+                '등 & 목어깨 집중 케어': ['등·목·어깨', 'upperBack'],
+                '하체 순환 & 부종 케어': ['종아리·하체', 'legs'],
+                '등·경추 & 골반 밸런스': ['등·경추·골반', 'spinePelvis'],
+                '1:1 맞춤 커스텀 바디': ['맞춤 바디', 'fullBody'],
+                '전신 순환 리프레시': ['전신 순환', 'circulation'],
+                '루미안 시그니처 전신 근막': ['전신 근막', 'fascia']
+            };
+            const [label, key] = configs[name] || ['케어 부위', 'fullBody'];
+            const front = '<path d="M40 8 C29 8 25 17 27 26 L29 32 C23 35 18 39 17 48 L13 79 Q12 84 18 85 L25 59 L27 87 L53 87 L55 59 L62 85 Q68 84 67 79 L63 48 C62 39 57 35 51 32 L53 26 C55 17 51 8 40 8Z" />';
+            const back = '<path d="M40 8 C29 8 25 17 27 26 L29 32 C22 35 18 39 17 48 L13 79 Q12 84 18 85 L25 59 L27 87 L53 87 L55 59 L62 85 Q68 84 67 79 L63 48 C62 39 58 35 51 32 L53 26 C55 17 51 8 40 8Z" />';
+            const areas = {
+                face: '<ellipse cx="40" cy="23" rx="12" ry="13"/>',
+                faceGlow: '<ellipse cx="40" cy="23" rx="13" ry="13"/><ellipse cx="31" cy="26" rx="4" ry="3"/><ellipse cx="49" cy="26" rx="4" ry="3"/>',
+                tzone: '<path d="M37 13 L43 13 L45 27 L40 31 L35 27Z"/><ellipse cx="30" cy="27" rx="4" ry="3"/><ellipse cx="50" cy="27" rx="4" ry="3"/>',
+                jaw: '<path d="M29 25 Q40 38 51 25 L49 32 Q40 42 31 32Z"/>',
+                neckShoulder: '<path d="M31 30 L49 30 L57 40 L64 44 L58 51 L48 43 L32 43 L22 51 L16 44 L23 40Z"/>',
+                pelvis: '<path d="M27 55 Q40 48 53 55 L55 69 L49 75 L31 75 L25 69Z"/>',
+                abdomen: '<path d="M29 39 L51 39 L53 65 Q40 72 27 65Z"/>',
+                upperBack: '<path d="M28 34 Q40 39 52 34 L59 50 L50 57 L40 48 L30 57 L21 50Z"/>',
+                legs: '<path d="M29 59 L39 59 L37 84 L29 84Z M41 59 L51 59 L51 84 L43 84Z"/>',
+                spinePelvis: '<path d="M37 35 L43 35 L44 62 L53 69 L49 76 L40 70 L31 76 L27 69 L36 62Z"/>',
+                fullBody: '<path d="M28 34 L52 34 L58 50 L52 58 L51 84 L43 84 L40 60 L37 84 L29 84 L28 58 L22 50Z"/>',
+                circulation: '<path d="M30 34 L50 34 L55 51 L50 83 L43 83 L40 59 L37 83 L30 83 L25 51Z"/>',
+                fascia: '<path d="M28 34 L52 34 L58 50 L52 59 L51 84 L43 84 L40 60 L37 84 L29 84 L28 59 L22 50Z"/>'
+            };
+            const isFace = ['face','faceGlow','tzone','jaw'].includes(key);
+            const isBack = ['upperBack','spinePelvis','fascia'].includes(key);
+            const outline = isFace
+                ? '<path d="M40 7 C28 7 25 17 27 26 C28 35 34 40 40 40 C46 40 52 35 53 26 C55 17 52 7 40 7Z M33 40 L31 52 M47 40 L49 52" />'
+                : (isBack ? back : front);
+            return `<div class="mt-2 flex flex-col items-center">
+                <svg viewBox="0 0 80 94" role="img" aria-label="${label} 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] p-1">
+                    <g fill="#e7e2da" stroke="#9a958c" stroke-width="1.25" stroke-linejoin="round">${outline}</g>
+                    <g fill="#d96f68" fill-opacity=".78" stroke="#bd625d" stroke-width=".65">${areas[key]}</g>
+                    <g fill="none" stroke="#b8afa4" stroke-width=".65" opacity=".9">
+                        <path d="M40 42 L40 57 M29 43 L25 55 M51 43 L55 55"/>
+                        <path d="M31 58 Q40 62 49 58"/>
+                    </g>
+                </svg>
+                <span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">${label}</span>
+            </div>`;
+        }
+
         function renderServices(filter='all') {
             const container = document.getElementById('serviceCards');
             if (!container) return;
@@ -462,7 +517,7 @@
                                 <h4 class="font-semibold text-sm text-white leading-snug">${service.name}</h4>
                                 <p class="text-[10px] text-gray-400 mt-1">${service.time}분 소요</p>
                             </div>
-                            <strong class="text-gold text-sm whitespace-nowrap">${formatServicePrice(service.price)}</strong>
+                            <div class="flex flex-col items-center shrink-0"><strong class="text-gold text-sm whitespace-nowrap">${formatServicePrice(service.price)}</strong>${renderServiceAnatomy(service.name)}</div>
                         </div>
                         <div class="grid grid-cols-2 gap-3 border-t border-white/10 mt-3 pt-3">
                             <div><p class="text-[9px] text-gold/70 tracking-wider mb-1">RECOMMENDED FOR</p><p class="text-[10px] text-gray-300 leading-relaxed">${service.for}</p></div>
