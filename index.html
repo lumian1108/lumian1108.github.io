@@ -581,12 +581,43 @@ function filterServices(filter) {
             renderServices(filter);
         }
 
-        let detailOrder = [], detailPosition = 0;
-        function moveServiceDetail(delta) {
+        let detailOrder = [], detailPosition = 0, detailMoving = false;
+        async function moveServiceDetail(delta) {
+            const modal = document.getElementById('serviceDetailModal');
+            if (!modal || !modal.open || detailMoving) return;
+            const track = modal.querySelector('.detail-track');
             const next = detailPosition + delta;
-            if (next < 0 || next >= detailOrder.length) return;
-            detailPosition = next;
-            openServiceDetail(detailOrder[next], true, delta);
+            if (next < 0 || next >= detailOrder.length) {
+                track.style.transition = 'transform 260ms cubic-bezier(.2,.8,.2,1)';
+                track.style.transform = 'translateY(0)';
+                return;
+            }
+            detailMoving = true;
+            const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const old = track.cloneNode(true);
+            old.removeAttribute('id');
+            old.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+            old.setAttribute('aria-hidden','true');
+            old.inert = true;
+            const offset = parseFloat(track.dataset.drag || '0');
+            const height = modal.clientHeight + 24;
+            const session = modal.detailSession;
+            try {
+                detailPosition = next;
+                openServiceDetail(detailOrder[next], true, delta);
+                const incoming = modal.querySelector('.detail-track');
+                if (!reduced && incoming.animate) {
+                    const viewport = incoming.parentElement;
+                    viewport.style.height = Math.max(old.getBoundingClientRect().height, incoming.getBoundingClientRect().height)+'px';
+                    Object.assign(old.style,{position:'absolute',top:'0',left:'0',width:'100%',pointerEvents:'none',transition:'none',transform:'none'});
+                    viewport.appendChild(old);
+                    const timing = {duration:420,easing:'cubic-bezier(.22,.75,.18,1)',fill:'both'};
+                    const out = old.animate([{transform:'translateY('+offset+'px)'},{transform:'translateY('+(-delta*height)+'px)'}],timing);
+                    const enter = incoming.animate([{transform:'translateY('+(delta*height+offset)+'px)'},{transform:'translateY(0)'}],timing);
+                    await Promise.allSettled([out.finished,enter.finished]);
+                    old.remove(); enter.cancel(); viewport.style.height = '';
+                }
+            } finally { if (modal.detailSession === session) detailMoving = false; }
         }
         function openServiceDetail(index, navigating = false, direction = 1) {
             if (!navigating) {
@@ -628,17 +659,32 @@ function filterServices(filter) {
                 }, {passive:true});
                 modal.addEventListener('touchmove', e => {
                     if (e.cancelable) e.preventDefault();
+                    if (!touchStart || !touchStart.inside || detailMoving || e.touches.length !== 1) return;
+                    const dy = e.touches[0].clientY - touchStart.y;
+                    const dx = e.touches[0].clientX - touchStart.x;
+                    if (Math.abs(dy) < Math.abs(dx)) return;
+                    const track = modal.querySelector('.detail-track');
+                    if (!track) return;
+                    const edge = (dy > 0 && detailPosition === 0) || (dy < 0 && detailPosition === detailOrder.length - 1);
+                    const offset = dy * (edge ? .16 : .85);
+                    track.style.transition = 'none';
+                    track.style.transform = 'translateY('+offset+'px)';
+                    track.dataset.drag = String(offset);
                 }, {passive:false});
                 modal.addEventListener('touchend', e => {
                     if (!touchStart || !e.changedTouches.length) return;
                     const start = touchStart; touchStart = null;
                     const dy = start.y - e.changedTouches[0].clientY;
                     const dx = start.x - e.changedTouches[0].clientX;
-                    if (!start.inside || Math.abs(dy) < 35 || Math.abs(dy) < Math.abs(dx)) return;
+                    if (!start.inside || Math.abs(dy) < 35 || Math.abs(dy) < Math.abs(dx)) {
+                        const track = modal.querySelector('.detail-track');
+                        if (track) {track.style.transition='transform 260ms cubic-bezier(.2,.8,.2,1)';track.style.transform='translateY(0)';track.dataset.drag='0';}
+                        return;
+                    }
                     if (e.cancelable) e.preventDefault();
                     moveServiceDetail(dy > 0 ? 1 : -1);
                 }, {passive:false});
-                modal.addEventListener('touchcancel', () => {touchStart = null;});
+                modal.addEventListener('touchcancel', () => {touchStart = null; const track = modal.querySelector('.detail-track'); if(track){track.style.transition='transform 260ms ease-out';track.style.transform='translateY(0)';track.dataset.drag='0';}});
                 modal.addEventListener('wheel', e => {
                     if (Math.abs(e.deltaY) < 8) return;
                     const bottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 4;
@@ -661,6 +707,7 @@ function filterServices(filter) {
                     <span>${detailPosition + 1} / ${detailOrder.length}</span>
                     <button type="button" aria-label="다음 프로그램" onclick="moveServiceDetail(1)" ${detailPosition === detailOrder.length - 1 ? 'disabled style="opacity:.3"' : ''}>다음 ›</button>
                 </div>
+                <div style="position:relative;overflow:hidden"><div class="detail-track" style="will-change:transform">
                 <div style="font-size:11px;letter-spacing:2px;color:#d4af37;padding-right:30px">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'} ${service.tag || ''}</div>
                 <h2 id="serviceDetailTitle" style="font-size:21px;font-weight:600;line-height:1.4;margin:10px 24px 8px 0">${service.name}</h2>
                 <div style="display:flex;justify-content:space-between;align-items:center;color:#d4af37;font-size:15px"><span>${service.time}분 소요</span><strong>${formatServicePrice(service.price)}</strong></div>
@@ -668,13 +715,11 @@ function filterServices(filter) {
                 <div style="border-top:1px solid #ffffff20;padding-top:16px;margin-top:12px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">추천 대상</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.for}</p></div>
                 <div style="margin-top:18px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">관리 효과</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.benefit}</p></div>
                 <button type="button" onclick="this.closest('dialog').unlockDetailBackground(); this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
+                </div></div>
             `;
-            if (!modal.open) { modal.lockDetailBackground(); modal.showModal(); }
+            if (!modal.open) { detailMoving = false; modal.detailSession = (modal.detailSession || 0) + 1; modal.lockDetailBackground(); modal.showModal(); }
             modal.scrollTop = 0;
-            if (navigating && modal.animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                modal.querySelector('.service-detail-art').animate([{opacity:.5,transform:'translateY('+(direction*18)+'px)'},{opacity:1,transform:'translateY(0)'}],{duration:200,easing:'ease-out'});
-                return;
-            }
+            if (navigating) return;
             if (!matchMedia('(prefers-reduced-motion: reduce)').matches && modal.animate) modal.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],{duration:220,easing:'ease-out'});
         }
 
