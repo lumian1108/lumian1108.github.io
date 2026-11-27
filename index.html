@@ -99,7 +99,7 @@
 .lumian-nav::backdrop {background:rgba(0,0,0,.65);backdrop-filter:blur(3px);}
 </style><style>
 body{background:#10271e}.premium-main{color:#eee4d3}.premium-hero{padding:26px 0 34px}.premium-kicker{font-size:10px;letter-spacing:.24em;color:#cfb583}.premium-hero h1{font-family:Georgia,serif;font-size:clamp(42px,12vw,56px);font-weight:400;letter-spacing:.10em;color:#dfc69a;margin:12px 0 6px}.premium-rule{height:1px;width:36px;background:#cfb58366;margin:30px auto 24px}.premium-hero h2{font-size:19px;font-weight:500;letter-spacing:-.04em}.premium-sub{font-size:12px;color:#b1bdb4;margin-top:10px}.premium-owner{font-size:13px;color:#d8c6a4;margin-top:20px}.premium-book{display:flex;align-items:center;justify-content:space-between;width:100%;padding:17px 20px;background:#cfb583;color:#10271e;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:15px}.premium-section{border-top:1px solid #cfb58333;margin-top:22px;padding-top:27px}.premium-heading{font-size:23px;font-weight:500;margin-top:8px}.premium-card{overflow:hidden;border-radius:10px;background:#1c362a;text-align:left;border:1px solid #cfb58326}.premium-card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#203b2e}.premium-card-copy{padding:13px}.premium-card-copy small{display:block;color:#cfb583;font-size:9px;letter-spacing:.1em}.premium-card-copy strong{display:block;font-size:15px;font-weight:500;margin:5px 0 8px}.premium-card-copy span{display:flex;justify-content:space-between;align-items:center;color:#aab9ae;font-size:11px}.premium-location{border-block:1px solid #cfb58333;display:flex;align-items:center;gap:14px;width:100%;padding:20px 4px;margin-top:16px}.premium-main .text-gold{color:#cfb583}.premium-main button:active{opacity:.8}
-</style></head>
+</style><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#10271e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="루미안"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head>
 <body class="antialiased flex justify-center min-h-screen">
     
     <main class="premium-main w-full max-w-md relative px-7 pb-12">
@@ -955,5 +955,17 @@ function filterServices(filter) {
 <script>
 (function(){const button=document.getElementById('lumianBackTop');const sync=()=>button.classList.toggle('visible',window.scrollY>320);window.addEventListener('scroll',sync,{passive:true});window.addEventListener('pageshow',sync);button.addEventListener('click',()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));sync();})();
 </script>
-</body>
+<dialog id="lumianInstallOffer" style="position:fixed;inset:0;margin:auto;width:calc(100% - 40px);max-width:360px;border:1px solid #cfb58355;border-radius:24px;background:#163023;color:#eee4d3;padding:26px;text-align:center"><button type="button" aria-label="닫기" onclick="dismissLumianOffer()" style="position:absolute;right:16px;top:12px;color:#cfb583;font-size:24px">×</button><img src="/lumian-icon.svg" alt="" style="width:76px;height:76px;border-radius:18px;margin:0 auto 20px"><h2 style="font-size:22px;font-weight:600">루미안을 더 가까이</h2><p style="font-size:14px;color:#bac8be;line-height:1.7;margin:14px 0 22px">이제 명함 없이도 편리하게 예약하세요.<br>스마트폰 홈 화면에 루미안을 추가해 보세요.</p><button type="button" onclick="installLumian()" style="width:100%;background:#cfb583;color:#10271e;border-radius:10px;padding:15px;font-weight:600">홈 화면에 추가하기</button><button type="button" onclick="dismissLumianOffer()" style="padding:15px;color:#bac8be;font-size:13px">다음에 할게요</button></dialog><style>#lumianInstallOffer::backdrop{background:#0009;backdrop-filter:blur(4px)}</style>
+<script>
+let lumianInstallPrompt=null;
+const lumianIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const lumianAndroid=/Android/i.test(navigator.userAgent);
+const lumianStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function lumianRemember(){try{localStorage.setItem('lumianInstallOfferSeen','1')}catch(e){}}
+function dismissLumianOffer(){lumianRemember();const d=document.getElementById('lumianInstallOffer');if(d.open)d.close();}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();lumianInstallPrompt=e;});
+window.addEventListener('appinstalled',()=>{lumianInstallPrompt=null;dismissLumianOffer();});
+async function installLumian(){dismissLumianOffer();if(lumianInstallPrompt){const p=lumianInstallPrompt;lumianInstallPrompt=null;try{await p.prompt();await p.userChoice;return}catch(e){}}openModal('homeAppModal');}
+(function(){const modal=document.getElementById('homeAppModal');const blocks=modal.querySelectorAll('.space-y-3 > div');if(lumianIOS&&blocks[1])blocks[1].hidden=true;if(lumianAndroid&&blocks[0])blocks[0].hidden=true;const d=document.getElementById('lumianInstallOffer');d.addEventListener('cancel',lumianRemember);if('serviceWorker' in navigator)navigator.serviceWorker.register('/lumian-sw.js').catch(()=>{});let seen=false;try{seen=!!localStorage.getItem('lumianInstallOfferSeen')}catch(e){}if((lumianIOS||lumianAndroid)&&!seen&&!lumianStandalone())setTimeout(()=>{if(document.querySelector('dialog[open],.fixed.inset-0.flex'))return; if(!lumianStandalone()&&d.showModal){d.showModal();lumianRemember();}},1800);})();
+</script></body>
 </html>
