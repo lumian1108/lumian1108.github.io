@@ -255,7 +255,7 @@
         @media (prefers-reduced-motion:reduce) { .admin-drawer-backdrop,.admin-drawer-panel { animation:none; opacity:1; transform:none; } }
 
     </style>
-</head>
+<style>#lumianStickyHeader{position:sticky;top:0;z-index:100;background:#10271e;padding-top:calc(12px + env(safe-area-inset-top,0px));box-shadow:0 8px 16px #10271e55;}#lumianStickyHeader #adminBrandRefresh{flex:0 1 auto;} </style></head>
 <body class="antialiased flex justify-center min-h-screen">
 
     <div class="admin-shell w-full max-w-3xl relative flex flex-col pt-8 pb-20 px-4 sm:px-6">
@@ -280,7 +280,7 @@
 
         <!-- 대시보드 섹션 -->
         <div id="dashboardSection" class="hidden">
-            <div class="flex items-center justify-between gap-3 mb-6 border-b border-gold/20 pb-4">
+            <div id="lumianStickyHeader" class="flex items-center justify-between gap-3 mb-6 border-b border-gold/20 pb-4">
                 <div class="flex items-center gap-3 min-w-0">
                     <button id="adminMenuToggle" type="button" onclick="toggleAdminMenu()" aria-label="관리자 메뉴 열기" aria-expanded="false" aria-controls="adminNavigation" class="admin-menu-toggle shrink-0">
                         <i class="fa-solid fa-bars"></i>
