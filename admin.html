@@ -446,30 +446,10 @@
             if (event.key === 'Escape') toggleAdminMenu(false);
         });
 
-        function showAdminView(view) {
-            toggleAdminMenu(false);
-            ['home', 'calendar', 'settings', 'reviews', 'customers'].forEach(name => {
-                const panel = document.getElementById(name + 'View');
-                if (panel) panel.classList.toggle('hidden', name !== view);
-            });
-            const summary = document.getElementById('dashboardSummary');
-            const listView = document.getElementById('bookingListView');
-            if (view === 'home') {
-                if (summary) summary.classList.remove('hidden');
-                document.getElementById('adminOverview').classList.remove('hidden');document.getElementById('todayTimeline').classList.remove('hidden');
-                if (listView) listView.classList.add('hidden');
-            }
-            document.querySelectorAll('.admin-nav-btn').forEach(button => {
-                button.classList.toggle('active', button.dataset.view === view);
-            });
-            if (view === 'calendar') renderAdminCalendar();
-            if (view === 'reviews') loadAdminReviews();
-            if (view === 'customers') renderCRM();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
+        function showAdminView(view){toggleAdminMenu(false);const d=document.getElementById('adminFeatureDialog');if(view==='calendar'||view==='home'){if(d.open)d.close();renderAdminCalendar();window.scrollTo({top:0,behavior:'smooth'});return;}openAdminFeature(view);}
+        function openAdminFeature(view){const d=document.getElementById('adminFeatureDialog'),host=document.getElementById('adminFeatureContent');const names={home:'매장 현황',customers:'고객 관리',reviews:'고객 후기 관리',settings:'운영 설정'};if(!names[view])return;for(const name of Object.keys(names)){const p=document.getElementById(name+'View');if(p)p.classList.toggle('hidden',name!==view);}if(view==='home'){document.getElementById('dashboardSummary').classList.remove('hidden');document.getElementById('adminOverview').classList.remove('hidden');document.getElementById('todayTimeline').classList.remove('hidden');document.getElementById('bookingListView').classList.add('hidden');}document.getElementById('adminFeatureTitle').textContent=names[view];if(!d.open)d.showModal();d.scrollTop=0;if(view==='reviews')loadAdminReviews();if(view==='customers')renderCRM();}
         function openBookingCategory(category) {
-            showAdminView('home');
+            openAdminFeature('home');
             document.getElementById('dashboardSummary').classList.add('hidden');document.getElementById('adminOverview').classList.add('hidden');document.getElementById('todayTimeline').classList.add('hidden');
             document.getElementById('bookingListView').classList.remove('hidden');
             const titles = { today: '오늘 예약', pending: '승인 대기', confirmed: '예약 확정', all: '전체 예약' };
@@ -492,6 +472,7 @@
             if (pw === "1234") {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('dashboardSection').classList.remove('hidden');
+                showAdminView('calendar');
                 loadBookings();
                 loadBookingSettings();
             } else {
@@ -500,6 +481,7 @@
         }
 
         function logout() {
+            document.getElementById('adminFeatureDialog')?.close();
             document.getElementById('manualBookingDialog')?.close();
             document.getElementById('salesDialog')?.close();
             document.getElementById('loginSection').classList.remove('hidden');
@@ -866,5 +848,7 @@ mb('manualBookingForm').addEventListener('submit',async e=>{e.preventDefault();c
 function renderCalendarDay(){const date=selectedCalendarDate;if(!date)return;document.getElementById('calendarDayTitle').textContent=new Date(date+'T00:00:00').toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'});const rows=Object.values(allBookings||{}).filter(b=>b&&b.year+'-'+String(b.month).padStart(2,'0')+'-'+String(b.day).padStart(2,'0')===date).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''),'en',{numeric:true}));document.getElementById('calendarDaySummary').textContent='확정 '+rows.filter(b=>!b.status||b.status==='confirmed').length+'건 · 대기 '+rows.filter(b=>b.status==='pending').length+'건 · 취소 '+rows.filter(b=>b.status==='cancelled').length+'건';const list=document.getElementById('calendarDayRows');list.replaceChildren();for(const b of rows){const row=document.createElement('div');row.className='bg-[#10271e] rounded-xl p-3 mb-2';const h=document.createElement('p');h.className='text-sm font-bold text-gold';const start=mbMinutes(b.time),end=start+mbDuration(b);h.textContent=(b.time||'시간 미정')+(Number.isFinite(end)?' – '+String(Math.floor(end/60)).padStart(2,'0')+':'+String(end%60).padStart(2,'0'):'')+' · '+(b.name||'고객');const p=document.createElement('p');p.className='text-xs mt-2';p.textContent=String(b.program||'');const status=document.createElement('p');status.className='text-xs mt-2';status.textContent=({pending:'승인 대기',confirmed:'예약 확정',cancelled:'취소'})[b.status]||(!b.status?'예약 확정':b.status);if(b.source==='phone')status.textContent+=' · 전화 예약';row.append(h,p,status);list.append(row)}if(!rows.length)list.textContent='등록된 예약이 없습니다.';document.getElementById('calendarAddPhone').disabled=date<getLocalDateKey()}
 function calendarPhoneBooking(){const date=selectedCalendarDate;document.getElementById('calendarDayDialog').close();openManualBooking();document.getElementById('mbDate').value=date;}
 function calendarManageDay(){const date=selectedCalendarDate;document.getElementById('calendarDayDialog').close();openBookingCategory('all');document.getElementById('bookingSearch').value='';document.getElementById('bookingStatusFilter').value='all';document.getElementById('bookingDateFilter').value=date;const p=document.getElementById('bookingProgramFilter');if(p)p.selectedIndex=0;selectedCalendarDate=date;document.getElementById('bookingListTitle').textContent=date+' 예약';renderBookingList()}
+</script><style>#adminFeatureDialog{position:fixed;inset:0;margin:auto;width:calc(100% - 24px);max-width:720px;max-height:88dvh;overflow:auto;background:#10271e;color:#eee4d3;border:1px solid #cfb58355;border-radius:22px;padding:16px}#adminFeatureDialog::backdrop{background:#0009;backdrop-filter:blur(5px)}#adminFeatureDialog[open],#salesDialog[open],#manualBookingDialog[open],#calendarDayDialog[open]{animation:lumianFeatureOpen .28s cubic-bezier(.2,.8,.2,1) both}@keyframes lumianFeatureOpen{from{opacity:0;transform:scale(.91) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}@media(prefers-reduced-motion:reduce){#adminFeatureDialog[open],#salesDialog[open],#manualBookingDialog[open],#calendarDayDialog[open]{animation:none}}#adminQuickApps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 6px;margin:12px 0 24px}#adminQuickApps button{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;padding:4px;color:inherit;font-size:11px}#adminQuickApps .quick-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#1f3c2c;color:#cfb583;border:1px solid #cfb58344;font-size:20px;transition:transform .15s}#adminQuickApps button:active .quick-icon{transform:scale(.88)}#adminQuickApps .quick-icon i{color:inherit}</style><dialog id="adminFeatureDialog"><header class="flex items-center justify-between mb-4"><h2 id="adminFeatureTitle" class="text-xl font-bold text-gold"></h2><button type="button" onclick="this.closest('dialog').close()" aria-label="닫기" class="text-2xl">×</button></header><div id="adminFeatureContent"></div></dialog><script>
+(function(){const host=document.getElementById('adminFeatureContent'),calendar=document.getElementById('calendarView');for(const name of ['home','customers','reviews','settings']){const p=document.getElementById(name+'View');host.appendChild(p);p.classList.add('hidden')}calendar.classList.remove('hidden');const apps=document.createElement('section');apps.id='adminQuickApps';const actions=[['fa-phone','전화 예약',()=>openManualBooking()],['fa-calendar-day','오늘 예약',()=>openBookingCategory('today')],['fa-hourglass-half','승인 대기',()=>openBookingCategory('pending')],['fa-list','전체 예약',()=>openBookingCategory('all')],['fa-users','고객 관리',()=>showAdminView('customers')],['fa-chart-line','매출 관리',()=>openSales()],['fa-star','고객 후기',()=>showAdminView('reviews')],['fa-gear','운영 설정',()=>showAdminView('settings')],['fa-chart-pie','매장 현황',()=>openAdminFeature('home')],['fa-check','예약 확정',()=>openBookingCategory('confirmed')]];for(const [icon,label,action] of actions){const button=document.createElement('button');button.type='button';const tile=document.createElement('span');tile.className='quick-icon';const i=document.createElement('i');i.className='fa-solid '+icon;tile.append(i);const caption=document.createElement('span');caption.textContent=label;button.append(tile,caption);button.onclick=action;apps.append(button)}calendar.after(apps);})();
 </script></body>
 </html>
