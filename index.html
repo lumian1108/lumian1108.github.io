@@ -97,62 +97,34 @@
 <style>
 .lumian-nav { position:fixed; inset:0 auto 0 max(0px,calc((100vw - 448px)/2)); margin:0; width:min(82vw,340px); height:100dvh; max-height:100dvh; max-width:none; padding: max(24px,env(safe-area-inset-top)) 22px 24px; background:#163023; color:white; border:0; border-right:1px solid #d4af3740; overflow-y:auto; overscroll-behavior:contain; }
 .lumian-nav::backdrop {background:rgba(0,0,0,.65);backdrop-filter:blur(3px);}
+</style><style>
+body{background:#10271e}.premium-main{color:#eee4d3}.premium-hero{padding:26px 0 34px}.premium-kicker{font-size:10px;letter-spacing:.24em;color:#cfb583}.premium-hero h1{font-family:Georgia,serif;font-size:clamp(42px,12vw,56px);font-weight:400;letter-spacing:.10em;color:#dfc69a;margin:12px 0 6px}.premium-rule{height:1px;width:36px;background:#cfb58366;margin:30px auto 24px}.premium-hero h2{font-size:19px;font-weight:500;letter-spacing:-.04em}.premium-sub{font-size:12px;color:#b1bdb4;margin-top:10px}.premium-owner{font-size:13px;color:#d8c6a4;margin-top:20px}.premium-book{display:flex;align-items:center;justify-content:space-between;width:100%;padding:17px 20px;background:#cfb583;color:#10271e;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:15px}.premium-section{border-top:1px solid #cfb58333;margin-top:22px;padding-top:27px}.premium-heading{font-size:23px;font-weight:500;margin-top:8px}.premium-card{overflow:hidden;border-radius:10px;background:#1c362a;text-align:left;border:1px solid #cfb58326}.premium-card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#203b2e}.premium-card-copy{padding:13px}.premium-card-copy small{display:block;color:#cfb583;font-size:9px;letter-spacing:.1em}.premium-card-copy strong{display:block;font-size:15px;font-weight:500;margin:5px 0 8px}.premium-card-copy span{display:flex;justify-content:space-between;align-items:center;color:#aab9ae;font-size:11px}.premium-location{border-block:1px solid #cfb58333;display:flex;align-items:center;gap:14px;width:100%;padding:20px 4px;margin-top:16px}.premium-main .text-gold{color:#cfb583}.premium-main button:active{opacity:.8}
 </style></head>
 <body class="antialiased flex justify-center min-h-screen">
     
-    <div class="w-full max-w-md relative flex flex-col pt-16 pb-24 px-7">
-        <button id="mainMenuButton" type="button" aria-label="전체 메뉴" aria-haspopup="dialog" aria-expanded="false" onclick="openMainMenu()" class="absolute top-4 left-7 w-11 h-11 rounded-xl border border-gold/25 text-gold flex items-center justify-center active:scale-95 transition-transform"><i class="fa-solid fa-bars text-xl" aria-hidden="true"></i></button>
-
-        
-        <div class="text-center mb-10">
-            <h1 class="text-gold text-4xl font-serif font-bold mb-2 tracking-wide">LUMIAN</h1>
-            <p class="text-gold text-[10px] tracking-[0.25em] mb-8">AESTHETIC & BODY CARE</p>
-            <div class="w-2/3 h-px bg-gold/30 mx-auto mb-8"></div>
-            <p class="text-gold text-xs mb-2 tracking-widest font-light">OWNER / CEO</p>
-            <h2 class="text-3xl font-bold mb-5 tracking-wide">원장 안은희</h2>
-            <p class="text-gray-300 text-[13px] leading-relaxed font-light">
-                피부 본연의 아름다운 빛을 찾는<br>
-                1:1 프리미엄 맞춤 에스테틱 & 바디케어
-            </p>
-        </div>
-
-        <div class="mb-6">
-            <p class="text-gold text-center text-[11px] font-semibold mb-4 tracking-widest">QUICK CONNECT</p>
-            <div class="grid grid-cols-4 gap-3">
-                <a href="tel:01071356548" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+    <main class="premium-main w-full max-w-md relative px-7 pb-12">
+<header class="flex items-center justify-between py-5"><button id="mainMenuButton" type="button" aria-label="전체 메뉴" aria-haspopup="dialog" aria-expanded="false" onclick="openMainMenu()" class="w-11 h-11 text-gold"><i class="fa-solid fa-bars text-xl"></i></button><button type="button" aria-label="예약" onclick="openBookingModal()" class="w-11 h-11 text-gold"><i class="fa-regular fa-calendar text-xl"></i></button></header>
+<div class="premium-hero text-center"><p class="premium-kicker">PREMIUM AESTHETIC</p><h1>LUMIAN</h1><p class="premium-kicker">AESTHETIC &amp; BODY CARE</p><div class="premium-rule"></div><h2>당신만을 위한 아름다움의 시간</h2><p class="premium-sub">1:1 프리미엄 맞춤 에스테틱 &amp; 바디케어</p><p class="premium-owner">원장 안은희</p></div>
+<button type="button" onclick="openBookingModal()" class="premium-book"><i class="fa-regular fa-calendar-check"></i><span>실시간 예약하기</span><i class="fa-solid fa-arrow-right"></i></button>
+<div class="grid grid-cols-4 gap-3">
+                <a href="tel:01071356548" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
                     <i class="fa-solid fa-phone text-gold text-lg mb-2 mt-1"></i>
                     <span class="text-[11px] text-gray-300">전화</span>
                 </a>
-                <a href="sms:01071356548" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                <a href="sms:01071356548" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
                     <i class="fa-solid fa-comment-sms text-gold text-lg mb-2 mt-1"></i>
                     <span class="text-[11px] text-gray-300">문자</span>
                 </a>
-                <a href="https://pf.kakao.com" target="_blank" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                <a href="https://pf.kakao.com" target="_blank" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
                     <i class="fa-solid fa-comment text-gold text-lg mb-2 mt-1"></i>
                     <span class="text-[11px] text-gray-300">카톡상담</span>
                 </a>
-                <a href="https://instagram.com" target="_blank" class="bg-boxDark border border-gold/20 rounded-2xl py-5 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                <a href="https://instagram.com" target="_blank" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
                     <i class="fa-brands fa-instagram text-gold text-lg mb-2 mt-1"></i>
                     <span class="text-[11px] text-gray-300">인스타</span>
                 </a>
             </div>
-        </div>
-
-        <section class="mb-8" id="serviceMenu">
-            <button type="button" id="serviceMenuToggle" aria-expanded="false" aria-controls="serviceMenuContent" onclick="toggleServiceMenu()" class="w-full flex items-center justify-between rounded-xl border border-gold/40 bg-[#1F3C2C] px-5 py-4 mb-4 text-left shadow-sm active:scale-[0.99] transition-all">
-                <span class="flex items-center gap-3">
-                    <span class="w-1 h-8 rounded-full bg-gold"></span>
-                    <span>
-                        <span class="block text-gold text-[10px] tracking-[0.2em] mb-1">LUMIAN SIGNATURE PROGRAM</span>
-                        <span class="block text-white text-base font-semibold">케어 프로그램</span>
-                    </span>
-                </span>
-                <span class="flex items-center gap-3">
-                    <span class="text-[10px] text-gray-400">VAT 포함</span>
-                    <i id="serviceMenuChevron" class="fa-solid fa-chevron-down text-gold text-xs transition-transform"></i>
-                </span>
-            </button>
-            <div id="serviceMenuContent" class="hidden">
+<section id="serviceMenu" class="premium-section"><div class="text-center mb-5"><p class="premium-kicker">SIGNATURE CARE</p><h2 class="premium-heading">케어 프로그램</h2></div><div class="grid grid-cols-2 gap-3"><button type="button" class="premium-card" onclick="previewCategory('facial')" aria-label="페이셜 케어"><img src="./hydration.jpg" alt="" onerror="this.style.display='none'"><div class="premium-card-copy"><small>FACIAL CARE</small><strong>페이셜 케어</strong><span>6가지 프로그램 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div></button><button type="button" class="premium-card" onclick="previewCategory('body')" aria-label="바디 케어"><img src="./back.jpg" alt="" onerror="this.style.display='none'"><div class="premium-card-copy"><small>BODY CARE</small><strong>바디 케어</strong><span>8가지 프로그램 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div></button></div><button id="serviceMenuToggle" aria-controls="serviceMenuContent" aria-expanded="false" onclick="toggleServiceMenu()" class="w-full text-gold text-xs py-4">전체 프로그램 보기 <i id="serviceMenuChevron" class="fa-solid fa-chevron-down"></i></button><div id="serviceMenuContent" class="hidden">
                 <div class="flex gap-2 mb-4">
                     <button type="button" onclick="filterServices('all')" class="service-filter active flex-1 rounded-full border border-gold/40 px-3 py-2 text-xs">전체</button>
                     <button type="button" onclick="filterServices('facial')" class="service-filter flex-1 rounded-full border border-gold/20 px-3 py-2 text-xs text-gray-300">얼굴</button>
@@ -162,75 +134,10 @@
                 <p class="text-[10px] text-gray-400 leading-relaxed mt-4">※ 모든 케어 금액은 부가가치세(VAT) 포함 정가입니다. 현금·계좌이체 결제 시 우대 혜택이 적용됩니다.</p>
             </div>
         </section>
-
-        <div class="mb-3">
-            <button onclick="openBookingModal()" class="w-full bg-gold text-[#163023] font-bold rounded-2xl py-4 px-5 flex items-center justify-between shadow-lg active:scale-95 transition-transform">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-calendar-check text-lg"></i>
-                    <span class="text-sm font-bold">실시간 예약 신청</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-            </button>
-        </div>
-
-        <div class="mb-3">
-            <button onclick="openModal('mapModal')" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-location-dot text-gold text-lg"></i>
-                    <span class="text-sm font-medium text-gray-200">오시는 길 (네이버 / 카카오 맵)</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
-            </button>
-        </div>
-
-        <div class="mb-3">
-            <button onclick="openQrModal()" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-qrcode text-gold text-lg"></i>
-                    <span class="text-sm font-medium text-gray-200">명함 공유하기 (QR코드)</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
-            </button>
-        </div>
-
-        <div class="mb-6">
-            <button onclick="openModal('homeAppModal')" class="w-full bg-boxDark border border-gold/20 rounded-2xl py-4 px-5 flex items-center justify-between active:scale-95 transition-transform">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-[#163023] fa-mobile-screen-button text-gold text-lg"></i>
-                    <span class="text-sm font-medium text-gray-200">스마트폰 홈 화면에 앱으로 추가</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-gold text-xs"></i>
-            </button>
-        </div>
-
-        <div class="bg-boxDark border border-gold/20 rounded-[20px] p-6 mb-8 shadow-lg">
-            <div class="flex items-start gap-4 mb-5">
-                <i class="fa-solid fa-store text-gold mt-1"></i>
-                <div>
-                    <p class="font-bold text-sm mb-1 text-gray-100">루미안 에스테틱 (LUMIAN)</p>
-                    <p class="text-xs text-gray-400 leading-relaxed">
-                        경기도 안양시 동안구 관양동 1608-4<br>
-                        동아프라자 아케이드 107호
-                    </p>
-                </div>
-            </div>
-            <div class="flex items-start gap-4 mb-5">
-                <i class="fa-solid fa-phone text-gold mt-1"></i>
-                <div>
-                    <a href="tel:01071356548" class="block text-[15px] font-bold text-gold mb-1 tracking-wide">
-                        TEL. 010-7135-6548 <span class="text-[10px] text-gray-400 font-normal ml-1">(터치시 바로 전화)</span>
-                    </a>
-                    <p class="text-xs text-gray-400">(평촌역 1번 출구 도보 2분)</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-4 pt-5 border-t border-gold/20">
-                <i class="fa-regular fa-clock text-gold"></i>
-                <p class="text-xs text-gray-300">100% 사전 예약제 운영</p>
-            </div>
-        </div>
-    </div>
-
-    <dialog id="mainNavigation" aria-labelledby="mainNavTitle" class="lumian-nav">
+<button type="button" onclick="openModal('mapModal')" class="premium-location"><i class="fa-solid fa-location-dot text-gold text-xl"></i><span class="text-left flex-1"><strong class="block text-sm">오시는 길</strong><small class="block mt-1 text-gray-400">평촌역 1번 출구 · 도보 2분</small></span><i class="fa-solid fa-chevron-right text-gold"></i></button>
+<footer class="text-center py-7"><p class="premium-kicker">100% 사전 예약제</p><p class="text-xs text-gray-400 mt-3">경기도 안양시 동안구 관양동 1608-4<br>동아프라자 아케이드 107호</p><p class="text-[10px] text-gray-500 mt-4">© LUMIAN AESTHETIC</p></footer>
+</main>
+<dialog id="mainNavigation" aria-labelledby="mainNavTitle" class="lumian-nav">
 <div class="flex items-center justify-between mb-8"><div><h2 id="mainNavTitle" class="text-gold font-serif text-2xl tracking-widest">LUMIAN</h2><p class="text-gray-400 text-[10px] tracking-widest mt-2">AESTHETIC & BODY CARE</p></div><button type="button" aria-label="메뉴 닫기" onclick="closeMainMenu()" class="text-gold w-10 h-10"><i class="fa-solid fa-xmark text-xl"></i></button></div>
 <nav aria-label="전체 메뉴" class="space-y-1"><button type="button" onclick="mainMenuAction('home')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-house text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">홈</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('care')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-spa text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">케어 프로그램</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('booking')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-calendar-check text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">실시간 예약 신청</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('map')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-location-dot text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">오시는 길</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('qr')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-qrcode text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">명함 공유하기</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('app')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-mobile-screen-button text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">홈 화면에 앱 추가</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('phone')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-phone text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">전화 상담</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('sms')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-comment-sms text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">문자 상담</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button></nav>
 </dialog>
@@ -586,6 +493,7 @@
     if (isOpening && !document.getElementById('serviceCards').children.length) renderServices('all');
 }
 
+function previewCategory(filter){if(document.getElementById('serviceMenuContent').classList.contains('hidden'))toggleServiceMenu();filterServices(filter);document.getElementById('serviceMenuContent').scrollIntoView({behavior:'smooth',block:'start'});}
 function filterServices(filter) {
             renderServices(filter);
         }
