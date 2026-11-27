@@ -379,7 +379,7 @@
             </section>
 
 <section id="homeView"> 
-            <section id="dashboardSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div id="adminOverview"><section class="admin-panel p-5 mb-4"><p class="text-xs text-gold tracking-widest">LUMIAN OVERVIEW</p><h3 class="text-xl font-bold mt-2">오늘의 매장 현황</h3><p id="overviewDate" class="text-xs mt-2"></p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-[#163023] rounded-xl p-3"><p class="text-xs">오늘 확정 예약 금액</p><strong id="todayExpected" class="block text-lg text-gold mt-2">—</strong></div><div class="bg-[#163023] rounded-xl p-3"><p class="text-xs">이번 달 확정 예약 금액</p><strong id="monthExpected" class="block text-lg text-gold mt-2">—</strong></div></div><p class="text-[11px] mt-3">프로그램 정가 기준 예상 금액이며 실제 결제 매출이 아닙니다.</p><p id="overviewUnknown" class="text-xs mt-2"></p></section></div><section id="dashboardSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                 <button type="button" onclick="openBookingCategory('today')" class="summary-card text-left bg-boxDark border border-gold/20 rounded-xl p-3 active:scale-[.98] transition">
                     <i class="fa-solid fa-calendar-day text-gold text-lg mb-2"></i><p class="text-[11px] text-gray-300">오늘 예약</p><p id="todayCount" class="text-2xl font-bold text-gold mt-1">0</p><p class="text-[10px] text-gray-500 mt-1">예약 확인 <i class="fa-solid fa-arrow-right ml-1"></i></p>
                 </button>
@@ -396,7 +396,7 @@
 
             
 
-            <section id="bookingListView" class="hidden">
+            <section id="todayTimeline" class="admin-panel p-4 mb-4"><div class="flex justify-between items-center mb-3"><h3 class="font-bold">오늘의 예약 일정</h3><button onclick="openBookingCategory('today')" class="text-xs text-gold">전체 보기 ›</button></div><div id="todayTimelineList" class="space-y-2 text-sm">예약을 불러오는 중입니다.</div></section><section id="bookingListView" class="hidden">
                 <div class="flex items-center gap-3 mb-4">
                     <button type="button" onclick="showAdminView('home')" class="w-10 h-10 rounded-xl admin-panel text-gold"><i class="fa-solid fa-arrow-left"></i></button>
                     <div><h3 id="bookingListTitle" class="font-bold text-base text-white">예약 목록</h3><p class="text-[11px] text-gray-400 mt-1">예약 정보를 확인하고 처리할 수 있습니다.</p></div>
@@ -459,6 +459,7 @@
             const listView = document.getElementById('bookingListView');
             if (view === 'home') {
                 if (summary) summary.classList.remove('hidden');
+                document.getElementById('adminOverview').classList.remove('hidden');document.getElementById('todayTimeline').classList.remove('hidden');
                 if (listView) listView.classList.add('hidden');
             }
             document.querySelectorAll('.admin-nav-btn').forEach(button => {
@@ -471,7 +472,7 @@
 
         function openBookingCategory(category) {
             showAdminView('home');
-            document.getElementById('dashboardSummary').classList.add('hidden');
+            document.getElementById('dashboardSummary').classList.add('hidden');document.getElementById('adminOverview').classList.add('hidden');document.getElementById('todayTimeline').classList.add('hidden');
             document.getElementById('bookingListView').classList.remove('hidden');
             const titles = { today: '오늘 예약', pending: '승인 대기', confirmed: '예약 확정', all: '전체 예약' };
             document.getElementById('bookingListTitle').textContent = titles[category] || '예약 목록';
@@ -711,7 +712,7 @@
         }
 
         function updateBookingSummary() {
-            const items = Object.values(allBookings);
+            const items = Object.values(allBookings).filter(item=>item && typeof item==='object');
             const today = getLocalDateKey();
             const countToday = items.filter(item =>
                 `${item.year}-${String(item.month).padStart(2, '0')}-${String(item.day).padStart(2, '0')}` === today &&
@@ -724,6 +725,7 @@
             document.getElementById('pendingCount').textContent = countPending;
             document.getElementById('confirmedCount').textContent = countConfirmed;
             document.getElementById('totalCount').textContent = items.length;
+            renderAdminOverview(items);
         }
 
         function clearBookingFilters() {
@@ -853,5 +855,7 @@
 let reviewAdminLoaded=false,reviewPending={},reviewPublic={};
 function loadAdminReviews(){if(reviewAdminLoaded)return;reviewAdminLoaded=true;for(const [path,assign] of [['reviewRequests',v=>reviewPending=v],['publishedReviews',v=>reviewPublic=v]])database.ref(path).on('value',s=>{assign(s.val()||{});renderAdminReviews()},()=>{document.getElementById('adminReviewList').textContent='후기 접근 권한 또는 연결을 확인해 주세요.'})}
 function renderAdminReviews(){const root=document.getElementById('adminReviewList');root.replaceChildren();for(const [label,rows,published] of [['승인 대기',reviewPending,false],['공개 후기',reviewPublic,true]]){const h=document.createElement('h4');h.className='text-gold font-bold my-3';h.textContent=label+' '+Object.keys(rows).length+'건';root.append(h);for(const [key,r] of Object.entries(rows)){if(!r||typeof r!=='object')continue;const card=document.createElement('article');card.className='bg-[#163023] rounded-xl p-4 mb-3 border border-gold/20';for(const v of [r.nickname+' · '+r.stars+'점',r.program,r.text,r.reply?'답글: '+r.reply:'']){const p=document.createElement('p');p.className='text-sm mb-2 whitespace-pre-wrap break-words';p.textContent=v;card.append(p)}const reply=document.createElement('textarea');reply.className='w-full bg-boxDark rounded-lg p-2 text-sm mb-2';reply.placeholder='관리자 답글 (선택)';reply.maxLength=500;reply.value=r.reply||'';card.append(reply);function action(label,fn){const b=document.createElement('button');b.className='bg-boxDark border border-gold/30 text-gold rounded-lg p-2 mr-2 text-xs';b.textContent=label;b.onclick=async()=>{b.disabled=true;try{await fn()}catch(e){alert('처리 실패: 권한 또는 연결을 확인해 주세요.')}finally{b.disabled=false}};card.append(b)}if(!published)action('승인 · 공개',async()=>{if(r.consent!==true){alert('공개 동의가 없습니다.');return}if(!confirm('이 후기를 공개하시겠습니까?'))return;await database.ref().update({['publishedReviews/'+key]:{nickname:String(r.nickname||'').slice(0,20),text:String(r.text||'').slice(0,500),program:String(r.program||'').slice(0,100),stars:Math.max(1,Math.min(5,Number(r.stars)||1)),consent:true,createdAt:Number(r.createdAt)||Date.now(),reply:reply.value.trim()},['reviewRequests/'+key]:null})});else action('답글 저장',()=>database.ref('publishedReviews/'+key+'/reply').set(reply.value.trim()));action(published?'공개 삭제':'거절 · 삭제',async()=>{if(confirm('후기를 삭제하시겠습니까?'))await database.ref((published?'publishedReviews':'reviewRequests')+'/'+key).remove()});root.append(card)}}}
+</script><script>
+function renderAdminOverview(items){const today=getLocalDateKey(),month=today.slice(0,7),key=b=>b.year+'-'+String(b.month).padStart(2,'0')+'-'+String(b.day).padStart(2,'0');const prices={'수분 · 보습 장벽 케어':88000,'미백 · 맑은 톤업 케어':110000,'트러블 · 피지 모공 케어':132000,'안티에이징 탄력 · 리프팅':165000,'윤곽 & 페이스 라인 수기':187000,'예비 신부 & 스페셜 웨딩':198000,'골반 밸런스 케어':88000,'복부 & 흉통 순환 케어':110000,'등 & 목어깨 집중 케어':132000,'하체 순환 & 부종 케어':132000,'등·경추 & 골반 밸런스':132000,'1:1 맞춤 커스텀 바디':165000,'전신 순환 리프레시':198000,'루미안 시그니처 전신 근막':242000};const confirmed=items.filter(b=>!b.status||b.status==='confirmed');let unknown=0;function sum(rows){return rows.reduce((n,b)=>{const p=Object.entries(prices).find(([name])=>String(b.program||'').includes(name));if(!p){unknown++;return n}return n+p[1]},0)}document.getElementById('overviewDate').textContent=today;document.getElementById('todayExpected').textContent=sum(confirmed.filter(b=>key(b)===today)).toLocaleString('ko-KR')+'원';unknown=0;document.getElementById('monthExpected').textContent=sum(confirmed.filter(b=>key(b).startsWith(month+'-'))).toLocaleString('ko-KR')+'원';document.getElementById('overviewUnknown').textContent=unknown?'이번 달 금액 미확인 예약 '+unknown+'건 제외':'';const list=document.getElementById('todayTimelineList');list.replaceChildren();const rows=items.filter(b=>key(b)===today&&(!b.status||['pending','confirmed'].includes(b.status))).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''),'en',{numeric:true}));if(!rows.length)list.textContent='오늘 예정된 예약이 없습니다.';for(const b of rows){const row=document.createElement('button');row.type='button';row.className='w-full text-left bg-[#163023] rounded-xl p-3 flex items-center gap-3';row.onclick=()=>openBookingCategory('today');const time=document.createElement('strong');time.className='text-gold shrink-0';time.textContent=b.time||'미정';const info=document.createElement('div');info.className='flex-1 min-w-0';const name=document.createElement('div');name.textContent=b.name||'고객';const program=document.createElement('div');program.className='text-xs text-gray-400';program.textContent=b.program||'';info.append(name,program);const status=document.createElement('span');status.className='text-xs shrink-0 '+(b.status==='pending'?'text-yellow-400':'text-green-400');status.textContent=b.status==='pending'?'승인 대기':'확정';row.append(time,info,status);list.append(row)}}
 </script></body>
 </html>
