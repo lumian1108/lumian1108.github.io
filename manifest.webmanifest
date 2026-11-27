@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "루미안 에스테틱",
+  "short_name": "루미안",
+  "lang": "ko",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#10271e",
+  "theme_color": "#10271e",
+  "icons": [
+    {
+      "src": "/lumian-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
