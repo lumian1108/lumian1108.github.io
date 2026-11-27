@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>루미안 에스테틱 | 원장 안은희</title>
+    
+    <script>
+        (function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#163023';
+            ctx.fillRect(0, 0, 512, 512);
+
+            ctx.strokeStyle = '#d4af37';
+            ctx.lineWidth = 16;
+            ctx.strokeRect(30, 30, 452, 452);
+
+            ctx.fillStyle = '#d4af37';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 100px serif';
+            ctx.fillText('LUMIAN', 256, 256);
+
+            const dataUrl = canvas.toDataURL('image/png');
+
+            const appleIcon = document.createElement('link');
+            appleIcon.rel = 'apple-touch-icon';
+            appleIcon.href = dataUrl;
+            document.head.appendChild(appleIcon);
+
+            const favicon = document.createElement('link');
+            favicon.rel = 'icon';
+            favicon.href = dataUrl;
+            document.head.appendChild(favicon);
+        })();
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bgDark: '#163023',
+                        boxDark: '#1F3C2C',
+                        gold: '#d4af37',
+                    }
+                }
+            }
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAL5Q-dAKzI8961lcUjMXM9UV1_IFywY2w",
+            authDomain: "lumian-booking.firebaseapp.com",
+            databaseURL: "https://lumian-booking-default-rtdb.firebaseio.com",
+            projectId: "lumian-booking",
+            storageBucket: "lumian-booking.firebasestorage.app",
+            messagingSenderId: "326384208087",
+            appId: "1:326384208087:web:24d696f92773c98251c892",
+            measurementId: "G-ZKP4VRX43"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+.service-filter.active { background: rgba(212,175,55,.12); color: #d4af37; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #163023; 
+            color: white; 
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<style>
+#serviceDetailModal::backdrop { background:rgba(0,0,0,.72); backdrop-filter:blur(4px); }
+#serviceDetailModal .service-detail-art img, #serviceDetailModal .service-detail-art svg { width:100%; max-width:240px; height:250px; object-fit:contain; }
+#serviceDetailModal .service-detail-art span { font-size:12px; margin-top:8px; }
+</style>
+<style>
+@media (max-height: 850px) {
+#serviceDetailModal { padding:16px !important; }
+#serviceDetailModal .service-detail-art { margin:8px auto !important; }
+#serviceDetailModal .service-detail-art img, #serviceDetailModal .service-detail-art svg { height:clamp(90px,25dvh,200px); }
+}
+</style>
+<style>
+.lumian-nav { position:fixed; inset:0 auto 0 max(0px,calc((100vw - 448px)/2)); margin:0; width:min(82vw,340px); height:100dvh; max-height:100dvh; max-width:none; padding: max(24px,env(safe-area-inset-top)) 22px 24px; background:#163023; color:white; border:0; border-right:1px solid #d4af3740; overflow-y:auto; overscroll-behavior:contain; }
+.lumian-nav::backdrop {background:rgba(0,0,0,.65);backdrop-filter:blur(3px);}
+</style><meta name="robots" content="noindex,nofollow"><style>
+body{background:#10271e}.premium-main{color:#eee4d3}.premium-hero{padding:26px 0 34px}.premium-kicker{font-size:10px;letter-spacing:.24em;color:#cfb583}.premium-hero h1{font-family:Georgia,serif;font-size:clamp(42px,12vw,56px);font-weight:400;letter-spacing:.10em;color:#dfc69a;margin:12px 0 6px}.premium-rule{height:1px;width:36px;background:#cfb58366;margin:30px auto 24px}.premium-hero h2{font-size:19px;font-weight:500;letter-spacing:-.04em}.premium-sub{font-size:12px;color:#b1bdb4;margin-top:10px}.premium-owner{font-size:13px;color:#d8c6a4;margin-top:20px}.premium-book{display:flex;align-items:center;justify-content:space-between;width:100%;padding:17px 20px;background:#cfb583;color:#10271e;border-radius:9px;font-size:15px;font-weight:600;margin-bottom:15px}.premium-section{border-top:1px solid #cfb58333;margin-top:22px;padding-top:27px}.premium-heading{font-size:23px;font-weight:500;margin-top:8px}.premium-card{overflow:hidden;border-radius:10px;background:#1c362a;text-align:left;border:1px solid #cfb58326}.premium-card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#203b2e}.premium-card-copy{padding:13px}.premium-card-copy small{display:block;color:#cfb583;font-size:9px;letter-spacing:.1em}.premium-card-copy strong{display:block;font-size:15px;font-weight:500;margin:5px 0 8px}.premium-card-copy span{display:flex;justify-content:space-between;align-items:center;color:#aab9ae;font-size:11px}.premium-location{border-block:1px solid #cfb58333;display:flex;align-items:center;gap:14px;width:100%;padding:20px 4px;margin-top:16px}.premium-main .text-gold{color:#cfb583}.premium-main button:active{opacity:.8}
+</style></head>
+<body class="antialiased flex justify-center min-h-screen">
+    
+    <main class="premium-main w-full max-w-md relative px-7 pb-12">
+<header class="flex items-center justify-between py-5"><button id="mainMenuButton" type="button" aria-label="전체 메뉴" aria-haspopup="dialog" aria-expanded="false" onclick="openMainMenu()" class="w-11 h-11 text-gold"><i class="fa-solid fa-bars text-xl"></i></button><button type="button" aria-label="예약" onclick="openBookingModal()" class="w-11 h-11 text-gold"><i class="fa-regular fa-calendar text-xl"></i></button></header>
+<div class="premium-hero text-center"><p class="premium-kicker">PREMIUM AESTHETIC</p><h1>LUMIAN</h1><p class="premium-kicker">AESTHETIC &amp; BODY CARE</p><div class="premium-rule"></div><h2>당신만을 위한 아름다움의 시간</h2><p class="premium-sub">1:1 프리미엄 맞춤 에스테틱 &amp; 바디케어</p><p class="premium-owner">원장 안은희</p></div>
+<button type="button" onclick="openBookingModal()" class="premium-book"><i class="fa-regular fa-calendar-check"></i><span>실시간 예약하기</span><i class="fa-solid fa-arrow-right"></i></button>
+<div class="grid grid-cols-4 gap-3">
+                <a href="tel:01071356548" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-phone text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">전화</span>
+                </a>
+                <a href="sms:01071356548" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-comment-sms text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">문자</span>
+                </a>
+                <a href="https://pf.kakao.com" target="_blank" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-comment text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">카톡상담</span>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="py-3 flex flex-col items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-brands fa-instagram text-gold text-lg mb-2 mt-1"></i>
+                    <span class="text-[11px] text-gray-300">인스타</span>
+                </a>
+            </div>
+<section id="serviceMenu" class="premium-section"><div class="text-center mb-5"><p class="premium-kicker">SIGNATURE CARE</p><h2 class="premium-heading">케어 프로그램</h2></div><div class="grid grid-cols-2 gap-3"><button type="button" class="premium-card" onclick="previewCategory('facial')" aria-label="페이셜 케어"><img src="./hydration.jpg" alt="" onerror="this.style.display='none'"><div class="premium-card-copy"><small>FACIAL CARE</small><strong>페이셜 케어</strong><span>6가지 프로그램 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div></button><button type="button" class="premium-card" onclick="previewCategory('body')" aria-label="바디 케어"><img src="./back.jpg" alt="" onerror="this.style.display='none'"><div class="premium-card-copy"><small>BODY CARE</small><strong>바디 케어</strong><span>8가지 프로그램 <i class="fa-solid fa-arrow-up-right-from-square"></i></span></div></button></div><button id="serviceMenuToggle" aria-controls="serviceMenuContent" aria-expanded="false" onclick="toggleServiceMenu()" class="w-full text-gold text-xs py-4">전체 프로그램 보기 <i id="serviceMenuChevron" class="fa-solid fa-chevron-down"></i></button><div id="serviceMenuContent" class="hidden">
+                <div class="flex gap-2 mb-4">
+                    <button type="button" onclick="filterServices('all')" class="service-filter active flex-1 rounded-full border border-gold/40 px-3 py-2 text-xs">전체</button>
+                    <button type="button" onclick="filterServices('facial')" class="service-filter flex-1 rounded-full border border-gold/20 px-3 py-2 text-xs text-gray-300">얼굴</button>
+                    <button type="button" onclick="filterServices('body')" class="service-filter flex-1 rounded-full border border-gold/20 px-3 py-2 text-xs text-gray-300">바디</button>
+                </div>
+                <div id="serviceCards" class="space-y-3"></div>
+                <p class="text-[10px] text-gray-400 leading-relaxed mt-4">※ 모든 케어 금액은 부가가치세(VAT) 포함 정가입니다. 현금·계좌이체 결제 시 우대 혜택이 적용됩니다.</p>
+            </div>
+        </section>
+<button type="button" onclick="openModal('mapModal')" class="premium-location"><i class="fa-solid fa-location-dot text-gold text-xl"></i><span class="text-left flex-1"><strong class="block text-sm">오시는 길</strong><small class="block mt-1 text-gray-400">평촌역 1번 출구 · 도보 2분</small></span><i class="fa-solid fa-chevron-right text-gold"></i></button>
+<footer class="text-center py-7"><p class="premium-kicker">100% 사전 예약제</p><p class="text-xs text-gray-400 mt-3">경기도 안양시 동안구 관양동 1608-4<br>동아프라자 아케이드 107호</p><p class="text-[10px] text-gray-500 mt-4">© LUMIAN AESTHETIC</p></footer>
+</main>
+<dialog id="mainNavigation" aria-labelledby="mainNavTitle" class="lumian-nav">
+<div class="flex items-center justify-between mb-8"><div><h2 id="mainNavTitle" class="text-gold font-serif text-2xl tracking-widest">LUMIAN</h2><p class="text-gray-400 text-[10px] tracking-widest mt-2">AESTHETIC & BODY CARE</p></div><button type="button" aria-label="메뉴 닫기" onclick="closeMainMenu()" class="text-gold w-10 h-10"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+<nav aria-label="전체 메뉴" class="space-y-1"><button type="button" onclick="mainMenuAction('home')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-house text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">홈</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('care')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-spa text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">케어 프로그램</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('booking')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-calendar-check text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">실시간 예약 신청</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('map')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-location-dot text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">오시는 길</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('qr')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-qrcode text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">명함 공유하기</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('app')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-mobile-screen-button text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">홈 화면에 앱 추가</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('phone')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-phone text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">전화 상담</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button><button type="button" onclick="mainMenuAction('sms')" class="w-full flex items-center gap-4 px-3 py-4 border-b border-gold/10 text-left text-sm text-gray-100"><i class="fa-solid fa-comment-sms text-gold w-5 text-center" aria-hidden="true"></i><span class="flex-1">문자 상담</span><i class="fa-solid fa-chevron-right text-gold/50 text-xs"></i></button></nav>
+</dialog>
+    <div id="bookingModal" class="fixed inset-0 bg-black/85 z-50 hidden flex-col justify-end sm:justify-center items-center backdrop-blur-md">
+        <div class="bg-[#1C2C22] border-t sm:border border-gold/30 w-full max-w-md rounded-t-[30px] sm:rounded-[30px] p-6 relative max-h-[90vh] overflow-y-auto">
+            
+            <div class="flex justify-between items-center mb-6">
+                <button id="backBtn" onclick="prevStep()" class="text-gold text-xs font-semibold flex items-center gap-1 hidden">
+                    <i class="fa-solid fa-chevron-left text-[10px]"></i> 뒤로
+                </button>
+                <h3 class="font-bold text-base text-gold mx-auto">실시간 예약 신청</h3>
+                <button onclick="closeModal('bookingModal')" class="text-gray-400 p-1 absolute right-6"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div id="stepDate" class="space-y-4">
+                <div class="flex justify-between items-center px-2 mb-2">
+                    <span id="calendarTitle" class="text-sm font-bold text-gray-200"></span>
+                    <div class="flex gap-2">
+                        <button onclick="changeMonth(-1)" class="text-gray-400 hover:text-white p-1"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button onclick="changeMonth(1)" class="text-gray-400 hover:text-white p-1"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-400 border-b border-gold/10 pb-2">
+                    <span class="text-red-400">일</span>
+                    <span>월</span>
+                    <span>화</span>
+                    <span>수</span>
+                    <span>목</span>
+                    <span>금</span>
+                    <span class="text-blue-400">토</span>
+                </div>
+
+                <div id="calendarDays" class="grid grid-cols-7 gap-1 text-center"></div>
+            </div>
+
+            <div id="stepTime" class="hidden space-y-4">
+                <p id="selectedDateText" class="text-xs text-gold font-medium mb-3 text-center bg-boxDark py-2 rounded-xl border border-gold/10"></p>
+                <div>
+                    <label class="block text-xs text-gray-300 mb-1">관리 프로그램 선택 (소요 시간 기준)</label>
+                    <select id="programSelect" onchange="renderTimeSlots()" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                        <option value="">프로그램을 먼저 선택해 주세요</option>
+                        <optgroup label="FACIAL CARE">
+                            <option value="수분 · 보습 장벽 케어 | 60분 | 88,000원">수분 · 보습 장벽 케어 · 60분 · 88,000원</option>
+                            <option value="미백 · 맑은 톤업 케어 | 60분 | 110,000원">미백 · 맑은 톤업 케어 · 60분 · 110,000원</option>
+                            <option value="트러블 · 피지 모공 케어 | 70분 | 132,000원">트러블 · 피지 모공 케어 · 70분 · 132,000원</option>
+                            <option value="안티에이징 탄력 · 리프팅 | 80분 | 165,000원">안티에이징 탄력 · 리프팅 · 80분 · 165,000원</option>
+                            <option value="윤곽 & 페이스 라인 수기 | 90분 | 187,000원">윤곽 & 페이스 라인 수기 · 90분 · 187,000원</option>
+                            <option value="예비 신부 & 스페셜 웨딩 | 100분 | 198,000원">예비 신부 & 스페셜 웨딩 · 100분 · 198,000원</option>
+                        </optgroup>
+                        <optgroup label="BODY CARE">
+                            <option value="골반 밸런스 케어 | 50분 | 88,000원">골반 밸런스 케어 · 50분 · 88,000원</option>
+                            <option value="복부 & 흉통 순환 케어 | 60분 | 110,000원">복부 & 흉통 순환 케어 · 60분 · 110,000원</option>
+                            <option value="등 & 목어깨 집중 케어 | 60분 | 132,000원">등 & 목어깨 집중 케어 · 60분 · 132,000원</option>
+                            <option value="하체 순환 & 부종 케어 | 70분 | 132,000원">하체 순환 & 부종 케어 · 70분 · 132,000원</option>
+                            <option value="등·경추 & 골반 밸런스 | 75분 | 132,000원">등·경추 & 골반 밸런스 · 75분 · 132,000원</option>
+                            <option value="1:1 맞춤 커스텀 바디 | 80분 | 165,000원">1:1 맞춤 커스텀 바디 · 80분 · 165,000원</option>
+                            <option value="전신 순환 리프레시 | 100분 | 198,000원">전신 순환 리프레시 · 100분 · 198,000원</option>
+                            <option value="루미안 시그니처 전신 근막 | 120분 | 242,000원">루미안 시그니처 전신 근막 · 120분 · 242,000원</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div id="timeSlots" class="grid grid-cols-3 gap-2.5"></div>
+            </div>
+
+            <div id="stepProgram" class="hidden space-y-4">
+                <p id="selectedDateTimeText" class="text-xs text-gold font-medium mb-2 text-center bg-boxDark py-2 rounded-xl border border-gold/10"></p>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-300 mb-1">예약자 성함</label>
+                        <input type="text" id="custName" placeholder="성함을 입력해주세요" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-300 mb-1">연락처</label>
+                        <input type="tel" id="custPhone" placeholder="010-0000-0000" class="w-full bg-[#163023] border border-gold/20 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-gold">
+                    </div>
+                </div>
+
+                <button onclick="submitBooking()" class="w-full bg-gold text-[#163023] font-bold rounded-xl py-3.5 mt-4 shadow-lg active:scale-95 transition-transform">
+                    예약 신청하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertModal" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-xs rounded-[24px] p-6 text-center relative shadow-2xl">
+            <i class="fa-solid fa-circle-check text-gold text-4xl mb-3"></i>
+            <h4 id="alertTitle" class="font-bold text-base text-gold mb-2">예약 신청이 완료되었습니다</h4>
+            <p id="alertMessage" class="text-xs text-gray-300 leading-relaxed mb-6"></p>
+            <button onclick="closeModal('alertModal')" class="w-full bg-gold text-[#163023] font-bold py-2.5 rounded-xl text-xs">확인</button>
+        </div>
+    </div>
+
+    <div id="mapModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-6 relative shadow-2xl">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-bold text-base text-gold">길찾기 앱 선택</h3>
+                <button onclick="closeModal('mapModal')" class="text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="space-y-3">
+                <a href="https://map.naver.com/p/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EA%B4%80%EC%96%91%EB%8F%99%201608-4" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
+                    <span class="text-sm font-medium text-gray-200">네이버 지도 열기</span>
+                    <i class="fa-solid fa-arrow-right text-gold text-xs"></i>
+                </a>
+                <a href="https://map.kakao.com/link/search/%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%95%88%EC%96%91%EC%8B%9C%20%EB%8F%99%EC%95%88%EA%B5%AC%20%EA%B4%80%EC%96%91%EB%8F%99%201608-4" target="_blank" class="flex items-center justify-between bg-[#163023] border border-gold/20 rounded-xl p-4 active:scale-95 transition-transform">
+                    <span class="text-sm font-medium text-gray-200">카카오맵 열기</span>
+                    <i class="fa-solid fa-arrow-right text-gold text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="qrModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-8 relative shadow-2xl flex flex-col items-center">
+            <button onclick="closeModal('qrModal')" class="absolute top-5 right-5 text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="font-bold text-lg text-gold mb-2 mt-2">디지털 명함 공유</h3>
+            <p class="text-xs text-gray-300 mb-6 text-center">스마트폰 카메라로 아래 QR코드를 스캔하면<br>명함으로 바로 연결됩니다.</p>
+            <div id="qrcode" class="bg-white p-3 rounded-xl mb-4"></div>
+            <p class="text-gold text-[10px] tracking-widest mt-2">LUMIAN AESTHETIC</p>
+        </div>
+    </div>
+
+    <div id="homeAppModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-boxDark border border-gold/40 w-full max-w-sm rounded-[24px] p-6 relative shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-base text-gold">홈 화면에 앱으로 추가</h3>
+                <button onclick="closeModal('homeAppModal')" class="text-gray-400 p-2"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <p class="text-xs text-gray-300 mb-4 leading-relaxed">
+                스마트폰 바탕화면에 앱처럼 저장하고 원클릭으로 쉽게 예약해보세요!
+            </p>
+
+            <div class="space-y-3">
+                <div class="bg-[#163023] p-3.5 rounded-xl border border-gold/20">
+                    <p class="text-xs font-bold text-gold mb-1"><i class="fa-brands fa-apple text-sm mr-1"></i>아이폰 (Safari 브라우저)</p>
+                    <p class="text-[11px] text-gray-300 leading-normal">
+                        하단 중앙의 <i class="fa-solid fa-share-nodes text-gold"></i> <strong>[공유]</strong> 버튼을 누른 후<br>
+                        메뉴에서 <strong>[홈 화면에 추가]</strong>를 선택하세요.
+                    </p>
+                </div>
+
+                <div class="bg-[#163023] p-3.5 rounded-xl border border-gold/20">
+                    <p class="text-xs font-bold text-gold mb-1"><i class="fa-brands fa-android text-sm mr-1"></i>안드로이드 (Chrome 브라우저)</p>
+                    <p class="text-[11px] text-gray-300 leading-normal">
+                        우측 상단의 <i class="fa-solid fa-ellipsis-vertical text-gold"></i> <strong>[메뉴]</strong> 버튼을 누른 후<br>
+                        <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.
+                    </p>
+                    <p class="text-[10px] text-red-300 mt-1 font-light">
+                        * 카카오톡 내부 링크에서는 보이지 않으니 '크롬 앱'으로 열어주세요.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currDate = new Date();
+        let selectedYear, selectedMonth, selectedDay, selectedTime;
+        let currentStep = 1;
+        let bookedTimesMap = {};
+
+        const holidays = [
+            "2026-01-01", "2026-02-16", "2026-02-17", "2026-02-18", 
+            "2026-03-01", "2026-05-05", "2026-05-24", "2026-06-06", 
+            "2026-08-15", "2026-09-24", "2026-09-25", "2026-09-26", 
+            "2026-10-03", "2026-10-09", "2026-12-25"
+        ];
+
+        // 관리자 페이지에서 저장한 예약 운영 설정. 데이터가 없으면 기존 운영시간을 사용합니다.
+        let bookingSettings = {
+            openHour: 9,
+            closeHour: 20,
+            wednesdayCloseHour: 17,
+            closedDates: []
+        };
+
+        database.ref('settings/booking').on('value', (snapshot) => {
+            const saved = snapshot.val() || {};
+            bookingSettings = {
+                openHour: Number.isInteger(Number(saved.openHour)) ? Number(saved.openHour) : 9,
+                closeHour: Number.isInteger(Number(saved.closeHour)) ? Number(saved.closeHour) : 20,
+                wednesdayCloseHour: Number.isInteger(Number(saved.wednesdayCloseHour)) ? Number(saved.wednesdayCloseHour) : 17,
+                closedDates: Array.isArray(saved.closedDates) ? saved.closedDates : []
+            };
+            if (currentStep === 1) renderCalendar();
+            if (currentStep === 2) renderTimeSlots();
+        });
+
+        database.ref('bookings').on('value', (snapshot) => {
+            bookedTimesMap = {};
+            const data = snapshot.val();
+            if (data) {
+                Object.values(data).forEach(booking => {
+                    // 승인된 예약(confirmed) 또는 대기중인 예약(pending) 모두 시간을 블록
+                    if (!booking.status || booking.status === 'confirmed' || booking.status === 'pending') {
+                        const dateKey = `${booking.year}-${booking.month}-${booking.day}`;
+                        if (!bookedTimesMap[dateKey]) bookedTimesMap[dateKey] = [];
+                        bookedTimesMap[dateKey].push(booking);
+                    }
+                });
+            }
+            if (currentStep === 2) renderTimeSlots();
+        });
+
+        const lumianServices = [
+            {category:'facial',name:'수분 · 보습 장벽 케어',time:60,price:88000,for:'속건조, 속당김, 각질 들뜸이 있는 민감 피부',benefit:'유수분 밸런스 회복 & 보습 장벽 강화'},
+            {category:'facial',name:'미백 · 맑은 톤업 케어',time:60,price:110000,for:'칙칙한 안색, 맑고 투명한 피부 톤을 원하는 분',benefit:'고농축 비타민 침투 & 투명한 안색 광채'},
+            {category:'facial',name:'트러블 · 피지 모공 케어',time:70,price:132000,for:'과다 피지 정체, 모공 노폐물, 위생 압출 필요 피부',benefit:'딥 모공 스케일링 & 항균 진정 스킨 케어'},
+            {category:'facial',name:'안티에이징 탄력 · 리프팅',time:80,price:165000,for:'잔주름, 피부 탄력 저하, 처진 페이스 라인 고민',benefit:'플라겐 수기 테크닉 & 피부 밀도 집중 충전'},
+            {category:'facial',name:'윤곽 & 페이스 라인 수기',time:90,price:187000,tag:'추천',for:'얼굴 붓기, 좌우 비대칭, 광대·이중턱 뭉침 고민',benefit:'두피~쇄골 속근막 이완 & 입체 윤곽 수기'},
+            {category:'facial',name:'예비 신부 & 스페셜 웨딩',time:100,price:198000,tag:'BEST',for:'본식/촬영 전 물광 피부 & 매끄러운 드레스 라인',benefit:'페이스 + 목·승모근 라인 집중 1:1 풀 케어'},
+            {category:'body',name:'골반 밸런스 케어',time:50,price:88000,for:'다리 꼬기 습관, 틀어진 골반 주변 뻐근함',benefit:'고관절 주변 이완 & 하체 순환 확보'},
+            {category:'body',name:'복부 & 흉통 순환 케어',time:60,price:110000,for:'복부 가스 팽만감, 답답한 흉통 완화 희망',benefit:'흉통 호흡 확보 & 복부 장 순환 촉진'},
+            {category:'body',name:'등 & 목어깨 집중 케어',time:60,price:132000,for:'만성 승모근 뭉침, 굽은 등, 경추 통증',benefit:'등 근막 집중 이완 & 슬림 목선 형성'},
+            {category:'body',name:'하체 순환 & 부종 케어',time:70,price:132000,for:'다리가 자주 무겁고 쉽게 저리는 부종 피부',benefit:'서경부 림프절 독소 배출 & 하체 피로 완화'},
+            {category:'body',name:'등·경추 & 골반 밸런스',time:75,price:132000,tag:'BEST',for:'상·하체 중심축(목·등·골반) 전체 불균형',benefit:'핵심 축 이완으로 전신 밸런스 리셋'},
+            {category:'body',name:'1:1 맞춤 커스텀 바디',time:80,price:165000,tag:'CUSTOM',for:'당일 체형 컨디션에 따른 집중 수기 희망',benefit:'1:1 문진 기반 맞춤 부위 조합 처방'},
+            {category:'body',name:'전신 순환 리프레시',time:100,price:198000,for:'전신 만성 피로 및 순환 정체 관리',benefit:'전신 림프 독소 정화 & 부드러운 전신 순환'},
+            {category:'body',name:'루미안 시그니처 전신 근막',time:120,price:242000,tag:'PREMIUM',for:'전신 굳은 속근막 유착 밀착 케어 원할 때',benefit:'120분 밀착 수기 근막 이완 최고급 풀바디'}
+        ];
+
+        function formatServicePrice(price) {
+            return price.toLocaleString('ko-KR') + '원';
+        }
+
+
+        // 케어 프로그램별 부위를 보여주는 작은 해부학 스타일 일러스트
+        function renderServiceAnatomy(name) {
+            if (name === "골반 밸런스 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./pelvis.jpg" decoding="async" alt="골반·고관절 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">골반·고관절</span></div>`;
+            if (name === "복부 & 흉통 순환 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./abdomen.jpg" decoding="async" alt="가슴·복부 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">가슴·복부</span></div>`;
+            if (name === "등 & 목어깨 집중 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./back.jpg" decoding="async" alt="등·목·어깨 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">등·목·어깨</span></div>`;
+            if (name === "하체 순환 & 부종 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./legs.jpg" decoding="async" alt="종아리·하체 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">종아리·하체</span></div>`;
+            if (name === "등·경추 & 골반 밸런스") return `<div class="mt-2 flex flex-col items-center"><img src="./spine.jpg" decoding="async" alt="등·경추·골반 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">등·경추·골반</span></div>`;
+            if (name === "1:1 맞춤 커스텀 바디") return `<div class="mt-2 flex flex-col items-center"><img src="./custom.jpg" decoding="async" alt="맞춤 바디 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">맞춤 바디</span></div>`;
+            if (name === "전신 순환 리프레시") return `<div class="mt-2 flex flex-col items-center"><img src="./circulation.jpg" decoding="async" alt="전신 순환 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">전신 순환</span></div>`;
+            if (name === "루미안 시그니처 전신 근막") return `<div class="mt-2 flex flex-col items-center"><img src="./fascia.jpg" decoding="async" alt="전신 근막 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">전신 근막</span></div>`;
+
+            if (name === "수분 · 보습 장벽 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./hydration.jpg" decoding="async" alt="얼굴 피부 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">얼굴 피부</span></div>`;
+            if (name === "미백 · 맑은 톤업 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./tone.jpg" decoding="async" alt="얼굴 톤 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">얼굴 톤</span></div>`;
+            if (name === "트러블 · 피지 모공 케어") return `<div class="mt-2 flex flex-col items-center"><img src="./pores.jpg" decoding="async" alt="T존·볼 모공 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">T존·볼 모공</span></div>`;
+            if (name === "안티에이징 탄력 · 리프팅") return `<div class="mt-2 flex flex-col items-center"><img src="./lifting.jpg" decoding="async" alt="턱선·목 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">턱선·목</span></div>`;
+            if (name === "윤곽 & 페이스 라인 수기") return `<div class="mt-2 flex flex-col items-center"><img src="./contour.jpg" decoding="async" alt="얼굴 윤곽 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">얼굴 윤곽</span></div>`;
+            if (name === "예비 신부 & 스페셜 웨딩") return `<div class="mt-2 flex flex-col items-center"><img src="./wedding.jpg" decoding="async" alt="얼굴·목·어깨 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] object-contain"><span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">얼굴·목·어깨</span></div>`;
+
+
+            const configs = {
+                '수분 · 보습 장벽 케어': ['얼굴 피부', 'face'],
+                '미백 · 맑은 톤업 케어': ['얼굴 톤', 'faceGlow'],
+                '트러블 · 피지 모공 케어': ['T존·볼 모공', 'tzone'],
+                '안티에이징 탄력 · 리프팅': ['턱선·목', 'jaw'],
+                '윤곽 & 페이스 라인 수기': ['얼굴 윤곽', 'jaw'],
+                '예비 신부 & 스페셜 웨딩': ['얼굴·목·어깨', 'neckShoulder'],
+                '골반 밸런스 케어': ['골반·고관절', 'pelvis'],
+                '복부 & 흉통 순환 케어': ['가슴·복부', 'abdomen'],
+                '등 & 목어깨 집중 케어': ['등·목·어깨', 'upperBack'],
+                '하체 순환 & 부종 케어': ['종아리·하체', 'legs'],
+                '등·경추 & 골반 밸런스': ['등·경추·골반', 'spinePelvis'],
+                '1:1 맞춤 커스텀 바디': ['맞춤 바디', 'fullBody'],
+                '전신 순환 리프레시': ['전신 순환', 'circulation'],
+                '루미안 시그니처 전신 근막': ['전신 근막', 'fascia']
+            };
+            const [label, key] = configs[name] || ['케어 부위', 'fullBody'];
+            const front = '<path d="M40 8 C29 8 25 17 27 26 L29 32 C23 35 18 39 17 48 L13 79 Q12 84 18 85 L25 59 L27 87 L53 87 L55 59 L62 85 Q68 84 67 79 L63 48 C62 39 57 35 51 32 L53 26 C55 17 51 8 40 8Z" />';
+            const back = '<path d="M40 8 C29 8 25 17 27 26 L29 32 C22 35 18 39 17 48 L13 79 Q12 84 18 85 L25 59 L27 87 L53 87 L55 59 L62 85 Q68 84 67 79 L63 48 C62 39 58 35 51 32 L53 26 C55 17 51 8 40 8Z" />';
+            const areas = {
+                face: '<ellipse cx="40" cy="23" rx="12" ry="13"/>',
+                faceGlow: '<ellipse cx="40" cy="23" rx="13" ry="13"/><ellipse cx="31" cy="26" rx="4" ry="3"/><ellipse cx="49" cy="26" rx="4" ry="3"/>',
+                tzone: '<path d="M37 13 L43 13 L45 27 L40 31 L35 27Z"/><ellipse cx="30" cy="27" rx="4" ry="3"/><ellipse cx="50" cy="27" rx="4" ry="3"/>',
+                jaw: '<path d="M29 25 Q40 38 51 25 L49 32 Q40 42 31 32Z"/>',
+                neckShoulder: '<path d="M31 30 L49 30 L57 40 L64 44 L58 51 L48 43 L32 43 L22 51 L16 44 L23 40Z"/>',
+                pelvis: '<path d="M27 55 Q40 48 53 55 L55 69 L49 75 L31 75 L25 69Z"/>',
+                abdomen: '<path d="M29 39 L51 39 L53 65 Q40 72 27 65Z"/>',
+                upperBack: '<path d="M28 34 Q40 39 52 34 L59 50 L50 57 L40 48 L30 57 L21 50Z"/>',
+                legs: '<path d="M29 59 L39 59 L37 84 L29 84Z M41 59 L51 59 L51 84 L43 84Z"/>',
+                spinePelvis: '<path d="M37 35 L43 35 L44 62 L53 69 L49 76 L40 70 L31 76 L27 69 L36 62Z"/>',
+                fullBody: '<path d="M28 34 L52 34 L58 50 L52 58 L51 84 L43 84 L40 60 L37 84 L29 84 L28 58 L22 50Z"/>',
+                circulation: '<path d="M30 34 L50 34 L55 51 L50 83 L43 83 L40 59 L37 83 L30 83 L25 51Z"/>',
+                fascia: '<path d="M28 34 L52 34 L58 50 L52 59 L51 84 L43 84 L40 60 L37 84 L29 84 L28 59 L22 50Z"/>'
+            };
+            const isFace = ['face','faceGlow','tzone','jaw'].includes(key);
+            const isBack = ['upperBack','spinePelvis','fascia'].includes(key);
+            const outline = isFace
+                ? '<path d="M40 7 C28 7 25 17 27 26 C28 35 34 40 40 40 C46 40 52 35 53 26 C55 17 52 7 40 7Z M33 40 L31 52 M47 40 L49 52" />'
+                : (isBack ? back : front);
+            return `<div class="mt-2 flex flex-col items-center">
+                <svg viewBox="0 0 80 94" role="img" aria-label="${label} 부위 일러스트" class="w-[66px] h-[76px] rounded-lg bg-[#f7f5f0] p-1">
+                    <g fill="#e7e2da" stroke="#9a958c" stroke-width="1.25" stroke-linejoin="round">${outline}</g>
+                    <g fill="#d96f68" fill-opacity=".78" stroke="#bd625d" stroke-width=".65">${areas[key]}</g>
+                    <g fill="none" stroke="#b8afa4" stroke-width=".65" opacity=".9">
+                        <path d="M40 42 L40 57 M29 43 L25 55 M51 43 L55 55"/>
+                        <path d="M31 58 Q40 62 49 58"/>
+                    </g>
+                </svg>
+                <span class="mt-1 text-[9px] text-gray-400 whitespace-nowrap">${label}</span>
+            </div>`;
+        }
+
+        function renderServices(filter='all') {
+            const container = document.getElementById('serviceCards');
+            if (!container) return;
+            const items = lumianServices
+                .filter(service => filter === 'all' || service.category === filter)
+                .sort((a, b) => {
+                    const featuredTags = ['BEST', '추천', 'PREMIUM', 'CUSTOM'];
+                    const aFeatured = featuredTags.includes(a.tag);
+                    const bFeatured = featuredTags.includes(b.tag);
+                    return Number(bFeatured) - Number(aFeatured);
+                });
+            container.dataset.detailOrder = JSON.stringify(items.map(service => lumianServices.indexOf(service)));
+            container.innerHTML = items.map((service) => {
+                const index = lumianServices.indexOf(service);
+                return `
+                    <article tabindex="0" aria-label="${service.name} 상세 보기" class="bg-boxDark border border-gold/15 rounded-2xl p-4 cursor-pointer" onclick="if (!event.target.closest('button')) openServiceDetail(${index})" onkeydown="if (event.target === this && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openServiceDetail(${index}); }">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    <span class="text-[10px] tracking-widest text-gold/80">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'}</span>
+                                    ${service.tag ? `<span class="text-[9px] bg-gold/15 text-gold rounded px-2 py-0.5">${service.tag}</span>` : ''}
+                                </div>
+                                <h4 class="font-semibold text-sm text-white leading-snug">${service.name}</h4>
+                                <p class="text-[10px] text-gray-400 mt-1">${service.time}분 소요</p>
+                            </div>
+                            <div class="flex flex-col items-center shrink-0"><strong class="text-gold text-sm whitespace-nowrap">${formatServicePrice(service.price)}</strong>${renderServiceAnatomy(service.name)}</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 border-t border-white/10 mt-3 pt-3">
+                            <div><p class="text-[9px] text-gold/70 tracking-wider mb-1">RECOMMENDED FOR</p><p class="text-[10px] text-gray-300 leading-relaxed">${service.for}</p></div>
+                            <div><p class="text-[9px] text-gold/70 tracking-wider mb-1">KEY BENEFIT</p><p class="text-[10px] text-gray-300 leading-relaxed">${service.benefit}</p></div>
+                        </div>
+                        <button type="button" onclick="chooseService(${index})" class="w-full mt-3 rounded-xl border border-gold/40 py-2.5 text-xs font-semibold text-gold active:bg-gold active:text-[#163023]">이 프로그램 예약하기</button>
+                    </article>`;
+            }).join('');
+            document.querySelectorAll('.service-filter').forEach(button => {
+                const active = button.getAttribute('onclick').includes(`'${filter}'`);
+                button.classList.toggle('active', active);
+                button.classList.toggle('border-gold/40', active);
+                button.classList.toggle('border-gold/20', !active);
+                button.classList.toggle('text-gray-300', !active);
+                button.classList.toggle('text-gold', active);
+            });
+        }
+
+        function toggleServiceMenu() {
+    const content = document.getElementById('serviceMenuContent');
+    const toggle = document.getElementById('serviceMenuToggle');
+    const chevron = document.getElementById('serviceMenuChevron');
+    const isOpening = content.classList.contains('hidden');
+    content.classList.toggle('hidden', !isOpening);
+    toggle.setAttribute('aria-expanded', String(isOpening));
+    chevron.classList.toggle('rotate-180', isOpening);
+    if (isOpening && !document.getElementById('serviceCards').children.length) renderServices('all');
+}
+
+function previewCategory(filter){if(document.getElementById('serviceMenuContent').classList.contains('hidden'))toggleServiceMenu();filterServices(filter);document.getElementById('serviceMenuContent').scrollIntoView({behavior:'smooth',block:'start'});}
+function filterServices(filter) {
+            renderServices(filter);
+        }
+
+        let detailOrder = [], detailPosition = 0, detailMoving = false;
+        async function moveServiceDetail(delta) {
+            const modal = document.getElementById('serviceDetailModal');
+            if (!modal || !modal.open || detailMoving) return;
+            const track = modal.querySelector('.detail-track');
+            const next = detailPosition + delta;
+            if (next < 0 || next >= detailOrder.length) {
+                track.style.transition = 'transform 260ms cubic-bezier(.2,.8,.2,1)';
+                track.style.transform = 'translateY(0)';
+                return;
+            }
+            detailMoving = true;
+            const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const old = track.cloneNode(true);
+            old.removeAttribute('id');
+            old.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+            old.setAttribute('aria-hidden','true');
+            old.inert = true;
+            const offset = parseFloat(track.dataset.drag || '0');
+            const height = modal.clientHeight + 24;
+            const session = modal.detailSession;
+            try {
+                detailPosition = next;
+                openServiceDetail(detailOrder[next], true, delta);
+                const incoming = modal.querySelector('.detail-track');
+                if (!reduced && incoming.animate) {
+                    const viewport = incoming.parentElement;
+                    viewport.style.height = Math.max(old.getBoundingClientRect().height, incoming.getBoundingClientRect().height)+'px';
+                    Object.assign(old.style,{position:'absolute',top:'0',left:'0',width:'100%',pointerEvents:'none',transition:'none',transform:'none'});
+                    viewport.appendChild(old);
+                    const timing = {duration:420,easing:'cubic-bezier(.22,.75,.18,1)',fill:'both'};
+                    const out = old.animate([{transform:'translateY('+offset+'px)'},{transform:'translateY('+(-delta*height)+'px)'}],timing);
+                    const enter = incoming.animate([{transform:'translateY('+(delta*height+offset)+'px)'},{transform:'translateY(0)'}],timing);
+                    await Promise.allSettled([out.finished,enter.finished]);
+                    old.remove(); enter.cancel(); viewport.style.height = '';
+                }
+            } finally { if (modal.detailSession === session) detailMoving = false; }
+        }
+        function openServiceDetail(index, navigating = false, direction = 1) {
+            if (!navigating) {
+                detailOrder = JSON.parse(document.getElementById('serviceCards').dataset.detailOrder || '[]');
+                if (!detailOrder.includes(index)) detailOrder = [index];
+                detailPosition = detailOrder.indexOf(index);
+            }
+            const service = lumianServices[index];
+            if (!service) return;
+            let modal = document.getElementById('serviceDetailModal');
+            if (!modal) {
+                modal = document.createElement('dialog');
+                modal.id = 'serviceDetailModal';
+                modal.setAttribute('aria-labelledby','serviceDetailTitle');
+                modal.style.cssText = 'position:fixed;inset:0;margin:auto;width:calc(100% - 32px);max-width:400px;max-height:85dvh;overflow:auto;overscroll-behavior:contain;border:1px solid #d4af3766;border-radius:24px;background:#1f3c2c;color:white;padding:24px;box-shadow:0 24px 80px #0008;';
+                document.body.appendChild(modal);
+                let touchStart = null, wheelTime = 0, savedStyles = [], savedY = 0;
+                function lockDetailBackground() {
+                    savedY = window.scrollY;
+                    savedStyles = [document.documentElement, document.body].map(el => [el, el.style.cssText]);
+                    document.documentElement.style.overflow = 'hidden';
+                    document.documentElement.style.overscrollBehavior = 'none';
+                    Object.assign(document.body.style, {position:'fixed',top:'-'+savedY+'px',left:'0',right:'0',width:'100%',overflow:'hidden',overscrollBehavior:'none'});
+                }
+                function unlockDetailBackground() {
+                    if (!savedStyles.length) return;
+                    savedStyles.forEach(([el, style]) => el.style.cssText = style);
+                    savedStyles = [];
+                    window.scrollTo(0,savedY);
+                }
+                modal.lockDetailBackground = lockDetailBackground;
+                modal.unlockDetailBackground = unlockDetailBackground;
+                modal.addEventListener('close', () => { if (!modal.open) unlockDetailBackground(); });
+                modal.style.touchAction = 'none';
+                modal.addEventListener('touchstart', e => {
+                    if (e.touches.length !== 1) { touchStart = null; return; }
+                    const t = e.touches[0], rect = modal.getBoundingClientRect();
+                    touchStart = {x:t.clientX,y:t.clientY,inside:t.clientX >= rect.left && t.clientX <= rect.right && t.clientY >= rect.top && t.clientY <= rect.bottom};
+                }, {passive:true});
+                modal.addEventListener('touchmove', e => {
+                    if (e.cancelable) e.preventDefault();
+                    if (!touchStart || !touchStart.inside || detailMoving || e.touches.length !== 1) return;
+                    const dy = e.touches[0].clientY - touchStart.y;
+                    const dx = e.touches[0].clientX - touchStart.x;
+                    if (Math.abs(dy) < Math.abs(dx)) return;
+                    const track = modal.querySelector('.detail-track');
+                    if (!track) return;
+                    const edge = (dy > 0 && detailPosition === 0) || (dy < 0 && detailPosition === detailOrder.length - 1);
+                    const offset = dy * (edge ? .16 : .85);
+                    track.style.transition = 'none';
+                    track.style.transform = 'translateY('+offset+'px)';
+                    track.dataset.drag = String(offset);
+                }, {passive:false});
+                modal.addEventListener('touchend', e => {
+                    if (!touchStart || !e.changedTouches.length) return;
+                    const start = touchStart; touchStart = null;
+                    const dy = start.y - e.changedTouches[0].clientY;
+                    const dx = start.x - e.changedTouches[0].clientX;
+                    if (!start.inside || Math.abs(dy) < 35 || Math.abs(dy) < Math.abs(dx)) {
+                        const track = modal.querySelector('.detail-track');
+                        if (track) {track.style.transition='transform 260ms cubic-bezier(.2,.8,.2,1)';track.style.transform='translateY(0)';track.dataset.drag='0';}
+                        return;
+                    }
+                    if (e.cancelable) e.preventDefault();
+                    moveServiceDetail(dy > 0 ? 1 : -1);
+                }, {passive:false});
+                modal.addEventListener('touchcancel', () => {touchStart = null; const track = modal.querySelector('.detail-track'); if(track){track.style.transition='transform 260ms ease-out';track.style.transform='translateY(0)';track.dataset.drag='0';}});
+                modal.addEventListener('wheel', e => {
+                    if (Math.abs(e.deltaY) < 8) return;
+                    const bottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 4;
+                    if ((e.deltaY > 0 && bottom) || (e.deltaY < 0 && modal.scrollTop <= 4)) {
+                        e.preventDefault();
+                        const now = Date.now(), elapsed = now - wheelTime; wheelTime = now;
+                        if (elapsed > 450) moveServiceDetail(e.deltaY > 0 ? 1 : -1);
+                    }
+                }, {passive:false});
+                modal.addEventListener('click', event => {
+                    if (event.target !== modal) return;
+                    const rect = modal.getBoundingClientRect();
+                    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) modal.close();
+                });
+            }
+            modal.innerHTML = `
+                <button type="button" aria-label="닫기" onclick="this.closest('dialog').close()" style="position:absolute;right:14px;top:12px;width:36px;height:36px;font-size:24px;color:#d4af37">×</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:0 28px 12px 0;color:#d4af37;font-size:12px">
+                    <button type="button" aria-label="이전 프로그램" onclick="moveServiceDetail(-1)" ${detailPosition === 0 ? 'disabled style="opacity:.3"' : ''}>‹ 이전</button>
+                    <span>${detailPosition + 1} / ${detailOrder.length}</span>
+                    <button type="button" aria-label="다음 프로그램" onclick="moveServiceDetail(1)" ${detailPosition === detailOrder.length - 1 ? 'disabled style="opacity:.3"' : ''}>다음 ›</button>
+                </div>
+                <div style="position:relative;overflow:hidden"><div class="detail-track" style="will-change:transform">
+                <div style="font-size:11px;letter-spacing:2px;color:#d4af37;padding-right:30px">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'} ${service.tag || ''}</div>
+                <h2 id="serviceDetailTitle" style="font-size:21px;font-weight:600;line-height:1.4;margin:10px 24px 8px 0">${service.name}</h2>
+                <div style="display:flex;justify-content:space-between;align-items:center;color:#d4af37;font-size:15px"><span>${service.time}분 소요</span><strong>${formatServicePrice(service.price)}</strong></div>
+                <div class="service-detail-art" style="margin:20px auto">${renderServiceAnatomy(service.name)}</div>
+                <div style="border-top:1px solid #ffffff20;padding-top:16px;margin-top:12px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">추천 대상</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.for}</p></div>
+                <div style="margin-top:18px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">관리 효과</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.benefit}</p></div>
+                <button type="button" onclick="this.closest('dialog').unlockDetailBackground(); this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
+                </div></div>
+            `;
+            if (!modal.open) { detailMoving = false; modal.detailSession = (modal.detailSession || 0) + 1; modal.lockDetailBackground(); modal.showModal(); }
+            modal.scrollTop = 0;
+            if (navigating) return;
+            if (!matchMedia('(prefers-reduced-motion: reduce)').matches && modal.animate) modal.animate([{opacity:0,transform:'scale(.94)'},{opacity:1,transform:'scale(1)'}],{duration:220,easing:'ease-out'});
+        }
+
+        function chooseService(index) {
+            const service = lumianServices[index];
+            const select = document.getElementById('programSelect');
+            const option = Array.from(select.options).find(item => item.value.startsWith(service.name + ' |'));
+            if (option) select.value = option.value;
+            openBookingModal();
+            document.getElementById('programSelect').focus();
+        }
+
+        let mainNavSaved = null;
+        function openMainMenu() {
+            const menu = document.getElementById('mainNavigation');
+            if (menu.open) return;
+            mainNavSaved = {y:window.scrollY,body:document.body.style.cssText,root:document.documentElement.style.cssText};
+            document.documentElement.style.overflow='hidden';
+            Object.assign(document.body.style,{position:'fixed',top:'-'+mainNavSaved.y+'px',width:'100%',overflow:'hidden'});
+            menu.showModal();
+            document.getElementById('mainMenuButton').setAttribute('aria-expanded','true');
+            if (!matchMedia('(prefers-reduced-motion: reduce)').matches) menu.animate([{transform:'translateX(-100%)'},{transform:'translateX(0)'}],{duration:300,easing:'cubic-bezier(.22,.75,.18,1)'});
+        }
+        function closeMainMenu() {
+            const menu = document.getElementById('mainNavigation');
+            if(menu.open) menu.close();
+            if(mainNavSaved) {
+                const saved=mainNavSaved;mainNavSaved=null;
+                document.body.style.cssText=saved.body;
+                document.documentElement.style.cssText=saved.root;
+                window.scrollTo(0,saved.y);
+            }
+            document.getElementById('mainMenuButton').setAttribute('aria-expanded','false');
+        }
+        document.getElementById('mainNavigation').addEventListener('close',()=>{if(!document.getElementById('mainNavigation').open) closeMainMenu();});
+        document.getElementById('mainNavigation').addEventListener('click',e=>{
+            if(e.target!==e.currentTarget)return;
+            const rect=e.currentTarget.getBoundingClientRect();
+            if(e.clientX<rect.left||e.clientX>rect.right||e.clientY<rect.top||e.clientY>rect.bottom)closeMainMenu();
+        });
+        function mainMenuAction(action) {
+            closeMainMenu();
+            if(action==='home')window.scrollTo({top:0,behavior:'smooth'});
+            else if(action==='care'){
+                if(document.getElementById('serviceMenuContent').classList.contains('hidden'))toggleServiceMenu();
+                document.getElementById('serviceMenu').scrollIntoView({behavior:'smooth',block:'start'});
+            }else if(action==='booking')openBookingModal();
+            else if(action==='map')openModal('mapModal');
+            else if(action==='qr')openQrModal();
+            else if(action==='app')openModal('homeAppModal');
+            else if(action==='phone')location.href='tel:01071356548';
+            else if(action==='sms')location.href='sms:01071356548';
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.remove('flex');
+            el.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function openQrModal() {
+            openModal('qrModal');
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById("qrcode"), {
+                text: "https://lumian1108.github.io",
+                width: 160,
+                height: 160,
+                colorDark : "#163023",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        function openBookingModal() {
+            openModal('bookingModal');
+            currentStep = 1;
+            showStep(1);
+            renderCalendar();
+        }
+
+        function changeMonth(delta) {
+            currDate.setMonth(currDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const year = currDate.getFullYear();
+            const month = currDate.getMonth();
+            
+            document.getElementById('calendarTitle').innerText = `${year}년 ${month + 1}월`;
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            for (let i = 0; i < firstDay; i++) {
+                calendarDays.appendChild(document.createElement('div'));
+            }
+
+            for (let day = 1; day <= lastDate; day++) {
+                const dayEl = document.createElement('button');
+                dayEl.innerText = day;
+                
+                const targetDate = new Date(year, month, day);
+                const dayOfWeek = targetDate.getDay();
+                
+                const monthStr = String(month + 1).padStart(2, '0');
+                const dayStr = String(day).padStart(2, '0');
+                const formattedDate = `${year}-${monthStr}-${dayStr}`;
+                const isHoliday = holidays.includes(formattedDate);
+                const isCustomClosed = bookingSettings.closedDates.includes(formattedDate);
+                const isClosed = isHoliday || isCustomClosed;
+
+                let textColor = "text-gray-200";
+                if (dayOfWeek === 0 || isClosed) textColor = "text-red-400";
+                else if (dayOfWeek === 6) textColor = "text-blue-400";
+
+                dayEl.className = `h-10 text-sm font-medium rounded-xl flex items-center justify-center transition-all ${textColor}`;
+
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+                if (isToday) {
+                    dayEl.classList.add('border', 'border-gold', 'font-bold', 'bg-gold/10');
+                }
+
+                targetDate.setHours(23, 59, 59, 999);
+                if ((targetDate < today && !isToday) || isClosed) {
+                    dayEl.classList.add('opacity-30', 'cursor-not-allowed');
+                    dayEl.disabled = true;
+                    if (isClosed) dayEl.title = '휴무일';
+                } else {
+                    dayEl.classList.add('hover:bg-gold/20', 'active:scale-95');
+                    dayEl.onclick = () => selectDate(year, month + 1, day, dayOfWeek);
+                }
+
+                calendarDays.appendChild(dayEl);
+            }
+        }
+
+        function selectDate(year, month, day, dayOfWeek) {
+            selectedYear = year;
+            selectedMonth = month;
+            selectedDay = day;
+            selectedDayOfWeek = dayOfWeek;
+
+            document.getElementById('selectedDateText').innerText = `선택한 날짜: ${year}년 ${month}월 ${day}일`;
+            showStep(2);
+            renderTimeSlots();
+        }
+
+        function getDurationFromProgram(programValue) {
+            const match = String(programValue || '').match(/\|\s*(\d+)분\s*\|/);
+            return match ? Number(match[1]) : 0;
+        }
+
+        function getBookingDuration(booking) {
+            if (Number(booking.duration) > 0) return Number(booking.duration);
+            const match = String(booking.program || '').match(/\|\s*(\d+)분\s*\|/);
+            if (match) return Number(match[1]);
+            const service = lumianServices.find(item => String(booking.program || '').includes(item.name));
+            return service ? service.time : 60;
+        }
+
+        function toMinutes(timeValue) {
+            const parts = String(timeValue || '00:00').split(':').map(Number);
+            return (parts[0] || 0) * 60 + (parts[1] || 0);
+        }
+
+        function intervalsOverlap(startA, durationA, startB, durationB) {
+            return startA < startB + durationB && startB < startA + durationA;
+        }
+
+        function renderTimeSlots() {
+            const timeSlots = document.getElementById('timeSlots');
+            timeSlots.innerHTML = '';
+            const duration = getDurationFromProgram(document.getElementById('programSelect').value);
+            if (!duration) {
+                timeSlots.innerHTML = '<p class="col-span-3 text-center text-xs text-gray-400 py-5">프로그램을 먼저 선택하시면 소요 시간에 맞춰 예약 가능한 시간이 표시됩니다.</p>';
+                return;
+            }
+            const endHour = (selectedDayOfWeek === 3) ? bookingSettings.wednesdayCloseHour : bookingSettings.closeHour;
+            const startHour = bookingSettings.openHour;
+            const dateKey = `${selectedYear}-${selectedMonth}-${selectedDay}`;
+            const existingBookings = bookedTimesMap[dateKey] || [];
+            for (let hour = startHour; hour < endHour; hour++) {
+                const timeStr = `${String(hour).padStart(2, '0')}:00`;
+                const candidateStart = toMinutes(timeStr);
+                const isBooked = candidateStart + duration > endHour * 60 || existingBookings.some(booking =>
+                    intervalsOverlap(candidateStart, duration, toMinutes(booking.time), getBookingDuration(booking))
+                );
+                const btn = document.createElement('button');
+                btn.className = `py-3 border rounded-xl text-xs font-semibold transition-all ${isBooked ? 'border-gray-600 bg-gray-800/40 text-gray-500 line-through cursor-not-allowed' : 'border-gold/30 bg-[#163023] text-gray-200 hover:border-gold active:scale-95'}`;
+                btn.innerText = isBooked ? `${timeStr} (마감)` : timeStr;
+                btn.disabled = isBooked;
+                if (!isBooked) btn.onclick = () => selectTime(timeStr);
+                timeSlots.appendChild(btn);
+            }
+        }
+
+        function selectTime(timeStr) {
+            selectedTime = timeStr;
+            document.getElementById('selectedDateTimeText').innerText = `일시: ${selectedYear}.${selectedMonth}.${selectedDay} ${selectedTime}`;
+            showStep(3);
+        }
+
+        function showStep(step) {
+            currentStep = step;
+            document.getElementById('stepDate').classList.toggle('hidden', step !== 1);
+            document.getElementById('stepTime').classList.toggle('hidden', step !== 2);
+            document.getElementById('stepProgram').classList.toggle('hidden', step !== 3);
+            document.getElementById('backBtn').classList.toggle('hidden', step === 1);
+        }
+
+        function prevStep() {
+            if (currentStep > 1) showStep(currentStep - 1);
+        }
+
+        function submitBooking() { showAlert("디자인 테스트","테스트 페이지에서는 실제 예약이 저장되지 않습니다."); return;
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const program = document.getElementById('programSelect').value;
+
+            if (!name || !phone || !program) {
+                showAlert('입력 확인', '성함, 연락처, 프로그램을 모두 입력 및 선택해 주세요.');
+                return;
+            }
+
+            const newBooking = {
+                year: selectedYear,
+                month: selectedMonth,
+                day: selectedDay,
+                time: selectedTime,
+                duration: getDurationFromProgram(program),
+                name: name,
+                phone: phone,
+                program: program,
+                status: 'pending', // 대기 상태로 저장
+                createdAt: new Date().toISOString()
+            };
+
+            // 같은 날짜와 시간에 활성 예약이 있는지 데이터베이스 트랜잭션으로 확인합니다.
+            // 동시에 여러 고객이 신청해도 한 건만 저장되도록 원자적으로 처리합니다.
+            const bookingsRef = database.ref('bookings');
+            const newBookingRef = bookingsRef.push();
+            const newBookingKey = newBookingRef.key;
+            let duplicateSlot = false;
+
+            bookingsRef.transaction((currentBookings) => {
+                duplicateSlot = false;
+                const bookings = currentBookings || {};
+
+                const hasConflict = Object.values(bookings).some((booking) => {
+                    if (!booking) return false;
+
+                    const isActive = !booking.status ||
+                        booking.status === 'pending' ||
+                        booking.status === 'confirmed';
+
+                    return isActive &&
+                        Number(booking.year) === Number(selectedYear) &&
+                        Number(booking.month) === Number(selectedMonth) &&
+                        Number(booking.day) === Number(selectedDay) &&
+                        intervalsOverlap(toMinutes(selectedTime), getDurationFromProgram(program), toMinutes(booking.time), getBookingDuration(booking));
+                });
+
+                if (hasConflict) {
+                    duplicateSlot = true;
+                    return; // 기존 예약을 덮어쓰지 않고 트랜잭션을 중단합니다.
+                }
+
+                bookings[newBookingKey] = newBooking;
+                return bookings;
+            }, (error, committed) => {
+                if (error) {
+                    showAlert('오류 발생', '예약 등록 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+                } else if (!committed && duplicateSlot) {
+                    showAlert('예약 마감', '죄송합니다. 방금 선택하신 시간에 다른 고객님의 예약이 먼저 접수되었습니다. 다른 시간을 선택해 주세요.');
+                    showStep(2);
+                    renderTimeSlots();
+                } else if (!committed) {
+                    showAlert('예약 확인 필요', '예약이 저장되지 않았습니다. 다시 시도해 주세요.');
+                } else {
+                    closeModal('bookingModal');
+                    showAlert('신청 완료', `${selectedMonth}월 ${selectedDay}일 ${selectedTime}\n'${program}' 예약 신청이 접수되었습니다.\n\n원장님 확인 후 승인 시 최종 확정됩니다.`);
+                    document.getElementById('custName').value = '';
+                    document.getElementById('custPhone').value = '';
+                    document.getElementById('programSelect').value = '';
+                }
+            }, false);
+        }
+
+        renderServices('all');
+
+        function showAlert(title, msg) {
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMessage').innerText = msg;
+            openModal('alertModal');
+        }
+    </script>
+</body>
+</html>
