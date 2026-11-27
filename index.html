@@ -625,7 +625,7 @@ function filterServices(filter) {
                     <span>${detailPosition + 1} / ${detailOrder.length}</span>
                     <button type="button" aria-label="다음 프로그램" onclick="moveServiceDetail(1)" ${detailPosition === detailOrder.length - 1 ? 'disabled style="opacity:.3"' : ''}>다음 ›</button>
                 </div>
-                ${cfReturning ? '<button type="button" onclick="this.closest(\'dialog\').close()" style="display:block;color:#cfb583;font-size:13px;margin-bottom:10px;padding:6px 0">‹ 추천 프로그램으로 돌아가기</button>' : ''}
+                ${cfReturning ? '<button type="button" onclick="this.closest(\'dialog\').close()" style="display:flex;align-items:center;gap:7px;width:100%;text-align:left;color:#e0c99e;font-size:14px;font-weight:600;margin-bottom:12px;padding:10px 12px;border:1px solid #cfb58340;border-radius:9px;background:#cfb5830d">‹ 추천 프로그램으로 돌아가기</button>' : ''}
                 <div style="position:relative;overflow:hidden"><div class="detail-track" style="will-change:transform">
                 <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;letter-spacing:1.5px;color:#dfc69a">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'} ${service.tag ? '<span class="detail-service-tag" data-tag="'+service.tag+'">'+service.tag+'</span>' : ''}</div>
                 <h2 id="serviceDetailTitle" style="font-size:21px;font-weight:600;line-height:1.4;margin:10px 24px 8px 0">${service.name}</h2>
