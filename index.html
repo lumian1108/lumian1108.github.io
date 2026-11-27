@@ -568,7 +568,7 @@ function filterServices(filter) {
                 }
                 modal.lockDetailBackground = lockDetailBackground;
                 modal.unlockDetailBackground = unlockDetailBackground;
-                modal.addEventListener('close', () => { if (!modal.open) unlockDetailBackground(); });
+                modal.addEventListener('close', () => { if (!modal.open) {unlockDetailBackground();if(cfReturning){cfReturning=false;cfReturnToResults();}} });
                 modal.style.touchAction = 'none';
                 modal.addEventListener('touchstart', e => {
                     if (e.touches.length !== 1) { touchStart = null; return; }
@@ -625,6 +625,7 @@ function filterServices(filter) {
                     <span>${detailPosition + 1} / ${detailOrder.length}</span>
                     <button type="button" aria-label="다음 프로그램" onclick="moveServiceDetail(1)" ${detailPosition === detailOrder.length - 1 ? 'disabled style="opacity:.3"' : ''}>다음 ›</button>
                 </div>
+                ${cfReturning ? '<button type="button" onclick="this.closest(\'dialog\').close()" style="display:block;color:#cfb583;font-size:13px;margin-bottom:10px;padding:6px 0">‹ 추천 프로그램으로 돌아가기</button>' : ''}
                 <div style="position:relative;overflow:hidden"><div class="detail-track" style="will-change:transform">
                 <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;letter-spacing:1.5px;color:#dfc69a">${service.category === 'facial' ? 'FACIAL CARE' : 'BODY CARE'} ${service.tag ? '<span class="detail-service-tag" data-tag="'+service.tag+'">'+service.tag+'</span>' : ''}</div>
                 <h2 id="serviceDetailTitle" style="font-size:21px;font-weight:600;line-height:1.4;margin:10px 24px 8px 0">${service.name}</h2>
@@ -632,7 +633,7 @@ function filterServices(filter) {
                 <div class="service-detail-art" style="margin:20px auto">${renderServiceAnatomy(service.name)}</div>
                 <div style="border-top:1px solid #ffffff20;padding-top:16px;margin-top:12px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">추천 대상</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.for}</p></div>
                 <div style="margin-top:18px"><p style="font-size:12px;color:#d4af37;margin-bottom:6px">관리 효과</p><p style="font-size:15px;line-height:1.7;color:#e5e7eb">${service.benefit}</p></div>
-                <button type="button" onclick="this.closest('dialog').unlockDetailBackground(); this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
+                <button type="button" onclick="cfLeaveForBooking(); this.closest('dialog').unlockDetailBackground(); this.closest('dialog').close(); chooseService(${index})" style="width:100%;margin-top:24px;padding:14px;border-radius:12px;background:#d4af37;color:#163023;font-weight:600">이 프로그램 예약하기</button>
                 </div></div>
             `;
             if (!modal.open) { detailMoving = false; modal.detailSession = (modal.detailSession || 0) + 1; modal.lockDetailBackground(); modal.showModal(); }
@@ -996,6 +997,9 @@ function cfSelectCategory(cat){cfCategory=cat;cfChosen.clear();cfOptions();}
 function cfOptions(){document.getElementById('cfContent').innerHTML='<p style="color:#cfb583;font-size:12px">STEP 02 / 02</p><p style="margin:8px 0">고민을 선택해 주세요. (복수 선택 가능)</p>'+cfGroups[cfCategory].map(([label,i])=>'<label class="cf-option"><input type="checkbox" '+(cfChosen.has(i)?'checked':'')+' onchange="cfToggle('+i+',this.checked)"><span>'+label+'</span></label>').join('')+'<button id="cfShowResults" class="cf-primary" onclick="cfResults()" '+(!cfChosen.size?'disabled':'')+'>추천 프로그램 보기</button><button style="padding:12px;color:#cfb583" onclick="cfStart()">‹ 이전 단계</button>';}
 function cfToggle(i,checked){if(checked)cfChosen.add(i);else cfChosen.delete(i);document.getElementById('cfShowResults').disabled=!cfChosen.size;}
 function cfResults(){if(!cfChosen.size)return;const ids=[...cfChosen].sort((a,b)=>a-b);document.getElementById('cfContent').innerHTML='<p style="color:#cfb583;font-size:12px">PERSONAL CARE GUIDE</p><h3 style="font-size:19px;margin:8px 0">추천 프로그램 '+ids.length+'가지</h3><p style="font-size:12px;color:#bac8be">선택하신 고민과 일치하는 프로그램입니다.</p>'+ids.map(i=>{const s=lumianServices[i];return '<article class="cf-result"><div style="display:flex;gap:12px;align-items:center">'+renderServiceAnatomy(s.name)+'<div style="flex:1"><p style="font-weight:600;font-size:15px">'+s.name+'</p><p style="font-size:13px;color:#cfb583;margin:6px 0">'+s.time+'분 · '+formatServicePrice(s.price)+'</p><p style="font-size:12px;color:#bac8be">'+cfGroups[cfCategory].find(x=>x[1]===i)[0]+'</p></div></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="cfDetail('+i+')">상세 보기</button><button onclick="document.getElementById(\'careFinder\').close();chooseService('+i+')" style="background:#cfb583;color:#10271e;font-weight:600">예약하기</button></div></article>'}).join('')+'<button class="cf-primary" onclick="cfOptions()">고민 다시 선택하기</button><button style="padding:12px;color:#cfb583" onclick="cfStart()">처음부터 다시</button>';document.getElementById('careFinder').scrollTop=0;}
-function cfDetail(i){document.getElementById('careFinder').close();openServiceDetail(i);}
+let cfReturning=false,cfSavedScroll=0;
+function cfDetail(i){const finder=document.getElementById('careFinder');cfSavedScroll=finder.scrollTop;finder.close();cfReturning=true;openServiceDetail(i);detailOrder=[...cfChosen].sort((a,b)=>a-b);detailPosition=detailOrder.indexOf(i);openServiceDetail(i,true); }
+function cfReturnToResults(){const finder=document.getElementById('careFinder');if(!finder.open){finder.showModal();finder.scrollTop=cfSavedScroll;}}
+function cfLeaveForBooking(){cfReturning=false;}
 </script></body>
 </html>
