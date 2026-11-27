@@ -945,5 +945,15 @@ function filterServices(filter) {
             openModal('alertModal');
         }
     </script>
+<style>
+#lumianBackTop{position:fixed;right:max(18px,calc((100vw - 448px)/2 + 18px));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:35;width:48px;height:48px;border:1px solid #cfb58380;border-radius:50%;background:#163023;color:#cfb583;box-shadow:0 4px 18px #0004;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity .22s,transform .22s,visibility .22s}
+#lumianBackTop.visible{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
+#lumianBackTop span{font-size:9px;letter-spacing:1px}#lumianBackTop:focus-visible{outline:2px solid #cfb583;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#lumianBackTop{transition:none}}
+</style>
+<button id="lumianBackTop" type="button" aria-label="페이지 맨 위로 이동"><i class="fa-solid fa-chevron-up" aria-hidden="true"></i><span aria-hidden="true">TOP</span></button>
+<script>
+(function(){const button=document.getElementById('lumianBackTop');const sync=()=>button.classList.toggle('visible',window.scrollY>320);window.addEventListener('scroll',sync,{passive:true});window.addEventListener('pageshow',sync);button.addEventListener('click',()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));sync();})();
+</script>
 </body>
 </html>
