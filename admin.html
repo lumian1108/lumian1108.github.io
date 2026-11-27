@@ -376,7 +376,7 @@
             </section>
 
 <section id="homeView"> 
-            <div id="adminOverview"><button type="button" onclick="openManualBooking()" class="w-full bg-gold text-[#163023] rounded-xl p-3 font-bold text-sm mb-4"><i class="fa-solid fa-plus mr-2"></i>전화 예약 등록</button><section class="admin-panel p-5 mb-4"><p class="text-xs text-gold tracking-widest">LUMIAN OVERVIEW</p><h3 class="text-xl font-bold mt-2">오늘의 매장 현황</h3><p id="overviewDate" class="text-xs mt-2"></p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-[#163023] rounded-xl p-3"><p class="text-xs">오늘 확정 예약 금액</p><strong id="todayExpected" class="block text-lg text-gold mt-2">—</strong></div><div class="bg-[#163023] rounded-xl p-3"><p class="text-xs">이번 달 확정 예약 금액</p><strong id="monthExpected" class="block text-lg text-gold mt-2">—</strong></div></div><p class="text-[11px] mt-3">프로그램 정가 기준 예상 금액이며 실제 결제 매출이 아닙니다.</p><p id="overviewUnknown" class="text-xs mt-2"></p></section></div><section id="dashboardSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div id="adminOverview"><button type="button" onclick="showAdminView('calendar')" class="w-full admin-panel p-3 mb-3 text-sm font-bold"><i class="fa-regular fa-calendar mr-2"></i>예약 달력 보기 <i class="fa-solid fa-chevron-right ml-2"></i></button><button type="button" onclick="openManualBooking()" class="w-full bg-gold text-[#163023] rounded-xl p-3 font-bold text-sm mb-4"><i class="fa-solid fa-plus mr-2"></i>전화 예약 등록</button><section class="admin-panel p-5 mb-4"><p class="text-xs text-gold tracking-widest">LUMIAN OVERVIEW</p><h3 class="text-xl font-bold mt-2">오늘의 매장 현황</h3><p id="overviewDate" class="text-xs mt-2"></p><div class="grid grid-cols-2 gap-3 mt-4"><div class="bg-[#163023] rounded-xl p-3"><p class="text-xs">오늘 확정 예약 금액</p><strong id="todayExpected" class="block text-lg text-gold mt-2">—</strong></div><div class="bg-[#163023] rounded-xl p-3"><p class="text-xs">이번 달 확정 예약 금액</p><strong id="monthExpected" class="block text-lg text-gold mt-2">—</strong></div></div><p class="text-[11px] mt-3">프로그램 정가 기준 예상 금액이며 실제 결제 매출이 아닙니다.</p><p id="overviewUnknown" class="text-xs mt-2"></p></section></div><section id="dashboardSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                 <button type="button" onclick="openBookingCategory('today')" class="summary-card text-left bg-boxDark border border-gold/20 rounded-xl p-3 active:scale-[.98] transition">
                     <i class="fa-solid fa-calendar-day text-gold text-lg mb-2"></i><p class="text-[11px] text-gray-300">오늘 예약</p><p id="todayCount" class="text-2xl font-bold text-gold mt-1">0</p><p class="text-[10px] text-gray-500 mt-1">예약 확인 <i class="fa-solid fa-arrow-right ml-1"></i></p>
                 </button>
@@ -607,20 +607,7 @@
             selectCalendarDate(getLocalDateKey());
         }
 
-        function selectCalendarDate(dateKey) {
-            showAdminView('home');
-            document.getElementById('dashboardSummary').classList.add('hidden');
-            document.getElementById('bookingListView').classList.remove('hidden');
-            document.getElementById('bookingListTitle').textContent = '선택한 날짜 예약';
-            selectedCalendarDate = dateKey;
-            document.getElementById('bookingDateFilter').value = dateKey;
-            document.getElementById('selectedCalendarDate').textContent = new Date(dateKey + 'T00:00:00').toLocaleDateString('ko-KR', {
-                year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
-            }) + ' 예약';
-            renderAdminCalendar();
-            renderBookingList();
-        }
-
+        function selectCalendarDate(dateKey){selectedCalendarDate=dateKey;document.getElementById('selectedCalendarDate').textContent=dateKey+' 예약';renderAdminCalendar();renderCalendarDay();const d=document.getElementById('calendarDayDialog');if(!d.open)d.showModal();}
         function renderAdminCalendar() {
             const title = document.getElementById('adminCalendarTitle');
             const grid = document.getElementById('adminCalendarGrid');
@@ -641,7 +628,7 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateKey = formatDateKey(calendarYear, calendarMonth, day);
                 const dayRecords = Object.values(allBookings).filter(item =>
-                    Number(item.year) === calendarYear &&
+                    item && Number(item.year) === calendarYear &&
                     Number(item.month) === calendarMonth + 1 &&
                     Number(item.day) === day
                 );
@@ -658,13 +645,13 @@
                 cell.className = `min-h-[58px] rounded-lg border p-1 flex flex-col items-center justify-start gap-1 transition-colors ${isSelected ? 'border-gold bg-gold/15' : 'border-white/5 bg-[#163023]'} ${isToday ? 'ring-1 ring-gold/50' : ''}`;
 
                 const number = document.createElement('span');
-                number.className = `text-[11px] font-semibold ${new Date(calendarYear, calendarMonth, day).getDay() === 0 ? 'text-red-300' : new Date(calendarYear, calendarMonth, day).getDay() === 6 ? 'text-blue-300' : 'text-gray-200'}`;
+                number.className = `text-sm font-semibold ${new Date(calendarYear, calendarMonth, day).getDay() === 0 ? 'text-red-300' : new Date(calendarYear, calendarMonth, day).getDay() === 6 ? 'text-blue-300' : 'text-gray-200'}`;
                 number.textContent = day;
                 cell.appendChild(number);
 
                 if (dayRecords.length) {
                     const count = document.createElement('span');
-                    count.className = 'text-[9px] text-gray-300 leading-none';
+                    count.className = 'calendar-count';
                     count.textContent = `${activeCount}건`;
                     cell.appendChild(count);
 
@@ -687,6 +674,7 @@
 
                 grid.appendChild(cell);
             }
+            if(document.getElementById("calendarDayDialog")?.open)renderCalendarDay();
         }
 
         function getLocalDateKey(date = new Date()) {
@@ -874,5 +862,9 @@ function mbPreview(){const s=manualServices[Number(mb('mbProgram').value)],start
 function openManualBooking(){if(mb('dashboardSection').classList.contains('hidden'))return;toggleAdminMenu(false);const d=mb('manualBookingDialog');if(d.open)return;mb('manualBookingForm').reset();mb('mbDate').value=getLocalDateKey();mb('mbDate').min=getLocalDateKey();mb('mbMessage').textContent='';mbPreview();d.showModal()}
 mb('mbTime').addEventListener('input',mbPreview);mb('mbProgram').addEventListener('change',mbPreview);
 mb('manualBookingForm').addEventListener('submit',async e=>{e.preventDefault();const name=mb('mbName').value.trim(),phone=mb('mbPhone').value.trim(),date=mb('mbDate').value,time=mb('mbTime').value,s=manualServices[Number(mb('mbProgram').value)],start=mbMinutes(time),msg=mb('mbMessage'),save=mb('mbSave');if(!name||phone.replace(/\D/g,'').length<8||!s||!date||date<getLocalDateKey()||!Number.isFinite(start)||start+s[1]>1440){msg.textContent='성함, 연락처, 날짜 및 시간을 확인해 주세요.';return}const [year,month,day]=date.split('-').map(Number);save.disabled=true;try{const settings=(await database.ref('settings/booking').get()).val()||{},weekday=new Date(year,month-1,day).getDay(),opening=Number(settings.openHour??9)*60,closing=Number(weekday===3?settings.wednesdayCloseHour??17:settings.closeHour??20)*60;if((start<opening||start+s[1]>closing||(Array.isArray(settings.closedDates)&&settings.closedDates.includes(date)))&&!confirm('운영시간 외 또는 지정 휴무일입니다. 전화 예약을 등록하시겠습니까?'))return;const b={year,month,day,time,duration:s[1],name,phone,program:s[0]+' | '+s[1]+'분 | '+s[2].toLocaleString('ko-KR')+'원',status:'confirmed',source:'phone',createdAt:new Date().toISOString()};const ref=database.ref('bookings'),key=ref.push().key;const result=await ref.transaction(current=>{const rows=current||{};if(Object.values(rows).some(x=>x&&(!x.status||['pending','confirmed'].includes(x.status))&&Number(x.year)===year&&Number(x.month)===month&&Number(x.day)===day&&start<mbMinutes(x.time)+mbDuration(x)&&mbMinutes(x.time)<start+s[1]))return;rows[key]=b;return rows},undefined,false);if(!result.committed){msg.textContent='이미 예약된 관리 시간과 겹칩니다. 다른 시간을 선택해 주세요.';return}mb('manualBookingDialog').close();showAdminView('home');alert('전화 예약이 확정되었습니다.')}catch(err){msg.textContent='예약 저장 실패. 연결 및 접근 권한을 확인해 주세요.'}finally{save.disabled=false}});
+</script><style>#adminCalendarGrid button{min-height:76px;padding:7px 2px;gap:5px}#adminCalendarGrid .calendar-count{font-size:12px;font-weight:700;color:#cfb583}#calendarDayDialog{position:fixed;inset:0;margin:auto;width:calc(100% - 28px);max-width:520px;max-height:85dvh;overflow:auto;background:#163023;color:#eee4d3;border:1px solid #cfb58355;border-radius:20px;padding:20px}#calendarDayDialog::backdrop{background:#000a;backdrop-filter:blur(4px)}</style><dialog id="calendarDayDialog"><header class="flex justify-between items-center mb-4"><h2 id="calendarDayTitle" class="text-lg font-bold text-gold"></h2><button type="button" onclick="this.closest('dialog').close()" aria-label="닫기" class="text-2xl">×</button></header><p id="calendarDaySummary" class="text-xs mb-3"></p><div id="calendarDayRows"></div><button type="button" id="calendarAddPhone" onclick="calendarPhoneBooking()" class="w-full bg-gold text-[#163023] font-bold rounded-xl p-3 mt-4">+ 선택 날짜 전화 예약 등록</button><button type="button" onclick="calendarManageDay()" class="w-full border border-gold/30 rounded-xl p-3 mt-2 text-sm">예약 승인 · 취소 관리</button></dialog><script>
+function renderCalendarDay(){const date=selectedCalendarDate;if(!date)return;document.getElementById('calendarDayTitle').textContent=new Date(date+'T00:00:00').toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'});const rows=Object.values(allBookings||{}).filter(b=>b&&b.year+'-'+String(b.month).padStart(2,'0')+'-'+String(b.day).padStart(2,'0')===date).sort((a,b)=>String(a.time||'').localeCompare(String(b.time||''),'en',{numeric:true}));document.getElementById('calendarDaySummary').textContent='확정 '+rows.filter(b=>!b.status||b.status==='confirmed').length+'건 · 대기 '+rows.filter(b=>b.status==='pending').length+'건 · 취소 '+rows.filter(b=>b.status==='cancelled').length+'건';const list=document.getElementById('calendarDayRows');list.replaceChildren();for(const b of rows){const row=document.createElement('div');row.className='bg-[#10271e] rounded-xl p-3 mb-2';const h=document.createElement('p');h.className='text-sm font-bold text-gold';const start=mbMinutes(b.time),end=start+mbDuration(b);h.textContent=(b.time||'시간 미정')+(Number.isFinite(end)?' – '+String(Math.floor(end/60)).padStart(2,'0')+':'+String(end%60).padStart(2,'0'):'')+' · '+(b.name||'고객');const p=document.createElement('p');p.className='text-xs mt-2';p.textContent=String(b.program||'');const status=document.createElement('p');status.className='text-xs mt-2';status.textContent=({pending:'승인 대기',confirmed:'예약 확정',cancelled:'취소'})[b.status]||(!b.status?'예약 확정':b.status);if(b.source==='phone')status.textContent+=' · 전화 예약';row.append(h,p,status);list.append(row)}if(!rows.length)list.textContent='등록된 예약이 없습니다.';document.getElementById('calendarAddPhone').disabled=date<getLocalDateKey()}
+function calendarPhoneBooking(){const date=selectedCalendarDate;document.getElementById('calendarDayDialog').close();openManualBooking();document.getElementById('mbDate').value=date;}
+function calendarManageDay(){const date=selectedCalendarDate;document.getElementById('calendarDayDialog').close();openBookingCategory('all');document.getElementById('bookingSearch').value='';document.getElementById('bookingStatusFilter').value='all';document.getElementById('bookingDateFilter').value=date;const p=document.getElementById('bookingProgramFilter');if(p)p.selectedIndex=0;selectedCalendarDate=date;document.getElementById('bookingListTitle').textContent=date+' 예약';renderBookingList()}
 </script></body>
 </html>
